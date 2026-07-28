@@ -37,6 +37,7 @@
     sym("phone", '<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>') +
     sym("check", '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>') +
     sym("ig", '<rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>') +
+    sym("search", '<circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.2" y2="16.2"/>') +
     sym("star", '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>', true) +
     sym("sparkle", '<path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/>', true) +
     '<symbol id="i-wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.5c1.2.5 2.5.8 3.8.8 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.2 0-2.4-.3-3.5-.8l-.6-.3-4.9.9 1-4.7-.3-.6c-.9-1.5-1.4-3.2-1.4-5 0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.5 9.5-9.9 9.5zm5.4-7.1c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5s-.7-1.6-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.5-.3z"/></symbol>' +
@@ -218,7 +219,15 @@
   }
 
   function updateCartBadge() {
-    qsa(".cart-count").forEach(function (el) { el.textContent = cartCount(); });
+    var n = String(cartCount());
+    qsa(".cart-count").forEach(function (el) {
+      if (el.textContent !== n && el.textContent !== "") {
+        el.classList.remove("bump");
+        void el.offsetWidth; // reinicia la animación
+        el.classList.add("bump");
+      }
+      el.textContent = n;
+    });
   }
 
   /* ---------- Toast ---------- */
@@ -259,7 +268,19 @@
 
   function bindAddButtons(ctx) {
     qsa("[data-add]", ctx).forEach(function (btn) {
-      btn.addEventListener("click", function () { addToCart(btn.getAttribute("data-add"), 1); });
+      btn.addEventListener("click", function () {
+        addToCart(btn.getAttribute("data-add"), 1);
+        // Confirmación visual sobre el propio botón
+        var original = btn.innerHTML;
+        btn.classList.add("added");
+        btn.disabled = true;
+        btn.innerHTML = "✓ En el carrito";
+        setTimeout(function () {
+          btn.classList.remove("added");
+          btn.disabled = false;
+          btn.innerHTML = original;
+        }, 1300);
+      });
     });
   }
 
@@ -305,6 +326,10 @@
 
   /* ---------- Página: Tienda ---------- */
 
+  function normalizeText(s) {
+    return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  }
+
   function initShop() {
     var grid = qs("#tienda-grid");
     if (!grid) return;
@@ -313,32 +338,86 @@
       cat: urlParam("cat") || "todas",
       tipo: urlParam("tipo") || "todos",
       orden: "relevancia",
+      q: urlParam("q") || "",
     };
 
     var tipoSel = qs("#filtro-tipo");
     var ordenSel = qs("#filtro-orden");
+    var buscar = qs("#filtro-buscar");
+    var limpiar = qs("#filtro-limpiar");
     if (state.tipo !== "todos" && tipoSel) tipoSel.value = state.tipo;
+    if (buscar && state.q) buscar.value = state.q;
+
+    // Cada chip muestra cuántos productos tiene su categoría
+    qsa(".chip[data-cat]").forEach(function (chip) {
+      var c = chip.getAttribute("data-cat");
+      var n = c === "todas"
+        ? ONDEA_PRODUCTS.length
+        : ONDEA_PRODUCTS.filter(function (p) { return p.category === c; }).length;
+      chip.insertAdjacentHTML("beforeend", '<span class="chip-count">' + n + "</span>");
+    });
+
+    function hayFiltros() {
+      return state.cat !== "todas" || state.tipo !== "todos" || state.q !== "";
+    }
+
+    // La URL refleja los filtros: se puede compartir o volver atrás sin perderlos
+    function syncURL() {
+      var params = new URLSearchParams();
+      if (state.cat !== "todas") params.set("cat", state.cat);
+      if (state.tipo !== "todos") params.set("tipo", state.tipo);
+      if (state.q) params.set("q", state.q);
+      var query = params.toString();
+      history.replaceState(null, "", location.pathname + (query ? "?" + query : ""));
+    }
+
+    function reset() {
+      state.cat = "todas";
+      state.tipo = "todos";
+      state.q = "";
+      if (tipoSel) tipoSel.value = "todos";
+      if (buscar) buscar.value = "";
+      apply();
+    }
 
     function apply() {
       var list = ONDEA_PRODUCTS.slice();
       if (state.cat !== "todas") list = list.filter(function (p) { return p.category === state.cat; });
       if (state.tipo !== "todos") list = list.filter(function (p) { return p.types.indexOf(state.tipo) !== -1; });
+      if (state.q) {
+        var q = normalizeText(state.q);
+        list = list.filter(function (p) {
+          return normalizeText(p.name + " " + p.short + " " + p.categoryLabel).indexOf(q) !== -1;
+        });
+      }
       if (state.orden === "precio-asc") list.sort(function (a, b) { return a.price - b.price; });
       if (state.orden === "precio-desc") list.sort(function (a, b) { return b.price - a.price; });
-      if (state.orden === "rating") list.sort(function (a, b) { return b.rating - a.rating; });
 
       grid.innerHTML = list.length
         ? list.map(productCard).join("")
-        : '<p style="grid-column:1/-1;text-align:center;color:var(--brown-soft);padding:40px 0;">No hay productos con esos filtros. Prueba otra combinación ✦</p>';
+        : '<div class="shop-empty">' +
+          "<strong>No encontramos productos con esos filtros.</strong>" +
+          "<span>Prueba con otra búsqueda o mira todo el catálogo ✦</span>" +
+          '<button class="btn btn-outline btn-sm" id="empty-limpiar">Quitar los filtros</button>' +
+          "</div>";
       bindAddButtons(grid);
       revealScan();
 
       var count = qs("#result-count");
-      if (count) count.textContent = list.length + " producto" + (list.length === 1 ? "" : "s");
+      if (count) {
+        count.textContent = list.length === ONDEA_PRODUCTS.length
+          ? list.length + " productos"
+          : list.length + " de " + ONDEA_PRODUCTS.length + " productos";
+      }
 
       qsa(".chip[data-cat]").forEach(function (chip) {
         chip.classList.toggle("active", chip.getAttribute("data-cat") === state.cat);
       });
+
+      if (limpiar) limpiar.hidden = !hayFiltros();
+      var emptyBtn = qs("#empty-limpiar");
+      if (emptyBtn) emptyBtn.addEventListener("click", reset);
+      syncURL();
     }
 
     qsa(".chip[data-cat]").forEach(function (chip) {
@@ -349,6 +428,18 @@
     });
     if (tipoSel) tipoSel.addEventListener("change", function () { state.tipo = tipoSel.value; apply(); });
     if (ordenSel) ordenSel.addEventListener("change", function () { state.orden = ordenSel.value; apply(); });
+
+    if (buscar) {
+      var debounce = null;
+      buscar.addEventListener("input", function () {
+        clearTimeout(debounce);
+        debounce = setTimeout(function () {
+          state.q = buscar.value.trim();
+          apply();
+        }, 160);
+      });
+    }
+    if (limpiar) limpiar.addEventListener("click", reset);
 
     apply();
   }
