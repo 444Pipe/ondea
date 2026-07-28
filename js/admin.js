@@ -105,6 +105,14 @@
     renderChartTop(ok);
     renderPedidos(lista);
     renderConta(ok);
+    renderProductos(ok);
+
+    var nuevos = state.pedidos.filter(function (p) { return p.estado === "nuevo"; }).length;
+    var badge = $("#sb-nuevos");
+    if (badge) {
+      badge.hidden = !nuevos;
+      badge.textContent = nuevos;
+    }
   }
 
   function renderKPIs(lista, ok) {
@@ -278,6 +286,31 @@
       '<td class="num">' + totMargen + "%</td></tr></tfoot></table>";
   }
 
+  function renderProductos(ok) {
+    var wrap = $("#productos-wrap");
+    if (!wrap) return;
+    var vendidos = {};
+    ok.forEach(function (p) {
+      p.items.forEach(function (i) { vendidos[i.id] = (vendidos[i.id] || 0) + i.qty; });
+    });
+    var rows = ONDEA_PRODUCTS.map(function (p) {
+      var cost = p.cost || Math.round(p.price * 0.55);
+      var gan = p.price - cost;
+      var margen = Math.round((gan / p.price) * 100);
+      return "<tr><td><strong>" + esc(p.name) + "</strong><br><span class='muted'>" + esc(p.size) + "</span></td>" +
+        "<td>" + esc(p.categoryLabel) + "</td>" +
+        '<td class="num">' + fmtCOP(p.price) + "</td>" +
+        '<td class="num muted">' + fmtCOP(cost) + "</td>" +
+        '<td class="num pos">' + fmtCOP(gan) + "</td>" +
+        '<td class="num">' + margen + "%</td>" +
+        '<td class="num"><strong>' + (vendidos[p.id] || 0) + "</strong></td></tr>";
+    }).join("");
+    wrap.innerHTML =
+      '<table class="admin-table"><thead><tr>' +
+      "<th>Producto</th><th>Categoría</th><th class='num'>Precio</th><th class='num'>Costo</th><th class='num'>Ganancia/und</th><th class='num'>Margen</th><th class='num'>Vendidos</th>" +
+      "</tr></thead><tbody>" + rows + "</tbody></table>";
+  }
+
   /* ---------- Exportar CSV ---------- */
 
   function downloadCSV(nombre, filas) {
@@ -367,6 +400,32 @@
         state.rango = parseInt(chip.getAttribute("data-rango"), 10);
         $$("#range-row .chip").forEach(function (c) { c.classList.toggle("active", c === chip); });
         render();
+      });
+    });
+
+    // Navegación entre secciones + menú lateral en móvil
+    var VIEW_TITLES = { resumen: "Resumen", pedidos: "Pedidos", contabilidad: "Contabilidad", productos: "Productos" };
+    var sidebar = $("#admin-sidebar");
+    var backdrop = $("#sb-backdrop");
+
+    function closeDrawer() {
+      sidebar.classList.remove("open");
+      backdrop.classList.remove("show");
+    }
+    $("#sb-toggle").addEventListener("click", function () {
+      sidebar.classList.add("open");
+      backdrop.classList.add("show");
+    });
+    backdrop.addEventListener("click", closeDrawer);
+
+    $$(".sb-item").forEach(function (item) {
+      item.addEventListener("click", function () {
+        var view = item.getAttribute("data-view");
+        $$(".sb-item").forEach(function (i) { i.classList.toggle("active", i === item); });
+        $$(".admin-view").forEach(function (v) { v.hidden = v.id !== "view-" + view; });
+        $("#view-title").textContent = VIEW_TITLES[view] || "";
+        closeDrawer();
+        window.scrollTo({ top: 0 });
       });
     });
 

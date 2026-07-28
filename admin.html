@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600;1,700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css?v=5">
-  <link rel="stylesheet" href="css/admin.css?v=2">
+  <link rel="stylesheet" href="css/admin.css?v=3">
 </head>
 <body class="admin-body">
 
@@ -31,83 +31,111 @@
   </div>
 
   <!-- Panel -->
-  <div id="panel-view" style="display:none;">
-    <div class="admin-top">
-      <div class="container admin-top-inner">
-        <div class="admin-title">
-          <span class="brand-ondea">Ondea</span>
-          <small>Panel de administración</small>
-        </div>
-        <div class="admin-actions">
-          <button class="abtn abtn-pink" id="btn-refresh">↻ Actualizar</button>
-          <button class="abtn abtn-ghost" id="btn-demo">Cargar datos demo</button>
-          <button class="abtn abtn-ghost" id="btn-demo-clear">Borrar demo</button>
-          <button class="abtn abtn-ghost" id="btn-logout">Salir</button>
-        </div>
+  <div id="panel-view" class="admin-layout" style="display:none;">
+
+    <div class="sb-backdrop" id="sb-backdrop"></div>
+
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="sb-brand">
+        <span class="brand-ondea">Ondea</span>
+        <small>Panel admin ✦</small>
       </div>
+      <nav class="sb-nav" aria-label="Secciones del panel">
+        <button class="sb-item active" data-view="resumen">
+          <svg class="icon" aria-hidden="true"><use href="#i-sparkle"></use></svg> Resumen
+        </button>
+        <button class="sb-item" data-view="pedidos">
+          <svg class="icon" aria-hidden="true"><use href="#i-cart"></use></svg> Pedidos
+          <span class="sb-badge" id="sb-nuevos" hidden>0</span>
+        </button>
+        <button class="sb-item" data-view="contabilidad">
+          <svg class="icon" aria-hidden="true"><use href="#i-cash"></use></svg> Contabilidad
+        </button>
+        <button class="sb-item" data-view="productos">
+          <svg class="icon" aria-hidden="true"><use href="#i-bottle"></use></svg> Productos
+        </button>
+      </nav>
+      <div class="sb-foot">
+        <a class="sb-link" href="index.html">← Ver la tienda</a>
+        <button class="sb-link" id="btn-logout">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <div class="admin-content">
+      <header class="content-top">
+        <button class="sb-toggle" id="sb-toggle" aria-label="Abrir menú">☰</button>
+        <h1 id="view-title">Resumen</h1>
+        <button class="abtn abtn-pink" id="btn-refresh">↻ Actualizar</button>
+      </header>
+
+      <main class="admin-main">
+        <div class="range-row" id="range-row">
+          <span class="lbl">Periodo:</span>
+          <button class="chip" data-rango="7">7 días</button>
+          <button class="chip active" data-rango="30">30 días</button>
+          <button class="chip" data-rango="90">90 días</button>
+          <button class="chip" data-rango="0">Todo</button>
+        </div>
+
+        <!-- RESUMEN -->
+        <section class="admin-view" id="view-resumen">
+          <div class="kpi-grid" id="kpi-grid"><!-- Render dinámico --></div>
+          <div class="charts-grid" style="margin-top: 16px;">
+            <div class="chart-card">
+              <h3>Ventas por día (COP)</h3>
+              <div id="chart-ventas"></div>
+            </div>
+            <div class="chart-card">
+              <h3>Productos más vendidos</h3>
+              <div id="chart-top"></div>
+            </div>
+          </div>
+          <div class="toolbox">
+            <span>Herramientas:</span>
+            <button class="abtn abtn-light" id="btn-demo">Cargar datos demo</button>
+            <button class="abtn abtn-light" id="btn-demo-clear">Borrar demo</button>
+          </div>
+        </section>
+
+        <!-- PEDIDOS -->
+        <section class="admin-view" id="view-pedidos" hidden>
+          <div class="view-head">
+            <span id="pedidos-count" class="muted"></span>
+            <button class="abtn abtn-light" id="btn-csv-pedidos">⬇ Exportar CSV</button>
+          </div>
+          <div class="table-card">
+            <div id="pedidos-wrap"><!-- Render dinámico --></div>
+          </div>
+        </section>
+
+        <!-- CONTABILIDAD -->
+        <section class="admin-view" id="view-contabilidad" hidden>
+          <div class="view-head">
+            <span class="muted">Ganancia = (precio − costo) × unidades · pedidos no cancelados del periodo · el envío no cuenta como ganancia.</span>
+            <button class="abtn abtn-light" id="btn-csv-conta">⬇ Exportar CSV</button>
+          </div>
+          <div class="table-card">
+            <div id="conta-wrap"><!-- Render dinámico --></div>
+          </div>
+        </section>
+
+        <!-- PRODUCTOS -->
+        <section class="admin-view" id="view-productos" hidden>
+          <div class="view-head">
+            <span class="muted">Catálogo con precio, costo y margen configurados en <code>js/data.js</code>. "Vendidos" cuenta el periodo elegido.</span>
+          </div>
+          <div class="table-card">
+            <div id="productos-wrap"><!-- Render dinámico --></div>
+          </div>
+        </section>
+
+        <p class="admin-foot">Rizos Ondea ✦ Panel interno — los pedidos llegan aquí automáticamente con cada compra en la tienda.</p>
+      </main>
     </div>
-
-    <main class="admin-main container">
-
-      <div class="range-row" id="range-row">
-        <span class="lbl">Periodo:</span>
-        <button class="chip" data-rango="7">Últimos 7 días</button>
-        <button class="chip active" data-rango="30">Últimos 30 días</button>
-        <button class="chip" data-rango="90">Últimos 90 días</button>
-        <button class="chip" data-rango="0">Todo</button>
-      </div>
-
-      <!-- KPIs -->
-      <section class="admin-section">
-        <div class="kpi-grid" id="kpi-grid"><!-- Render dinámico --></div>
-      </section>
-
-      <!-- Gráficas -->
-      <section class="admin-section">
-        <div class="charts-grid">
-          <div class="chart-card">
-            <h3>Ventas por día (COP)</h3>
-            <div id="chart-ventas"></div>
-          </div>
-          <div class="chart-card">
-            <h3>Productos más vendidos</h3>
-            <div id="chart-top"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Pedidos -->
-      <section class="admin-section">
-        <h2><svg class="icon" aria-hidden="true"><use href="#i-cart"></use></svg> Pedidos <span id="pedidos-count" class="muted" style="font-size:14px; color:var(--brown-soft);"></span></h2>
-        <div class="table-card">
-          <div id="pedidos-wrap"><!-- Render dinámico --></div>
-        </div>
-        <div style="margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="abtn abtn-light" id="btn-csv-pedidos">⬇ Exportar pedidos (CSV)</button>
-        </div>
-      </section>
-
-      <!-- Contabilidad -->
-      <section class="admin-section">
-        <h2><svg class="icon" aria-hidden="true"><use href="#i-cash"></use></svg> Contabilidad por producto</h2>
-        <div class="table-card">
-          <div id="conta-wrap"><!-- Render dinámico --></div>
-        </div>
-        <div style="margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="abtn abtn-light" id="btn-csv-conta">⬇ Exportar contabilidad (CSV)</button>
-        </div>
-        <p class="admin-foot" style="text-align:left; padding: 10px 4px 0;">
-          La ganancia se calcula como (precio de venta − costo) × unidades, sobre pedidos no cancelados del periodo.
-          El costo de cada producto se configura en <code>js/data.js</code> (campo <code>cost</code>). El valor del envío no se cuenta como ganancia.
-        </p>
-      </section>
-
-      <p class="admin-foot">Rizos Ondea ✦ Panel interno — los pedidos llegan aquí automáticamente cada vez que una clienta finaliza su compra en la tienda.</p>
-    </main>
   </div>
 
   <script src="js/data.js?v=5"></script>
   <script src="js/app.js?v=5"></script>
-  <script src="js/admin.js?v=2"></script>
+  <script src="js/admin.js?v=3"></script>
 </body>
 </html>
