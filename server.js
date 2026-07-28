@@ -30,9 +30,11 @@ const MIME = {
   ".woff2": "font/woff2",
 };
 
-// Los HTML se revalidan siempre; los assets (imágenes, css, js) se cachean 7 días.
+// Los HTML se revalidan siempre; los assets (imágenes, css, js) se cachean 1 día.
+// Los HTML referencian css/js con ?v=N: al subir cambios se incrementa la
+// versión y los navegadores descargan el archivo nuevo de inmediato.
 function cacheControl(ext) {
-  return ext === ".html" ? "no-cache" : "public, max-age=604800";
+  return ext === ".html" ? "no-cache" : "public, max-age=86400";
 }
 
 function send(res, status, headers, body) {
