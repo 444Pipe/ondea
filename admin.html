@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de administración · Rizos Ondea</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/jpeg" href="Statics/logo.jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600;1,700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=4">
+  <link rel="stylesheet" href="css/admin.css?v=1">
+</head>
+<body class="admin-body">
+
+  <!-- Acceso -->
+  <div class="login-wrap" id="login-view">
+    <div class="login-card">
+      <img src="Statics/logo.jpeg" alt="Rizos Ondea" width="110" height="110" style="border-radius: 20px; margin: 0 auto;">
+      <h1>Panel <span class="script">Ondea</span> ✦</h1>
+      <p>Ingresa la clave de administración para ver los pedidos, estadísticas y contabilidad de la tienda.</p>
+      <form id="login-form">
+        <input type="password" id="login-key" placeholder="Clave de administración" autocomplete="current-password" required>
+        <button class="btn btn-pink btn-block" type="submit">Entrar al panel</button>
+        <div class="login-error" id="login-error"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Panel -->
+  <div id="panel-view" style="display:none;">
+    <div class="admin-top">
+      <div class="container admin-top-inner">
+        <div class="admin-title">
+          <span class="brand-ondea">Ondea</span>
+          <small>Panel de administración</small>
+        </div>
+        <div class="admin-actions">
+          <button class="abtn abtn-pink" id="btn-refresh">↻ Actualizar</button>
+          <button class="abtn abtn-ghost" id="btn-demo">Cargar datos demo</button>
+          <button class="abtn abtn-ghost" id="btn-demo-clear">Borrar demo</button>
+          <button class="abtn abtn-ghost" id="btn-logout">Salir</button>
+        </div>
+      </div>
+    </div>
+
+    <main class="admin-main container">
+
+      <div class="range-row" id="range-row">
+        <span class="lbl">Periodo:</span>
+        <button class="chip" data-rango="7">Últimos 7 días</button>
+        <button class="chip active" data-rango="30">Últimos 30 días</button>
+        <button class="chip" data-rango="90">Últimos 90 días</button>
+        <button class="chip" data-rango="0">Todo</button>
+      </div>
+
+      <!-- KPIs -->
+      <section class="admin-section">
+        <div class="kpi-grid" id="kpi-grid"><!-- Render dinámico --></div>
+      </section>
+
+      <!-- Gráficas -->
+      <section class="admin-section">
+        <div class="charts-grid">
+          <div class="chart-card">
+            <h3>Ventas por día (COP)</h3>
+            <div id="chart-ventas"></div>
+          </div>
+          <div class="chart-card">
+            <h3>Productos más vendidos</h3>
+            <div id="chart-top"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pedidos -->
+      <section class="admin-section">
+        <h2><svg class="icon" aria-hidden="true"><use href="#i-cart"></use></svg> Pedidos <span id="pedidos-count" class="muted" style="font-size:14px; color:var(--brown-soft);"></span></h2>
+        <div class="table-card">
+          <div id="pedidos-wrap"><!-- Render dinámico --></div>
+        </div>
+        <div style="margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="abtn abtn-light" id="btn-csv-pedidos">⬇ Exportar pedidos (CSV)</button>
+        </div>
+      </section>
+
+      <!-- Contabilidad -->
+      <section class="admin-section">
+        <h2><svg class="icon" aria-hidden="true"><use href="#i-cash"></use></svg> Contabilidad por producto</h2>
+        <div class="table-card">
+          <div id="conta-wrap"><!-- Render dinámico --></div>
+        </div>
+        <div style="margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="abtn abtn-light" id="btn-csv-conta">⬇ Exportar contabilidad (CSV)</button>
+        </div>
+        <p class="admin-foot" style="text-align:left; padding: 10px 4px 0;">
+          La ganancia se calcula como (precio de venta − costo) × unidades, sobre pedidos no cancelados del periodo.
+          El costo de cada producto se configura en <code>js/data.js</code> (campo <code>cost</code>). El valor del envío no se cuenta como ganancia.
+        </p>
+      </section>
+
+      <p class="admin-foot">Rizos Ondea ✦ Panel interno — los pedidos llegan aquí automáticamente cada vez que una clienta finaliza su compra en la tienda.</p>
+    </main>
+  </div>
+
+  <script src="js/data.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
+  <script src="js/admin.js?v=1"></script>
+</body>
+</html>

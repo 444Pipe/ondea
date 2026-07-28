@@ -529,6 +529,29 @@
           return "• " + i.qty + " x " + p.name + " — " + fmtCOP(p.price * i.qty);
         });
 
+        // Registra el pedido en el panel admin (si el sitio corre sobre HTTP)
+        if (window.fetch && location.protocol.indexOf("http") === 0) {
+          var orderPayload = {
+            cliente: { nombre: nombre, telefono: telefono, direccion: direccion, ciudad: ciudad, depto: depto, notas: notas },
+            items: cart.map(function (i) {
+              var p = getProduct(i.id);
+              return { id: i.id, name: p ? p.name : i.id, qty: i.qty, price: p ? p.price : 0 };
+            }),
+            subtotal: subtotal,
+            envio: envio,
+            total: subtotal + envio,
+            pago: pago,
+          };
+          try {
+            fetch("/api/pedidos", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(orderPayload),
+              keepalive: true,
+            }).catch(function () {});
+          } catch (e) { /* si falla, el pedido igual sale por WhatsApp */ }
+        }
+
         var msg =
           "¡Hola Rizos Ondea! ✨ Quiero hacer este pedido:\n\n" +
           lineas.join("\n") + "\n\n" +

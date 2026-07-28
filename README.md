@@ -51,6 +51,25 @@ node server.js
 # → http://localhost:3000
 ```
 
+## 🛡️ Panel de administración
+
+En **`/admin.html`** está el panel interno: pedidos que llegan de la tienda,
+estadísticas (ventas, ganancia, ticket promedio), gráficas, gestión de estados
+(nuevo → confirmado → enviado → entregado / cancelado), contabilidad por
+producto y exportación a CSV.
+
+- **Clave de acceso**: por defecto `ondea2026`. En producción defínela con la
+  variable `ADMIN_KEY` en Railway (*Variables*) — ¡cámbiala sí o sí!
+- **Cómo llegan los pedidos**: cuando una clienta finaliza el checkout, el
+  pedido se guarda automáticamente en el servidor además de abrir WhatsApp.
+- **Persistencia en Railway**: crea un **Volume** montado en `/data` y define
+  la variable `DATA_DIR=/data`. Sin volumen, los pedidos se borran en cada
+  redespliegue (el archivo vive en el sistema de archivos efímero).
+- **Ganancia por producto**: se calcula con el campo `cost` de cada producto
+  en `js/data.js` — actualízalo con tus costos reales.
+- **Datos demo**: el botón "Cargar datos demo" siembra ~32 pedidos de ejemplo
+  para ver el panel en acción; "Borrar demo" los elimina sin tocar los reales.
+
 ## 🚂 Desplegar en Railway
 
 El proyecto ya incluye todo lo necesario: `server.js` (servidor estático sin

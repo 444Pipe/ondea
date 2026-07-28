@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /carrito.html
+Disallow: /admin.html
+Disallow: /api/
 
 Sitemap: https://www.rizosondea.com/sitemap.xml
