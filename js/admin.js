@@ -343,11 +343,13 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    // Login
+    // Login: el servidor espera "usuario:contraseña"
     $("#login-form").addEventListener("submit", function (ev) {
       ev.preventDefault();
-      tryLogin($("#login-key").value.trim()).catch(function (e) {
-        if (e.message === "AUTH") showLogin("Clave incorrecta.");
+      var user = $("#login-user").value.trim();
+      var pass = $("#login-pass").value;
+      tryLogin(user + ":" + pass).catch(function (e) {
+        if (e.message === "AUTH") showLogin("Usuario o contraseña incorrectos.");
         else showLogin("No se pudo conectar con el servidor.");
       });
     });

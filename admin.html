@@ -19,9 +19,10 @@
     <div class="login-card">
       <img src="Statics/logo.jpeg" alt="Rizos Ondea" width="110" height="110" style="border-radius: 20px; margin: 0 auto;">
       <h1>Panel <span class="script">Ondea</span> ✦</h1>
-      <p>Ingresa la clave de administración para ver los pedidos, estadísticas y contabilidad de la tienda.</p>
+      <p>Ingresa tus credenciales para ver los pedidos, estadísticas y contabilidad de la tienda.</p>
       <form id="login-form">
-        <input type="password" id="login-key" placeholder="Clave de administración" autocomplete="current-password" required>
+        <input type="text" id="login-user" placeholder="Usuario" autocomplete="username" required>
+        <input type="password" id="login-pass" placeholder="Contraseña" autocomplete="current-password" required>
         <button class="btn btn-pink btn-block" type="submit">Entrar al panel</button>
         <div class="login-error" id="login-error"></div>
       </form>

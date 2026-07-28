@@ -58,8 +58,11 @@ estadísticas (ventas, ganancia, ticket promedio), gráficas, gestión de estado
 (nuevo → confirmado → enviado → entregado / cancelado), contabilidad por
 producto y exportación a CSV.
 
-- **Clave de acceso**: por defecto `ondea2026`. En producción defínela con la
-  variable `ADMIN_KEY` en Railway (*Variables*) — ¡cámbiala sí o sí!
+- **Acceso**: hay un enlace "Admin" al final del footer de la tienda.
+  Usuario por defecto `gamendo`, contraseña `amoapipe`. En producción puedes
+  cambiarlos con las variables `ADMIN_USER` y `ADMIN_PASS` en Railway
+  (*Variables*) — recomendado, porque los valores por defecto quedan visibles
+  en el código del repositorio.
 - **Cómo llegan los pedidos**: cuando una clienta finaliza el checkout, el
   pedido se guarda automáticamente en el servidor además de abrir WhatsApp.
 - **Persistencia en Railway**: crea un **Volume** montado en `/data` y define

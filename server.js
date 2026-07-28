@@ -4,11 +4,12 @@
    Sin dependencias: solo módulos nativos de Node.
 
    Variables de entorno:
-   - PORT       → la inyecta Railway automáticamente.
-   - ADMIN_KEY  → clave del panel admin (por defecto "ondea2026" — ¡cámbiala!).
-   - DATA_DIR   → carpeta de datos persistente. En Railway crea un Volume
-                  montado en /data y define DATA_DIR=/data para que los
-                  pedidos sobrevivan a los redespliegues.
+   - PORT        → la inyecta Railway automáticamente.
+   - ADMIN_USER  → usuario del panel admin (por defecto "gamendo").
+   - ADMIN_PASS  → contraseña del panel admin (por defecto "amoapipe").
+   - DATA_DIR    → carpeta de datos persistente. En Railway crea un Volume
+                   montado en /data y define DATA_DIR=/data para que los
+                   pedidos sobrevivan a los redespliegues.
    ========================================================================== */
 
 const http = require("http");
@@ -18,7 +19,9 @@ const zlib = require("zlib");
 
 const ROOT = __dirname;
 const PORT = process.env.PORT || 3000;
-const ADMIN_KEY = process.env.ADMIN_KEY || "ondea2026";
+const ADMIN_USER = process.env.ADMIN_USER || "gamendo";
+const ADMIN_PASS = process.env.ADMIN_PASS || "amoapipe";
+const ADMIN_KEY = ADMIN_USER + ":" + ADMIN_PASS; // el panel envía "usuario:contraseña"
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, "data");
 const PEDIDOS_FILE = path.join(DATA_DIR, "pedidos.json");
 
