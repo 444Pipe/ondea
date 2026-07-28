@@ -343,14 +343,21 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    // El panel necesita el servidor Node: avisa si se abrió como archivo suelto
+    var SIN_SERVIDOR = location.protocol.indexOf("http") !== 0;
+    if (SIN_SERVIDOR) {
+      showLogin("Este panel funciona en el sitio publicado (tu-dominio.up.railway.app/admin.html) o corriendo el servidor local con: node server.js — no abriendo el archivo directamente.");
+    }
+
     // Login: el servidor espera "usuario:contraseña"
     $("#login-form").addEventListener("submit", function (ev) {
       ev.preventDefault();
+      if (SIN_SERVIDOR) return;
       var user = $("#login-user").value.trim();
       var pass = $("#login-pass").value;
       tryLogin(user + ":" + pass).catch(function (e) {
         if (e.message === "AUTH") showLogin("Usuario o contraseña incorrectos.");
-        else showLogin("No se pudo conectar con el servidor.");
+        else showLogin("No se pudo conectar con el servidor. Si estás en el dominio de Railway, revisa que el último deploy haya terminado bien.");
       });
     });
 
