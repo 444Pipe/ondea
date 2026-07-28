@@ -28,7 +28,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600;1,700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=8">
+  <link rel="stylesheet" href="css/styles.css?v=9">
 
   <!-- Datos estructurados: negocio local en Villavicencio -->
   <script type="application/ld+json">
@@ -156,7 +156,6 @@
             <img src="Statics/hero.webp" alt="Mujer sonriendo con rizos definidos y saludables — Rizos Ondea, productos para cabello rizado en Villavicencio" width="1536" height="2048" fetchpriority="high">
           </div>
           <span class="hero-spark s1" aria-hidden="true">✦</span>
-          <span class="hero-spark s2" aria-hidden="true">✦</span>
           <span class="hero-spark s3" aria-hidden="true">✦</span>
           <div class="floater f1"><svg class="icon" aria-hidden="true"><use href="#i-sparkle"></use></svg> ¡Lanzamiento en Villavicencio!</div>
           <div class="floater f2"><svg class="icon" aria-hidden="true"><use href="#i-truck"></use></svg> Envíos a todo el país</div>
@@ -169,14 +168,6 @@
         </a>
       </div>
     </section>
-
-    <!-- MARQUEE -->
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee-track">
-        <span>Rizos ✦ Ondas ✦ Crespos ✦ Afros ✦ Método curly ✦ Marcas seleccionadas ✦ Envíos a todo el país ✦&nbsp;</span>
-        <span>Rizos ✦ Ondas ✦ Crespos ✦ Afros ✦ Método curly ✦ Marcas seleccionadas ✦ Envíos a todo el país ✦&nbsp;</span>
-      </div>
-    </div>
 
     <!-- CINTA DE CONFIANZA -->
     <section class="trust" aria-label="Beneficios de comprar en Rizos Ondea">
@@ -218,6 +209,12 @@
             <p>Gorros, toallas y difusores</p>
           </a>
         </div>
+        <p class="texture-links">
+          ¿Prefieres comprar por textura?
+          <a href="productos.html?tipo=ondulado">Ondulada 2A–2C</a>
+          <a href="productos.html?tipo=rizado">Rizada 3A–3C</a>
+          <a href="productos.html?tipo=afro">Afro 4A–4C</a>
+        </p>
       </div>
     </section>
 
@@ -232,40 +229,6 @@
         <div class="prod-grid" id="destacados-grid"><!-- Render dinámico --></div>
         <div style="text-align:center; margin-top: 36px;">
           <a class="btn btn-brown" href="productos.html">Ver todos los productos ✦</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- COMPRA POR TEXTURA -->
-    <section class="section" id="texturas" style="padding-top: 0;">
-      <div class="container">
-        <div class="section-head">
-          <span class="kicker">✦ Para todas las texturas ✦</span>
-          <h2>Compra según tu <span class="script">textura</span></h2>
-          <p>Cada patrón es un mundo. Encuentra los productos que funcionan para el tuyo.</p>
-        </div>
-        <div class="texture-grid">
-          <a class="texture-card" href="productos.html?tipo=ondulado">
-            <span class="tex-ico" aria-hidden="true"><svg viewBox="0 0 60 60" fill="none" stroke-linecap="round"><path d="M6 24 q9 -16 18 0 t18 0 t12 0" stroke="#F29DB0" stroke-width="5"/><path d="M6 40 q9 -16 18 0 t18 0 t12 0" stroke="#FBD9E3" stroke-width="5"/></svg></span>
-            <h3>Ondulada</h3>
-            <span class="tex-range">Tipo 2A — 2C</span>
-            <p>Ondas en S que piden ligereza: volumen y definición sin peso.</p>
-            <span class="btn btn-pink btn-sm">Ver productos ✦</span>
-          </a>
-          <a class="texture-card" href="productos.html?tipo=rizado">
-            <span class="tex-ico" aria-hidden="true"><svg viewBox="0 0 60 60" fill="none" stroke-linecap="round"><path d="M14 16 a9 9 0 1 1 9 9 a9 9 0 1 1 -9 9" stroke="#F29DB0" stroke-width="5"/><path d="M38 20 a8 8 0 1 1 8 8 a8 8 0 1 1 -8 8" stroke="#FBD9E3" stroke-width="5"/></svg></span>
-            <h3>Rizada</h3>
-            <span class="tex-range">Tipo 3A — 3C</span>
-            <p>Espirales que brillan con hidratación constante y definición duradera.</p>
-            <span class="btn btn-pink btn-sm">Ver productos ✦</span>
-          </a>
-          <a class="texture-card" href="productos.html?tipo=afro">
-            <span class="tex-ico" aria-hidden="true"><svg viewBox="0 0 60 60" fill="none"><circle cx="22" cy="20" r="9" fill="#F29DB0"/><circle cx="39" cy="16" r="7" fill="#FBD9E3"/><circle cx="44" cy="31" r="8" fill="#F29DB0"/><circle cx="30" cy="34" r="9" fill="#FBD9E3"/><circle cx="16" cy="37" r="7" fill="#F29DB0"/><circle cx="34" cy="47" r="7" fill="#F29DB0"/><circle cx="20" cy="49" r="6" fill="#FBD9E3"/></svg></span>
-            <h3>Afro / Crespa</h3>
-            <span class="tex-range">Tipo 4A — 4C</span>
-            <p>Coils poderosos que aman la nutrición profunda y el sellado con aceites.</p>
-            <span class="btn btn-pink btn-sm">Ver productos ✦</span>
-          </a>
         </div>
       </div>
     </section>
@@ -362,18 +325,7 @@
             <p><strong>Tu antes y después.</strong> Comparte tu transformación con <a href="https://www.instagram.com/rizosondea/" target="_blank" rel="noopener" style="color:var(--pink-strong); font-weight:600;">@rizosondea</a> y sé protagonista de la comunidad que apenas florece.</p>
           </article>
         </div>
-      </div>
-    </section>
-
-    <!-- INSTAGRAM -->
-    <section class="section" id="instagram">
-      <div class="container">
-        <div class="section-head">
-          <span class="kicker">✦ Comunidad ✦</span>
-          <h2>Síguenos en <span class="script">Instagram</span></h2>
-          <p>Tips, rutinas y mucho amor rizado. Porque cuando algo se siente así de bien, se comparte.</p>
-        </div>
-        <div class="ig-grid">
+        <div class="ig-grid" id="instagram" style="margin-top: 22px;">
           <a class="ig-tile" href="https://www.instagram.com/rizosondea/" target="_blank" rel="noopener" aria-label="Ver publicación en Instagram">
             <img src="Statics/ig-rizos.webp" alt="Rizos definidos y brillantes con cinta de satén rosa — Rizos Ondea" loading="lazy" width="600" height="600">
             <span class="ig-overlay"><svg class="icon" aria-hidden="true"><use href="#i-ig"></use></svg></span>
@@ -431,20 +383,6 @@
       </div>
     </section>
 
-    <!-- CTA -->
-    <section class="section" style="padding-top: 0;">
-      <div class="container">
-        <div class="cta-banner">
-          <h2>¿Lista para <span style="font-style:italic;">ondear</span>?</h2>
-          <p>Escríbenos por WhatsApp y arma tu rutina con asesoría gratis, o explora la tienda y recibe tus productos en cualquier rincón de Colombia.</p>
-          <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
-            <a class="btn btn-cta" href="productos.html">Comprar ahora ✦</a>
-            <a class="btn btn-outline wa-link" style="border-color:var(--pink); color:var(--pink);" href="#" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="#i-wa"></use></svg> WhatsApp</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- NEWSLETTER -->
     <section class="section" style="padding-top: 0;">
       <div class="container">
@@ -471,6 +409,7 @@
         <a class="social-link" href="https://www.instagram.com/rizosondea/" target="_blank" rel="noopener" aria-label="Síguenos en Instagram">
           <svg class="icon" aria-hidden="true"><use href="#i-ig"></use></svg> @rizosondea
         </a>
+        <p class="pay-line"><svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg> Pagos seguros: Nequi · Daviplata · Transferencia · Contraentrega en Villavicencio</p>
       </div>
       <div>
         <h4>Tienda</h4>
@@ -509,7 +448,7 @@
     <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.5c1.2.5 2.5.8 3.8.8 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.2 0-2.4-.3-3.5-.8l-.6-.3-4.9.9 1-4.7-.3-.6c-.9-1.5-1.4-3.2-1.4-5 0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.5 9.5-9.9 9.5zm5.4-7.1c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5s-.7-1.6-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.5-.3z"/></svg>
   </a>
 
-  <script src="js/data.js?v=8"></script>
-  <script src="js/app.js?v=8"></script>
+  <script src="js/data.js?v=9"></script>
+  <script src="js/app.js?v=9"></script>
 </body>
 </html>
