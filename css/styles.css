@@ -1024,13 +1024,29 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 
   .footer-grid { grid-template-columns: 1fr; }
   .cart-item { grid-template-columns: 72px 1fr; }
-  .shop-controls { top: 72px; }
+
+  /* Tienda en celular: controles compactos que no roban pantalla */
+  .shop-controls { position: static; padding: 0; margin-bottom: 16px; }
   .shop-controls .chip-row {
-    flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px;
+    flex-wrap: nowrap; overflow-x: auto; gap: 7px;
+    padding-bottom: 6px; margin-bottom: 8px;
     -webkit-overflow-scrolling: touch; scrollbar-width: none;
   }
   .shop-controls .chip-row::-webkit-scrollbar { display: none; }
-  .shop-controls .chip { white-space: nowrap; flex: 0 0 auto; }
+  .shop-controls .chip { white-space: nowrap; flex: 0 0 auto; padding: 6px 13px; font-size: 12.5px; }
+  .chip .chip-count { font-size: 10px; padding: 1px 6px; }
+  .shop-controls .filters { padding: 10px 12px; gap: 8px; }
+  .search-box { flex: 1 1 100%; min-width: 0; }
+  .search-box input { padding: 9px 12px 9px 36px; font-size: 13.5px; }
+  .shop-controls .filters select {
+    flex: 1 1 calc(50% - 4px); min-width: 0;
+    padding: 8px 8px; font-size: 12.5px;
+  }
+  .shop-controls .filters .spacer { display: none; }
+  .shop-controls .filters .result-count {
+    flex: 1 1 100%; text-align: center; font-size: 12px; margin-top: 2px;
+  }
+  .chip-clear { flex: 0 0 auto; font-size: 12px; }
   .newsletter form { flex-direction: column; }
   .qr-total { flex-direction: column; align-items: stretch; text-align: center; }
   .qr-actions { justify-content: center; }
