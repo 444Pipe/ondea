@@ -1,7 +1,8 @@
 # Rizos Ondea — Tienda online 🛒✦
 
-E-commerce estático (HTML + CSS + JS, sin dependencias) para **Rizos Ondea**, tienda de productos
-para cabello rizado, ondulado y afro en **Villavicencio, Meta**, con envíos a toda Colombia.
+E-commerce (HTML + CSS + JS + servidor Node sin dependencias) para **Rizos Ondea**, tienda
+**curadora de marcas** para cabello rizado, ondulado y afro en **Villavicencio, Meta**, con
+envíos a toda Colombia (modelo dropshipping: no fabrica, selecciona y revende marcas aliadas).
 El checkout finaliza el pedido por **WhatsApp** (sin pasarela de pagos ni backend).
 
 ## Estructura
