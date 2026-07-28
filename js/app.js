@@ -248,7 +248,7 @@
       '<div class="prod-body">' +
       '<span class="prod-cat">' + p.categoryLabel + " · " + p.size + "</span>" +
       '<h3 class="prod-name"><a href="producto.html?id=' + p.id + '">' + p.name + "</a></h3>" +
-      '<span class="prod-rating"><span class="stars">' + stars(p.rating) + "</span> " + p.rating.toFixed(1) + " (" + p.reviews + ")</span>" +
+      '<span class="prod-rating">' + p.short + "</span>" +
       '<div class="prod-price"><span class="now">' + fmtCOP(p.price) + "</span>" + before + "</div>" +
       '<div class="prod-actions">' +
       '<button class="btn btn-brown btn-sm" data-add="' + p.id + '">Agregar ' + icon("cart") + "</button>" +
@@ -376,7 +376,6 @@
       '<nav class="breadcrumb" aria-label="Ruta"><a href="index.html">Inicio</a> / <a href="productos.html">Tienda</a> / ' + p.categoryLabel + "</nav>" +
       '<span class="prod-cat">' + p.categoryLabel + "</span>" +
       "<h1>" + p.name + "</h1>" +
-      '<div class="prod-rating"><span class="stars">' + stars(p.rating) + "</span> " + p.rating.toFixed(1) + " · " + p.reviews + " opiniones</div>" +
       '<div class="detail-price"><span class="now">' + fmtCOP(p.price) + "</span>" + before + "</div>" +
       '<p class="detail-size">Contenido: ' + p.size + "</p>" +
       '<p class="detail-desc">' + p.desc + "</p>" +
@@ -770,7 +769,8 @@
       var target = parseFloat(el.getAttribute("data-count")) || 0;
       var dec = parseInt(el.getAttribute("data-decimals"), 10) || 0;
       var prefix = el.getAttribute("data-prefix") || "";
-      el.textContent = prefix + target.toFixed(dec).replace(".", ",");
+      var suffix = el.getAttribute("data-suffix") || "";
+      el.textContent = prefix + target.toFixed(dec).replace(".", ",") + suffix;
     }
 
     if (REDUCED_MOTION || !("IntersectionObserver" in window)) {
@@ -782,13 +782,14 @@
       var target = parseFloat(el.getAttribute("data-count")) || 0;
       var dec = parseInt(el.getAttribute("data-decimals"), 10) || 0;
       var prefix = el.getAttribute("data-prefix") || "";
+      var suffix = el.getAttribute("data-suffix") || "";
       var dur = 1500;
       var start = null;
       function frame(ts) {
         if (!start) start = ts;
         var t = Math.min(1, (ts - start) / dur);
         var eased = 1 - Math.pow(1 - t, 3);
-        el.textContent = prefix + (target * eased).toFixed(dec).replace(".", ",");
+        el.textContent = prefix + (target * eased).toFixed(dec).replace(".", ",") + suffix;
         if (t < 1) requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
