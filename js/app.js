@@ -726,6 +726,13 @@
     ".detail-art", ".detail-info",
   ];
 
+  // Variantes de entrada según el tipo de elemento
+  var REVEAL_VARIANTS = [
+    { sel: ".split > div:first-child", cls: "rv-left" },
+    { sel: ".split > div:last-child", cls: "rv-right" },
+    { sel: ".cat-card, .texture-card, .ig-tile", cls: "rv-zoom" },
+  ];
+
   var revealObserver = null;
 
   function revealScan() {
@@ -738,7 +745,7 @@
             revealObserver.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+      }, { threshold: 0.12, rootMargin: "0px 0px -90px 0px" });
     }
     REVEAL_SELECTORS.forEach(function (sel) {
       qsa(sel).forEach(function (el) {
@@ -746,13 +753,61 @@
         var i = el.parentElement ? Array.prototype.indexOf.call(el.parentElement.children, el) : 0;
         el.style.setProperty("--rv-i", Math.min(i, 6));
         el.classList.add("rv");
+        REVEAL_VARIANTS.forEach(function (v) {
+          if (el.matches(v.sel)) el.classList.add(v.cls);
+        });
         revealObserver.observe(el);
       });
     });
   }
 
+  /* Contadores animados (se disparan al entrar en pantalla) */
+  function initCounters() {
+    var nums = qsa(".stat-num");
+    if (!nums.length) return;
+
+    function setFinal(el) {
+      var target = parseFloat(el.getAttribute("data-count")) || 0;
+      var dec = parseInt(el.getAttribute("data-decimals"), 10) || 0;
+      var prefix = el.getAttribute("data-prefix") || "";
+      el.textContent = prefix + target.toFixed(dec).replace(".", ",");
+    }
+
+    if (REDUCED_MOTION || !("IntersectionObserver" in window)) {
+      nums.forEach(setFinal);
+      return;
+    }
+
+    function animate(el) {
+      var target = parseFloat(el.getAttribute("data-count")) || 0;
+      var dec = parseInt(el.getAttribute("data-decimals"), 10) || 0;
+      var prefix = el.getAttribute("data-prefix") || "";
+      var dur = 1500;
+      var start = null;
+      function frame(ts) {
+        if (!start) start = ts;
+        var t = Math.min(1, (ts - start) / dur);
+        var eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = prefix + (target * eased).toFixed(dec).replace(".", ",");
+        if (t < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        io.unobserve(entry.target);
+        animate(entry.target);
+      });
+    }, { threshold: 0.6 });
+
+    nums.forEach(function (el) { io.observe(el); });
+  }
+
   function initScrollFX() {
     revealScan();
+    initCounters();
 
     var progress = document.createElement("div");
     progress.id = "scroll-progress";
