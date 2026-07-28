@@ -446,8 +446,8 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   border-top: 1px solid rgba(245, 169, 190, 0.18); padding: 18px 0;
   font-size: 13px; text-align: center; opacity: 0.75;
 }
-.footer-bottom a { display: inline; color: var(--pink); font-weight: 600; }
-.footer-bottom a:hover { text-decoration: underline; }
+.footer-bottom a { display: inline; color: inherit; opacity: 0.55; }
+.footer-bottom a:hover { color: var(--pink); opacity: 1; }
 
 /* ---------- Página tienda ---------- */
 .page-head {
