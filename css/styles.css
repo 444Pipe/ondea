@@ -315,6 +315,37 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 .btn-outline { border-color: var(--brown); color: var(--brown); background: transparent; }
 .btn-outline:hover { background: var(--brown); color: var(--pink-soft); }
 .btn-sm { padding: 9px 18px; font-size: 13.5px; }
+
+/* CTA protagonista: degradado, pulso de resplandor y brillo que barre */
+.btn-cta {
+  position: relative; overflow: hidden;
+  background: linear-gradient(115deg, var(--pink-strong), var(--pink) 55%, var(--pink-strong));
+  color: var(--white); font-size: 16.5px; padding: 16px 34px;
+  border: none; box-shadow: 0 10px 26px rgba(232, 127, 160, 0.45);
+  animation: ctaPulse 2.6s ease-in-out infinite;
+}
+.btn-cta:hover {
+  transform: translateY(-3px) scale(1.04);
+  background: linear-gradient(115deg, var(--pink-strong), var(--pink-strong));
+  color: var(--white);
+}
+.btn-cta::after {
+  content: ""; position: absolute; top: -60%; bottom: -60%; width: 38px;
+  left: -70px; transform: rotate(20deg); pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  animation: ctaShine 3.2s ease-in-out infinite;
+}
+@keyframes ctaShine {
+  0%, 55% { left: -70px; }
+  85%, 100% { left: calc(100% + 50px); }
+}
+@keyframes ctaPulse {
+  0%, 100% { box-shadow: 0 10px 26px rgba(232, 127, 160, 0.45), 0 0 0 0 rgba(232, 127, 160, 0.5); }
+  50% { box-shadow: 0 12px 30px rgba(232, 127, 160, 0.55), 0 0 0 16px rgba(232, 127, 160, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-cta, .btn-cta::after { animation: none; }
+}
 .btn-block { width: 100%; }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
@@ -902,6 +933,7 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   .hero-badges { gap: 8px; }
   .hero-badges span { padding: 6px 12px; font-size: 12px; }
   .btn { padding: 12px 22px; font-size: 14px; }
+  .btn-cta { padding: 15px 28px; font-size: 15.5px; }
   .hero-visual .floater { font-size: 11.5px; padding: 7px 11px; }
   .hero-visual .floater.f1 { left: 0; }
   .hero-visual .floater.f2 { right: 0; }
