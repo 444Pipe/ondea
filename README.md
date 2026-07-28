@@ -23,9 +23,8 @@ El checkout finaliza el pedido por **WhatsApp** (sin pasarela de pagos ni backen
 
 ## ⚙️ Antes de publicar (importante)
 
-1. **Número de WhatsApp**: en [`js/data.js`](js/data.js), cambia
-   `whatsapp: "573000000000"` por el número real (formato `57` + celular, sin `+`).
-   También actualiza el teléfono visible en el footer de las 4 páginas HTML.
+1. **Número de WhatsApp**: ya configurado (`573188546934` en [`js/data.js`](js/data.js)
+   y visible en los footers). Si cambia, actualízalo en esos dos lugares.
 2. **Dominio**: cuando tengan dominio propio, reemplaza `https://www.rizosondea.com/`
    en las etiquetas `canonical`, `og:*`, JSON-LD, `sitemap.xml` y `robots.txt`.
 3. **Productos**: el catálogo actual es **inventado** (demo). Edita `ONDEA_PRODUCTS`

@@ -5,8 +5,7 @@
 
 const ONDEA_CONFIG = {
   // Número de WhatsApp en formato internacional SIN "+" (57 = Colombia).
-  // ⚠️ REEMPLAZAR por el número real del negocio:
-  whatsapp: "573000000000",
+  whatsapp: "573188546934",
   ciudad: "Villavicencio",
   envioNacional: 12000,      // COP — envío al resto de Colombia
   envioLocal: 6000,          // COP — envío dentro de Villavicencio
