@@ -9,7 +9,7 @@
   var KEY_STORAGE = "ondea_admin_key";
   var ESTADOS = ["nuevo", "confirmado", "enviado", "entregado", "cancelado"];
 
-  var state = { key: null, pedidos: [], rango: 30 };
+  var state = { key: null, pedidos: [], rango: 30, dropi: null };
 
   function $(sel, ctx) { return (ctx || document).querySelector(sel); }
   function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
@@ -75,7 +75,22 @@
       state.pedidos = data.pedidos || [];
       showPanel();
       render();
+      api("/api/dropi/estado").then(function (d) {
+        state.dropi = d;
+        renderDropiEstado();
+        render();
+      }).catch(function () {});
     });
+  }
+
+  function renderDropiEstado() {
+    var el = $("#dropi-estado");
+    if (!el || !state.dropi) return;
+    if (state.dropi.enabled && state.dropi.keySet) {
+      el.innerHTML = 'Dropi: <strong style="color:#1F6B41">conectado</strong>' + (state.dropi.autoSend ? " · envío automático" : " · envío manual desde Pedidos");
+    } else {
+      el.innerHTML = 'Dropi: <strong style="color:#92261C">sin configurar</strong> · define DROPI_ENABLED y DROPI_INTEGRATION_KEY en Railway';
+    }
   }
 
   /* ---------- Datos filtrados ---------- */
@@ -213,6 +228,19 @@
         return '<option value="' + e + '"' + (p.estado === e ? " selected" : "") + ">" + e.charAt(0).toUpperCase() + e.slice(1) + "</option>";
       }).join("");
 
+      var dropiCell = "—";
+      if (state.dropi && state.dropi.enabled) {
+        var d = p.dropi || { estado: "pendiente" };
+        if (d.estado === "enviado") {
+          dropiCell = '<span class="dropi-chip dropi-ok">Enviado' + (d.id ? " #" + esc(d.id) : "") + "</span>";
+        } else if (d.estado === "error") {
+          dropiCell = '<span class="dropi-chip dropi-err" title="' + esc(d.error || "") + '">Error</span> ' +
+            '<button class="abtn abtn-light dropi-send" data-dropi="' + esc(p.id) + '">Reintentar</button>';
+        } else {
+          dropiCell = '<button class="abtn abtn-light dropi-send" data-dropi="' + esc(p.id) + '">→ Dropi</button>';
+        }
+      }
+
       return "<tr>" +
         '<td class="muted">' + fmtFecha(p.fecha) + "<br>" + esc(p.id) + (p.demo ? '<span class="tag-demo">DEMO</span>' : "") + "</td>" +
         "<td><strong>" + esc(p.cliente.nombre) + "</strong><br><span class='muted'>" + esc(p.cliente.ciudad) + ", " + esc(p.cliente.depto) + "</span><br>" + waLink + "</td>" +
@@ -220,13 +248,30 @@
         '<td class="num"><strong>' + fmtCOP(p.total) + "</strong><br><span class='muted'>envío " + (p.envio ? fmtCOP(p.envio) : "gratis") + "</span></td>" +
         "<td>" + esc(p.pago) + "</td>" +
         '<td><select class="estado-select estado-' + p.estado + '" data-id="' + esc(p.id) + '">' + opts + "</select></td>" +
+        "<td>" + dropiCell + "</td>" +
         "</tr>";
     }).join("");
 
     $("#pedidos-wrap").innerHTML =
       '<table class="admin-table"><thead><tr>' +
-      "<th>Fecha / ID</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th>" +
+      "<th>Fecha / ID</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th><th>Dropi</th>" +
       "</tr></thead><tbody>" + rows + "</tbody></table>";
+
+    $$(".dropi-send").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-dropi");
+        btn.disabled = true;
+        btn.textContent = "Enviando...";
+        api("/api/pedidos/" + id + "/dropi", "POST").then(function (r) {
+          if (!r.ok) alert("Dropi: " + (r.error || "error desconocido"));
+          return refresh();
+        }).catch(function (e) {
+          if (e && e.message === "AUTH") return handleErr(e);
+          alert("No se pudo enviar a Dropi. Revisa la configuración.");
+          refresh();
+        });
+      });
+    });
 
     $$(".estado-select").forEach(function (sel) {
       sel.addEventListener("change", function () {

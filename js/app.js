@@ -619,7 +619,13 @@
             cliente: { nombre: nombre, telefono: telefono, direccion: direccion, ciudad: ciudad, depto: depto, notas: notas },
             items: cart.map(function (i) {
               var p = getProduct(i.id);
-              return { id: i.id, name: p ? p.name : i.id, qty: i.qty, price: p ? p.price : 0 };
+              return {
+                id: i.id,
+                name: p ? p.name : i.id,
+                qty: i.qty,
+                price: p ? p.price : 0,
+                dropiId: p && p.dropiId ? p.dropiId : null,
+              };
             }),
             subtotal: subtotal,
             envio: envio,

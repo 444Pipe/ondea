@@ -13,6 +13,7 @@
    ========================================================================== */
 
 const http = require("http");
+const https = require("https");
 const fs = require("fs");
 const path = require("path");
 const zlib = require("zlib");
@@ -26,6 +27,105 @@ const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, "data");
 const PEDIDOS_FILE = path.join(DATA_DIR, "pedidos.json");
 
 const ESTADOS = ["nuevo", "confirmado", "enviado", "entregado", "cancelado"];
+
+/* ---------- Integración con Dropi (dropshipping) ----------
+   Se activa con variables de entorno en Railway:
+   - DROPI_ENABLED=true
+   - DROPI_INTEGRATION_KEY=<llave generada en Dropi → Integraciones>
+   - DROPI_API_BASE=<URL base de la API según la documentación oficial;
+                     usa la URL de pruebas primero>
+   - DROPI_PAYMENT_METHOD_ID=<id del método de pago (contraentrega) en Dropi>
+   - DROPI_AUTO_SEND=true  → envía cada pedido a Dropi automáticamente
+     (si es false, se envían manualmente desde el panel admin)            */
+
+const DROPI = {
+  enabled: process.env.DROPI_ENABLED === "true",
+  base: (process.env.DROPI_API_BASE || "https://api.dropi.co/integrations").replace(/\/+$/, ""),
+  key: process.env.DROPI_INTEGRATION_KEY || "",
+  paymentMethodId: parseInt(process.env.DROPI_PAYMENT_METHOD_ID, 10) || 1,
+  autoSend: process.env.DROPI_AUTO_SEND === "true",
+};
+
+function httpsJSON(method, urlStr, headers, body) {
+  return new Promise((resolve, reject) => {
+    let u;
+    try { u = new URL(urlStr); } catch (e) { return reject(new Error("URL inválida: " + urlStr)); }
+    const data = body ? JSON.stringify(body) : null;
+    const req = https.request({
+      hostname: u.hostname,
+      port: u.port || 443,
+      path: u.pathname + u.search,
+      method: method,
+      headers: Object.assign(
+        { "Content-Type": "application/json", Accept: "application/json" },
+        data ? { "Content-Length": Buffer.byteLength(data) } : {},
+        headers || {}
+      ),
+      timeout: 20000,
+    }, (res) => {
+      let raw = "";
+      res.on("data", (c) => { raw += c; });
+      res.on("end", () => {
+        let parsed;
+        try { parsed = JSON.parse(raw); } catch (e) { parsed = { raw: raw.slice(0, 500) }; }
+        resolve({ status: res.statusCode, body: parsed });
+      });
+    });
+    req.on("timeout", () => req.destroy(new Error("Dropi no respondió (timeout)")));
+    req.on("error", reject);
+    if (data) req.write(data);
+    req.end();
+  });
+}
+
+/* ⚠️ Estructura basada en la documentación pública de la API de integraciones
+   de Dropi (POST /orders/myorders). Cuando tengas tu cuenta, confirma los
+   nombres exactos de los campos con la documentación oficial que entrega
+   Dropi al generar la llave, y ajústalos SOLO en esta función. */
+function buildDropiOrder(pedido) {
+  const partes = (pedido.cliente.nombre || "").trim().split(/\s+/);
+  return {
+    state: pedido.cliente.depto,
+    city: pedido.cliente.ciudad,
+    name: partes.slice(0, 1).join(" ") || "Cliente",
+    surname: partes.slice(1).join(" ") || ".",
+    dir: pedido.cliente.direccion,
+    phone: pedido.cliente.telefono,
+    payment_method_id: DROPI.paymentMethodId,
+    total_order: pedido.total,
+    notes: ("Pedido web " + pedido.id + (pedido.cliente.notas ? " · " + pedido.cliente.notas : "")).slice(0, 250),
+    products: pedido.items
+      .filter((i) => i.dropiId)
+      .map((i) => ({ id: i.dropiId, quantity: i.qty })),
+  };
+}
+
+async function dropiSendOrder(pedido) {
+  if (!DROPI.enabled || !DROPI.key) {
+    return { ok: false, error: "Dropi no está configurado: define DROPI_ENABLED y DROPI_INTEGRATION_KEY en las variables de entorno." };
+  }
+  const mapeados = pedido.items.filter((i) => i.dropiId);
+  if (!mapeados.length) {
+    return { ok: false, error: "Ningún producto de este pedido tiene dropiId. Agrégalo en js/data.js con el ID del catálogo de Dropi." };
+  }
+  const ahora = new Date().toISOString();
+  try {
+    const r = await httpsJSON("POST", DROPI.base + "/orders/myorders", { "dropi-integration-key": DROPI.key }, buildDropiOrder(pedido));
+    if (r.status >= 200 && r.status < 300) {
+      const dropiId = (r.body && (r.body.id || (r.body.order && r.body.order.id) || (r.body.data && r.body.data.id))) || null;
+      pedido.dropi = { estado: "enviado", fecha: ahora, id: dropiId, respuesta: r.body };
+      savePedidos();
+      return { ok: true, dropi: pedido.dropi };
+    }
+    pedido.dropi = { estado: "error", fecha: ahora, error: "HTTP " + r.status, respuesta: r.body };
+    savePedidos();
+    return { ok: false, error: "Dropi respondió HTTP " + r.status, detalle: r.body };
+  } catch (e) {
+    pedido.dropi = { estado: "error", fecha: ahora, error: e.message };
+    savePedidos();
+    return { ok: false, error: e.message };
+  }
+}
 
 /* ---------- Almacenamiento de pedidos ---------- */
 
@@ -140,6 +240,7 @@ async function handleApi(req, res, urlPath) {
         name: String(i.name || "").slice(0, 140),
         qty: Math.max(1, Math.min(99, parseInt(i.qty, 10) || 1)),
         price: Math.max(0, parseInt(i.price, 10) || 0),
+        dropiId: i.dropiId ? String(i.dropiId).slice(0, 40) : null,
       })),
       subtotal: Math.max(0, parseInt(body.subtotal, 10) || 0),
       envio: Math.max(0, parseInt(body.envio, 10) || 0),
@@ -147,8 +248,15 @@ async function handleApi(req, res, urlPath) {
       pago: String(body.pago || "").slice(0, 60),
     };
 
+    if (DROPI.enabled) pedido.dropi = { estado: "pendiente" };
     pedidos.push(pedido);
     savePedidos();
+
+    // Reenvío automático a Dropi (no bloquea la respuesta a la clienta)
+    if (DROPI.enabled && DROPI.autoSend) {
+      dropiSendOrder(pedido).catch((e) => console.error("Dropi auto-send:", e.message));
+    }
+
     return sendJSON(res, 201, { ok: true, id: pedido.id });
   }
 
@@ -158,6 +266,26 @@ async function handleApi(req, res, urlPath) {
   // Listar pedidos
   if (urlPath === "/api/pedidos" && req.method === "GET") {
     return sendJSON(res, 200, { ok: true, pedidos: pedidos });
+  }
+
+  // Estado de la integración con Dropi (para el panel)
+  if (urlPath === "/api/dropi/estado" && req.method === "GET") {
+    return sendJSON(res, 200, {
+      ok: true,
+      enabled: DROPI.enabled,
+      keySet: !!DROPI.key,
+      autoSend: DROPI.autoSend,
+      base: DROPI.base,
+    });
+  }
+
+  // Enviar (o reintentar) un pedido hacia Dropi
+  const matchDropi = urlPath.match(/^\/api\/pedidos\/([A-Za-z0-9-]+)\/dropi$/);
+  if (matchDropi && req.method === "POST") {
+    const pedido = pedidos.find((p) => p.id === matchDropi[1]);
+    if (!pedido) return sendJSON(res, 404, { ok: false, error: "Pedido no encontrado" });
+    const resultado = await dropiSendOrder(pedido);
+    return sendJSON(res, resultado.ok ? 200 : 502, resultado);
   }
 
   // Cambiar estado de un pedido

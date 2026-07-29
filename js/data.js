@@ -14,10 +14,16 @@ const ONDEA_CONFIG = {
 
 /* Productos de ejemplo (inventados) mientras llega el catálogo real.
    Categorías: limpieza · hidratacion · definicion · accesorios · kits
-   Tipos de rizo: ondulado (2A-2C) · rizado (3A-3C) · afro (4A-4C) */
+   Tipos de rizo: ondulado (2A-2C) · rizado (3A-3C) · afro (4A-4C)
+
+   🔌 INTEGRACIÓN DROPI: cuando cargues los productos reales, agrega a cada
+   uno el campo  dropiId: "12345"  con el ID del producto en el catálogo de
+   Dropi. Los pedidos que incluyan productos con dropiId podrán enviarse a
+   Dropi desde el panel admin (o automáticamente con DROPI_AUTO_SEND). */
 const ONDEA_PRODUCTS = [
   {
     id: "shampoo-low-poo",
+    dropiId: null, // ej: "12345" — ID del producto en Dropi
     name: "Shampoo Low Poo «Onda Limpia»",
     category: "limpieza",
     categoryLabel: "Limpieza",

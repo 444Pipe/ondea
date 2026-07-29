@@ -1,9 +1,32 @@
 # Rizos Ondea — Tienda online 🛒✦
 
 E-commerce (HTML + CSS + JS + servidor Node sin dependencias) para **Rizos Ondea**, tienda
-**curadora de marcas** para cabello rizado, ondulado y afro en **Villavicencio, Meta**, con
-envíos a toda Colombia (modelo dropshipping: no fabrica, selecciona y revende marcas aliadas).
-El checkout finaliza el pedido por **WhatsApp** (sin pasarela de pagos ni backend).
+online **colombiana curadora de marcas** para cabello rizado, ondulado y afro, con envío a
+domicilio en todo el país (modelo dropshipping: no fabrica, selecciona y revende marcas
+aliadas). El checkout finaliza el pedido por **WhatsApp** y queda registrado en el panel admin.
+
+## 🔌 Integración con Dropi
+
+El servidor trae un módulo listo para enviar pedidos al proveedor de dropshipping
+[Dropi](https://dropi.co). Está **desactivado por defecto**; para activarlo:
+
+1. Crea la cuenta en Dropi y genera la llave en **Integraciones** del panel de Dropi.
+2. En Railway → *Variables* define:
+   - `DROPI_ENABLED=true`
+   - `DROPI_INTEGRATION_KEY=<tu llave>`
+   - `DROPI_API_BASE=<URL base de la API — usa primero la URL del ambiente de PRUEBAS
+     que indica la documentación oficial de tu cuenta>`
+   - `DROPI_PAYMENT_METHOD_ID=<id del método de pago contraentrega en tu cuenta>`
+   - `DROPI_AUTO_SEND=true` (opcional: reenvía cada pedido automáticamente; si lo omites,
+     los envías uno a uno con el botón "→ Dropi" del panel admin).
+3. En `js/data.js` agrega a cada producto real su `dropiId` (el ID del producto en el
+   catálogo de Dropi). Sin `dropiId`, el pedido no se puede reenviar.
+4. El formato del cuerpo que se envía a Dropi (`POST /orders/myorders`, header
+   `dropi-integration-key`) está centralizado en la función `buildDropiOrder()` de
+   [`server.js`](server.js): si la documentación oficial de tu cuenta usa nombres de campo
+   distintos, ajústalos solo ahí.
+5. En el panel admin (Resumen) verás el estado de la conexión, y en Pedidos una columna
+   Dropi con el botón de envío/reintento y el ID devuelto por Dropi.
 
 ## Estructura
 
