@@ -412,6 +412,39 @@ const server = http.createServer((req, res) => {
     filePath += ".html";
   }
 
+  // Video: streaming con soporte de rangos (Safari/iOS exige respuestas 206 para reproducir)
+  const extVideo = path.extname(filePath).toLowerCase();
+  if (extVideo === ".mp4" || extVideo === ".webm") {
+    return fs.stat(filePath, (err, stat) => {
+      if (err || !stat.isFile()) {
+        return send(res, 404, { "Content-Type": "text/plain; charset=utf-8" }, "404 — No encontrado");
+      }
+      const headers = {
+        "Content-Type": MIME[extVideo],
+        "Cache-Control": cacheControl(extVideo),
+        "X-Content-Type-Options": "nosniff",
+        "Accept-Ranges": "bytes",
+      };
+      const m = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || "");
+      if (m && (m[1] || m[2])) {
+        let start = m[1] ? parseInt(m[1], 10) : stat.size - parseInt(m[2], 10);
+        let end = m[1] && m[2] ? parseInt(m[2], 10) : stat.size - 1;
+        if (isNaN(start) || isNaN(end) || start < 0 || start > end || start >= stat.size) {
+          headers["Content-Range"] = "bytes */" + stat.size;
+          return send(res, 416, headers, "");
+        }
+        end = Math.min(end, stat.size - 1);
+        headers["Content-Range"] = "bytes " + start + "-" + end + "/" + stat.size;
+        headers["Content-Length"] = end - start + 1;
+        res.writeHead(206, headers);
+        return fs.createReadStream(filePath, { start: start, end: end }).pipe(res);
+      }
+      headers["Content-Length"] = stat.size;
+      res.writeHead(200, headers);
+      fs.createReadStream(filePath).pipe(res);
+    });
+  }
+
   fs.readFile(filePath, (err, data) => {
     if (err) {
       return fs.readFile(path.join(ROOT, "index.html"), (err2, home) => {

@@ -295,6 +295,17 @@
   /* ---------- Página: Inicio ---------- */
 
   function initHome() {
+    // Video del hero: algunos navegadores móviles no arrancan el autoplay solos
+    var heroVid = qs(".hero-bg");
+    if (heroVid) {
+      var tryPlay = function () {
+        var pr = heroVid.play();
+        if (pr && pr.catch) pr.catch(function () {});
+      };
+      tryPlay();
+      document.addEventListener("touchstart", tryPlay, { once: true });
+    }
+
     var grid = qs("#destacados-grid");
     if (grid) {
       var ids = ["crema-define-rizos", "kit-rizos-la-pocion", "shampoo-low-poo", "mascarilla-nutritiva"];
