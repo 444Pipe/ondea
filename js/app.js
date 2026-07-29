@@ -173,6 +173,14 @@
 
   function artFor(p) { return ART[p.art] || ART.pump; }
 
+  function hasPhotos(p) { return !!(p.images && p.images.length); }
+
+  /* Foto real si el producto la tiene; si no, la ilustración de siempre */
+  function visualFor(p) {
+    if (hasPhotos(p)) return '<img class="prod-photo" src="' + p.images[0] + '" alt="' + p.name + '" loading="lazy">';
+    return artFor(p);
+  }
+
   /* ---------- Carrito (localStorage) ---------- */
 
   function getCart() {
@@ -253,7 +261,7 @@
     var before = p.oldPrice ? '<span class="before">' + fmtCOP(p.oldPrice) + "</span>" : "";
     return (
       '<article class="prod-card">' + badge +
-      '<a class="prod-art" href="producto.html?id=' + p.id + '" aria-label="Ver ' + p.name + '">' + artFor(p) + "</a>" +
+      '<a class="prod-art' + (hasPhotos(p) ? " has-photo" : "") + '" href="producto.html?id=' + p.id + '" aria-label="Ver ' + p.name + '">' + visualFor(p) + "</a>" +
       '<div class="prod-body">' +
       '<span class="prod-cat">' + p.categoryLabel + " · " + p.size + "</span>" +
       '<h3 class="prod-name"><a href="producto.html?id=' + p.id + '">' + p.name + "</a></h3>" +
@@ -461,8 +469,23 @@
     var before = p.oldPrice ? '<span class="before">' + fmtCOP(p.oldPrice) + "</span>" : "";
     var envioGratis = p.price >= ONDEA_CONFIG.envioGratisDesde;
 
+    var media;
+    if (hasPhotos(p)) {
+      media =
+        '<div class="detail-art has-photo">' +
+        '<img id="detail-img" src="' + p.images[0] + '" alt="' + p.name + '">' +
+        (p.images.length > 1
+          ? '<div class="detail-thumbs">' + p.images.map(function (src, i) {
+              return '<button type="button" class="detail-thumb' + (i === 0 ? " active" : "") + '" data-img="' + src + '" aria-label="Foto ' + (i + 1) + ' de ' + p.name + '"><img src="' + src + '" alt="" loading="lazy"></button>';
+            }).join("") + "</div>"
+          : "") +
+        "</div>";
+    } else {
+      media = '<div class="detail-art">' + artFor(p) + "</div>";
+    }
+
     wrap.innerHTML =
-      '<div class="detail-art">' + artFor(p) + "</div>" +
+      media +
       '<div class="detail-info">' +
       '<nav class="breadcrumb" aria-label="Ruta"><a href="index.html">Inicio</a> / <a href="productos.html">Tienda</a> / ' + p.categoryLabel + "</nav>" +
       '<span class="prod-cat">' + p.categoryLabel + "</span>" +
@@ -490,6 +513,18 @@
       "<details><summary>Modo de uso</summary><div class='acc-body'><p>" + p.howto + "</p></div></details>" +
       "<details><summary>Ingredientes</summary><div class='acc-body'><p>" + p.ingredients + "</p></div></details>" +
       "</div></div>";
+
+    // Galería: cambiar la foto grande al tocar una miniatura
+    var mainImg = qs("#detail-img");
+    if (mainImg) {
+      qsa(".detail-thumb").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          mainImg.src = btn.getAttribute("data-img");
+          qsa(".detail-thumb").forEach(function (b) { b.classList.remove("active"); });
+          btn.classList.add("active");
+        });
+      });
+    }
 
     var qty = qs("#qty");
     qs("#qty-menos").addEventListener("click", function () { qty.value = Math.max(1, +qty.value - 1); });
@@ -541,7 +576,7 @@
         if (!p) return "";
         return (
           '<div class="cart-item" data-id="' + p.id + '">' +
-          '<a class="thumb" href="producto.html?id=' + p.id + '">' + artFor(p) + "</a>" +
+          '<a class="thumb' + (hasPhotos(p) ? " has-photo" : "") + '" href="producto.html?id=' + p.id + '">' + visualFor(p) + "</a>" +
           "<div><h3>" + p.name + '</h3><span class="unit">' + p.size + " · " + fmtCOP(p.price) + " c/u</span></div>" +
           '<div class="line-right">' +
           '<span class="line-total">' + fmtCOP(p.price * i.qty) + "</span>" +

@@ -2,20 +2,27 @@
 
 Guarda aquí las fotos de los productos reales (las de Dropi o las tuyas propias).
 
-## Cómo nombrar los archivos
+## Cómo organizarlas
 
-Usa el **id del producto** en la tienda + un número si hay varias fotos:
+**Una carpeta por producto**, con las fotos adentro:
 
 ```
-kit-rizos-la-pocion-1.jpg
-kit-rizos-la-pocion-2.jpg
-shampoo-low-poo-1.jpg
+Statics/productos/
+  kit-rizos-la-pocion/
+    1.jpeg   ← foto principal (la que se ve en la tienda y el carrito)
+    2.jpeg
+    3.jpeg
+    ...
 ```
 
-El id de cada producto está en `js/data.js` (campo `id`).
-Si no sabes el id, nómbralas como quieras y avísale a Claude: él las renombra y las conecta.
+- Puedes nombrar la carpeta como quieras (ej. "Nombre del producto (id de Dropi)");
+  Claude la normaliza al id de la tienda y numera las fotos.
+- La foto `1` es la principal: idealmente la del producto en fondo blanco/limpio.
+- Las demás salen como galería en la página del producto, en ese orden.
 
 ## Formatos
 
-- Sirven `.jpg`, `.png` y `.webp` (ideal `.webp` o `.jpg`).
-- Mejor cuadradas (ej. 1000 × 1000 px) para que se vean parejas en la tienda.
+- Sirven `.jpg`, `.jpeg`, `.png` y `.webp`.
+- Mejor si pesan menos de ~400 KB cada una para que la página cargue rápido.
+
+Cuando subas fotos nuevas, avísale a Claude para que las conecte al producto en `js/data.js`.

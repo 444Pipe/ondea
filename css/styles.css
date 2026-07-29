@@ -410,6 +410,8 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   aspect-ratio: 1 / 0.85;
 }
 .prod-art svg { width: 72%; height: auto; }
+.prod-art.has-photo { padding: 0; background: var(--white); }
+.prod-art.has-photo .prod-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
 .prod-badge {
   position: absolute; top: 14px; left: 14px; z-index: 2;
   background: var(--brown); color: var(--pink); font-size: 11.5px;
@@ -617,6 +619,22 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   padding: 48px; box-shadow: var(--shadow); position: sticky; top: 100px;
 }
 .detail-art svg { width: 70%; height: auto; }
+.detail-art.has-photo { padding: 0; background: var(--white); flex-direction: column; overflow: hidden; }
+.detail-art.has-photo #detail-img {
+  width: 100%; aspect-ratio: 1 / 1; object-fit: contain; display: block; background: var(--white);
+}
+.detail-thumbs {
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+  padding: 12px 14px 16px; width: 100%;
+}
+.detail-thumb {
+  width: 62px; height: 62px; border-radius: 12px; overflow: hidden; padding: 0;
+  border: 2px solid transparent; background: var(--cream-2); cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.detail-thumb:hover { transform: translateY(-2px); }
+.detail-thumb.active { border-color: var(--pink-strong); }
+.detail-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .detail-info h1 { font-size: clamp(26px, 3.5vw, 36px); }
 .detail-info .prod-cat { display: block; margin-bottom: 8px; }
 .detail-info .prod-rating { margin: 10px 0 16px; font-size: 14px; }
@@ -676,6 +694,8 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   background: linear-gradient(150deg, var(--pink-soft), var(--cream-2));
   border-radius: 12px; padding: 10px; display: flex; align-items: center; justify-content: center;
 }
+.cart-item .thumb.has-photo { padding: 0; overflow: hidden; background: var(--white); }
+.cart-item .thumb.has-photo .prod-photo { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
 .cart-item h3 { font-size: 15.5px; }
 .cart-item .unit { font-size: 13px; color: var(--brown-soft); }
 .cart-item .line-right { display: grid; gap: 8px; justify-items: end; }
