@@ -318,30 +318,17 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 .btn-outline:hover { background: var(--brown); color: var(--pink-soft); }
 .btn-sm { padding: 9px 18px; font-size: 13.5px; }
 
-/* CTA protagonista: degradado, pulso de resplandor y brillo que barre */
+/* CTA del hero: vidrio rosado, sereno pero visible sobre el video */
 .btn-cta {
-  position: relative; overflow: hidden;
-  background: linear-gradient(115deg, var(--pink-strong), var(--pink) 55%, var(--pink-strong));
-  color: var(--white); font-size: 16.5px; padding: 16px 34px;
-  border: none; box-shadow: 0 10px 26px rgba(232, 127, 160, 0.45);
+  background: rgba(242, 157, 176, 0.34);
+  border-color: rgba(242, 157, 176, 0.8);
+  color: var(--white); font-size: 16px; padding: 15px 32px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px rgba(70, 37, 26, 0.2);
 }
 .btn-cta:hover {
-  transform: translateY(-3px) scale(1.04);
-  background: linear-gradient(115deg, var(--pink-strong), var(--pink-strong));
-  color: var(--white);
-}
-.btn-cta::after {
-  content: ""; position: absolute; top: -60%; bottom: -60%; width: 38px;
-  left: -70px; transform: rotate(20deg); pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
-  animation: ctaShine 3.2s ease-in-out infinite;
-}
-@keyframes ctaShine {
-  0%, 55% { left: -70px; }
-  85%, 100% { left: calc(100% + 50px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .btn-cta::after { animation: none; }
+  background: var(--pink); border-color: var(--pink);
+  color: var(--brown-deep); transform: translateY(-2px);
 }
 .btn-block { width: 100%; }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
