@@ -214,7 +214,7 @@ h1, h2, h3, .display {
 @media (prefers-reduced-motion: reduce) {
   .hero-video .hero-bg { display: none; }
   .hero-video {
-    background: url("../Statics/hero-poster.jpg") center / cover no-repeat, var(--brown-deep);
+    background: url("../Statics/hero-poster.jpg?v=20") center / cover no-repeat, var(--brown-deep);
   }
 }
 
@@ -998,8 +998,9 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   /* Hero minimalista en celular: titular, texto corto y un solo botón.
      Las insignias y el WhatsApp ya viven en la cinta de confianza y la
      burbuja flotante — repetirlos aquí saturaba la primera pantalla. */
+  /* En celular el video llena la pantalla al abrir (100svh menos topbar+header) */
   .hero-video .hero-inner {
-    min-height: min(58vh, 470px); min-height: min(58svh, 470px);
+    min-height: calc(100vh - 150px); min-height: calc(100svh - 150px);
     padding: 52px 0 40px;
   }
   .hero-video .hero-badges { display: none; }
