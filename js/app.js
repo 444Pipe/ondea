@@ -289,7 +289,7 @@
   function initHome() {
     var grid = qs("#destacados-grid");
     if (grid) {
-      var ids = ["crema-define-rizos", "kit-rutina-completa", "shampoo-low-poo", "mascarilla-nutritiva"];
+      var ids = ["crema-define-rizos", "kit-rizos-la-pocion", "shampoo-low-poo", "mascarilla-nutritiva"];
       grid.innerHTML = ids.map(function (id) { return productCard(getProduct(id)); }).join("");
       bindAddButtons(grid);
     }
