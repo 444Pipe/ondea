@@ -206,8 +206,7 @@ async function handleApi(req, res, urlPath) {
       }
       const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
       const lugar = ciudades[Math.floor(Math.random() * ciudades.length)];
-      const esVillavo = lugar[0] === "Villavicencio";
-      const envio = subtotal >= 150000 ? 0 : (esVillavo ? 6000 : 12000);
+      const envio = subtotal >= 150000 ? 0 : 12000;
       let estado;
       if (diasAtras > 8) estado = Math.random() < 0.9 ? "entregado" : "cancelado";
       else if (diasAtras > 3) estado = Math.random() < 0.6 ? "enviado" : "entregado";

@@ -482,7 +482,7 @@
       '<a class="btn btn-outline btn-block" href="carrito.html">Ir al carrito y pagar</a>' +
       '<div class="detail-ship">' +
       "<span>" + icon("truck") + " <strong>Envíos a toda Colombia</strong> (2 a 5 días hábiles). " + (envioGratis ? "<strong>¡Este producto tiene envío gratis!</strong>" : "Gratis desde " + fmtCOP(ONDEA_CONFIG.envioGratisDesde) + ".") + "</span>" +
-      "<span>" + icon("pin") + " <strong>Villavicencio:</strong> entrega el mismo día y pago contraentrega.</span>" +
+      "<span>" + icon("pin") + " <strong>Hasta la puerta de tu casa</strong> en cualquier municipio del país.</span>" +
       "<span>" + icon("chat") + " ¿Dudas con tu tipo de rizo? <strong>Escríbenos por WhatsApp</strong> y te asesoramos gratis.</span>" +
       "</div>" +
       '<div class="accordion-set">' +
@@ -512,9 +512,8 @@
   /* ---------- Página: Carrito + Checkout ---------- */
 
   function shippingCost(city, subtotal) {
-    if (subtotal >= ONDEA_CONFIG.envioGratisDesde) return 0;
-    var local = (city || "").toLowerCase().indexOf("villavicencio") !== -1;
-    return local ? ONDEA_CONFIG.envioLocal : ONDEA_CONFIG.envioNacional;
+    // Tarifa única nacional: el pedido llega hasta la puerta de la casa
+    return subtotal >= ONDEA_CONFIG.envioGratisDesde ? 0 : ONDEA_CONFIG.envioNacional;
   }
 
   function initCart() {
@@ -604,11 +603,6 @@
         var notas = qs("#f-notas").value.trim();
         var pagoInput = qs('input[name="pago"]:checked');
         var pago = pagoInput ? pagoInput.value : "";
-
-        if (pago === "Contraentrega" && ciudad.toLowerCase().indexOf("villavicencio") === -1) {
-          toast("El pago contraentrega solo está disponible en Villavicencio");
-          return;
-        }
 
         var cart = getCart();
         var subtotal = cartSubtotal();
