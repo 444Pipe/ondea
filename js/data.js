@@ -78,6 +78,35 @@ const ONDEA_PRODUCTS = [
     ingredients: "Coco, karité, monoï de Tahití y linaza. Sin sal, sin sulfatos, sin parabenos; gel sin alcohol ni residuos. Uso externo.",
   },
   {
+    id: "kit-hydracurl-etniker",
+    dropiId: "2020507", // ID en el catálogo de Dropi (SKU KIT-00093, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Hydracurl Etniker",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado", "afro"],
+    price: 139900,
+    cost: 87617,
+    size: "4 productos + cepillo",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Nuevo",
+    badgeClass: "",
+    art: "kit",
+    images: [
+      "Statics/productos/kit-hydracurl-etniker/1.png",
+      "Statics/productos/kit-hydracurl-etniker/2.jpg",
+      "Statics/productos/kit-hydracurl-etniker/3.jpg",
+      "Statics/productos/kit-hydracurl-etniker/4.jpg",
+      "Statics/productos/kit-hydracurl-etniker/5.jpg",
+    ],
+    short: "Limpieza profunda + hidratación intensa + espuma definidora, con cepillo profesional Etniker incluido.",
+    desc: "La rutina completa para revivir rizos secos, opacos o deshidratados. Incluye el Shampoo Limpieza Profunda (250 ml — purifica y retira acumulación), la Mascarilla Deep Conditioner (300 g — coco, karité y manzanilla que nutren y reparan), el Hydroelixir (38 ml — aceite que sella la hidratación y controla el frizz), la Espuma Intensificadora de Rizos (150 ml — açaí, linaza y ácido hialurónico para definir sin peso, con protección térmica) y el Cepillo Profesional Etniker para activar y definir el rizo por mechones. Ideal para rizos 2B a 3C, afros 4A a 4C y cabellos en transición — apto para niñas, mujeres y hombres.",
+    benefits: ["Limpieza profunda que retira residuos y acumulación", "Hidratación intensiva: más elasticidad y suavidad", "Espuma definidora ligera con ácido hialurónico", "Incluye cepillo profesional de definición", "Ideal para transición capilar y rizos sin forma"],
+    howto: "1) Lava con el Shampoo Limpieza Profunda (1-2 veces por semana). 2) Aplica la Mascarilla 10-15 minutos y enjuaga. 3) Sella medios y puntas con el Hydroelixir. 4) Define con la Espuma sobre cabello húmedo. 5) Activa el rizo por mechones con el Cepillo Etniker inclinándolo hacia afuera. Tip: mezcla una gota de Hydroelixir con la espuma para más brillo.",
+    ingredients: "Coco, karité, manzanilla, açaí, linaza, ácido hialurónico y aceites nutritivos. Sin sal ni parabenos. Uso externo.",
+  },
+  {
     id: "kit-emergencia-reparacion-milagros",
     dropiId: "1977270", // ID en el catálogo de Dropi (SKU KIT-00035, proveedor LIVANA COLOMBIA SAS)
     proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
@@ -155,6 +184,36 @@ const ONDEA_PRODUCTS = [
     benefits: ["Reparación profunda del daño por químicos, calor o decoloración", "Hidratación intensiva y nutrición completa", "Reduce el frizz y las puntas secas", "Cabello más fuerte, brillante y sedoso", "Incluye leave-in para mantener el resultado todo el día"],
     howto: "Lava con el Shampoo Bio-repolarizador y aplica el Tratamiento Bio Repolarizador de medios a puntas; enjuaga. Usa la Mascarilla Multivitamínica 1-2 veces por semana dejándola actuar 15-20 minutos. Finaliza con el Magia Capilar sin enjuague sobre cabello húmedo o seco para controlar el frizz y sellar las puntas.",
     ingredients: "Bio-repolarizadores con pro vitamina B5, keratina, aceite de argán, pulpa de coco y vitamina E; mascarilla con multivitaminas y aminoácidos; Magia Capilar con ácido hialurónico, extracto de lino, aceite de sacha inchi y vitaminas A, B5 y H. Uso externo.",
+  },
+  {
+    id: "kit-pre-decoloracion-pocion",
+    dropiId: "2013612", // ID en el catálogo de Dropi (SKU 795486215936, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Pre Decoloración «La Poción»",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado", "afro"],
+    price: 249900,
+    cost: 175206,
+    size: "5 productos",
+    rating: 5.0,
+    reviews: 0,
+    badge: "Envío gratis",
+    badgeClass: "badge-pink",
+    art: "kit",
+    images: [
+      "Statics/productos/kit-pre-decoloracion-pocion/1.png",
+      "Statics/productos/kit-pre-decoloracion-pocion/2.png",
+      "Statics/productos/kit-pre-decoloracion-pocion/3.png",
+      "Statics/productos/kit-pre-decoloracion-pocion/4.png",
+      "Statics/productos/kit-pre-decoloracion-pocion/5.png",
+      "Statics/productos/kit-pre-decoloracion-pocion/6.png",
+    ],
+    short: "Prepara tu cabello ANTES de decolorar o tinturar: fortalece, protege y minimiza el daño del químico.",
+    desc: "El kit de preparación para procesos químicos: fortalece la estructura interna del cabello antes de una decoloración o tintura para minimizar la rotura y el quiebre. Incluye la Mascarilla Ancestral (350 ml — vitaminas A, B1, B2, B6, B12, C y E), el Shampoo Acondicionador Refrescante (450 ml), el Tratamiento Reestructurante R3START PLEX (100 ml — aminoácidos y proteínas que refuerzan los puentes internos de la fibra), el Óleo B8 Brillo Infinito y el Bite Me Banano (250 ml — suplemento antioxidante hidroreparador). Sella la cutícula, reduce la porosidad, equilibra el pH y deja el cabello listo para soportar el proceso químico conservando elasticidad y resistencia.",
+    benefits: ["Fortalece la fibra ANTES del proceso químico", "Minimiza el daño, la rotura y el quiebre", "R3START PLEX: refuerzo tipo plex con aminoácidos y proteínas", "Sella la cutícula y reduce la porosidad", "Equilibra el pH y facilita el desenredo posterior"],
+    howto: "En los días previos al proceso: lava con el Shampoo Acondicionador Refrescante y aplica la Mascarilla Ancestral sobre cabello húmedo el tiempo recomendado. En días alternos usa el R3START PLEX para fortalecer los puentes internos. Una vez por semana aplica el Bite Me Banano como pre-shampoo desintoxicante. Sella de medios a puntas con el Óleo B8.",
+    ingredients: "Mascarilla Ancestral con vitaminas A, B1, B2, B6, B12, C y E; R3START PLEX con aminoácidos y proteínas; Bite Me con extracto de banano; Óleo B8 con mezcla de aceites vegetales. Uso externo.",
   },
   {
     id: "kit-rizos-largos-abundantes",
