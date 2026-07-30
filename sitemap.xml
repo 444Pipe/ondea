@@ -61,6 +61,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.rizosondea.com/producto.html?id=kit-milagro-herbal</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-secado-ondas-sonadas</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

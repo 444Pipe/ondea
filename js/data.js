@@ -157,6 +157,35 @@ const ONDEA_PRODUCTS = [
     ingredients: "Consulta la etiqueta de cada producto Tongolé y de los tónicos Oxy y Energy incluidos en el kit. Uso externo.",
   },
   {
+    id: "kit-milagro-herbal",
+    dropiId: "1979509", // ID en el catálogo de Dropi (SKU KIT-00055, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Milagro Herbal «Milagros»",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado", "afro"],
+    price: 194900,
+    cost: 139288,
+    size: "4 productos",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Envío gratis",
+    badgeClass: "badge-pink",
+    art: "kit",
+    images: [
+      "Statics/productos/kit-milagro-herbal/1.jpg",
+      "Statics/productos/kit-milagro-herbal/2.webp",
+      "Statics/productos/kit-milagro-herbal/3.webp",
+      "Statics/productos/kit-milagro-herbal/4.webp",
+      "Statics/productos/kit-milagro-herbal/5.webp",
+    ],
+    short: "Romero, jengibre, canela y eucalipto: crecimiento, control de grasa y menos caída desde la raíz.",
+    desc: "El poder de los extractos naturales para un cabello fuerte, fresco y con crecimiento saludable. Incluye el Shampoo Milagro Herbal (450 ml — con ramas de romero y jengibre 100% naturales, eficacia seborreguladora clínicamente comprobada), el Acondicionador Milagro Herbal (450 ml — desenreda y disminuye la caída), la Mascarilla Capilar Milagro Herbal (450 g — con provitamina B5, keratina y péptidos de avena) y el Tónico Revitalizante (110 ml — fortalece los folículos y purifica el cuero cabelludo). Ideal para cabello graso, con caída o debilitado que necesita limpieza profunda sin resecar.",
+    benefits: ["Estimula el crecimiento con romero y jengibre", "Regula el exceso de grasa del cuero cabelludo", "Disminuye la caída y fortalece la raíz", "Nutre y repara sin sensación grasosa", "Con extractos 100% naturales y eficacia comprobada"],
+    howto: "Antes del lavado, aplica el Tónico sobre el cuero cabelludo seco, masajea y déjalo actuar mínimo 2 horas (o toda la noche). Lava con el Shampoo dejando actuar 3-5 minutos y enjuaga. Aplica el Acondicionador de medios a puntas 5 minutos y retira con agua fría. Usa la Mascarilla 1-2 veces por semana, 15-30 minutos.",
+    ingredients: "Romero y jengibre (crecimiento y raíz fuerte), canela y eucalipto (regulan la grasa), extracto de arroz y aminoácidos, provitamina B5, keratina, péptidos de avena y vitaminas naturales. Uso externo; evitar el contacto con los ojos.",
+  },
+  {
     id: "kit-secado-ondas-sonadas",
     dropiId: "2013522", // ID en el catálogo de Dropi (SKU 733654185498, proveedor LIVANA COLOMBIA SAS)
     proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
