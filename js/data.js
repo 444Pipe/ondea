@@ -191,6 +191,63 @@ const ONDEA_PRODUCTS = [
     ingredients: "Extracto de cebolla morada, péptidos fortalecedores, cafeína, activos antifrizz y componentes reparadores con aminoácidos. Uso externo; evitar el contacto con los ojos.",
   },
   {
+    id: "kit-definicion-antifrizz-ponto",
+    dropiId: "2176373", // ID en el catálogo de Dropi (SKU KIT-00076, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Definición Antifrizz Ponto",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado"],
+    price: 174900,
+    cost: 116177,
+    size: "4 productos",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Envío gratis",
+    badgeClass: "badge-pink",
+    art: "kit",
+    images: [
+      "Statics/productos/kit-definicion-antifrizz-ponto/1.png",
+      "Statics/productos/kit-definicion-antifrizz-ponto/2.jpeg",
+      "Statics/productos/kit-definicion-antifrizz-ponto/3.jpeg",
+      "Statics/productos/kit-definicion-antifrizz-ponto/4.jpeg",
+      "Statics/productos/kit-definicion-antifrizz-ponto/5.jpeg",
+    ],
+    short: "Limpieza suave, 3 en 1 hidratante, espuma definidora y el termoprotector Boom: ondas sin frizz de principio a fin.",
+    desc: "La rutina Ponto completa para ondas y rizos con limpieza suave, hidratación, definición y control del frizz. Incluye el Shampoo Suave Aloe Vera (300 ml — con agua micelar, limpia sin resecar), el Tratamiento 3 en 1 Mi Dulce Pelo «Soy Ondulada» (380 ml — sirve como mascarilla, acondicionador o crema para peinar), el Termoprotector Boom (que protege del calor del secador, difusor, plancha o rizador mientras controla el frizz) y la Espuma Definidora Suspiros (90 ml — define, da volumen y mantiene el movimiento natural). Fórmulas sin sulfatos, parabenos ni siliconas.",
+    benefits: ["Limpieza suave con aloe vera y agua micelar", "3 en 1: mascarilla, acondicionador o crema para peinar", "Termoprotector para difusor, secador o plancha", "Espuma que define y da volumen sin rigidez", "Sin sulfatos, parabenos ni siliconas"],
+    howto: "1) Lava con el Shampoo Suave Aloe Vera masajeando el cuero cabelludo y enjuaga. 2) Aplica el Tratamiento 3 en 1 de medios a puntas, como acondicionador, mascarilla o crema según lo que tu cabello pida. 3) Aplica el Termoprotector Boom de medios a puntas, especialmente antes del calor. 4) Finaliza con la Espuma Suspiros sobre cabello húmedo, moldea con las manos y seca al aire o con difusor.",
+    ingredients: "Aloe vera y agua micelar (shampoo). Fórmulas sin sulfatos, sin parabenos y sin siliconas. Consulta las etiquetas para la lista completa. Uso externo.",
+  },
+  {
+    id: "kit-rizos-kids-leche-pal-pelo",
+    dropiId: "2103656", // ID en el catálogo de Dropi (SKU KIT-00082, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Rizos Kids Leche pal Pelo",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["rizado", "afro"],
+    price: 149900,
+    cost: 88296,
+    size: "3 productos",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Nuevo",
+    badgeClass: "",
+    art: "kit",
+    images: [
+      "Statics/productos/kit-rizos-kids-leche-pal-pelo/1.png",
+      "Statics/productos/kit-rizos-kids-leche-pal-pelo/2.png",
+      "Statics/productos/kit-rizos-kids-leche-pal-pelo/3.png",
+      "Statics/productos/kit-rizos-kids-leche-pal-pelo/4.png",
+    ],
+    short: "La rutina completa para los rizos de los peques: shampoo + acondicionador + crema de peinar, suaves y sin irritar.",
+    desc: "La rutina Leche pal Pelo diseñada especialmente para cuidar y definir el cabello rizado de niñas y niños. Incluye el Shampoo Hidratante Kids Rizos (440 ml — limpia con suavidad sin resecar), el Acondicionador Rizos Perfectos (440 ml — desenreda y nutre) y la Crema de Peinar Control Rizos (440 ml — define los rizos y controla el frizz todo el día). Sus fórmulas con aceite de argán, leche de avena, leche de coco y proteína de trigo hidratan profundamente, fortalecen la fibra capilar y facilitan el peinado diario sin causar irritación. El aliado perfecto para que la hora del peinado deje de ser una batalla.",
+    benefits: ["Diseñado especialmente para el cabello rizado infantil", "Define y controla los rizos de forma natural", "Hidratación profunda que reduce el frizz", "Facilita el desenredado y el peinado diario", "Fórmulas suaves con ingredientes de origen natural"],
+    howto: "1) Aplica el Shampoo sobre el cabello húmedo, masajea suavemente y enjuaga. 2) Aplica el Acondicionador de medios a puntas, deja actuar unos minutos y enjuaga. 3) Termina con la Crema de Peinar sobre cabello húmedo o seco para definir los rizos y controlar el frizz. Ideal para la rutina diaria antes del cole.",
+    ingredients: "Aceite de argán (nutre y da brillo), leche de avena (suavidad e hidratación), leche de coco (fortalece y protege) y proteína de trigo (mejora la estructura capilar). Uso externo; evitar el contacto con los ojos.",
+  },
+  {
     id: "kit-rescate-nutritivo-milagros",
     dropiId: "2127615", // ID en el catálogo de Dropi (SKU KIT-00031, proveedor LIVANA COLOMBIA SAS)
     proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
