@@ -938,7 +938,8 @@ section[id], footer[id] { scroll-margin-top: 96px; }
     min-height: min(64vh, 540px); min-height: min(64svh, 540px);
     padding: 64px 0 72px;
   }
-  .hero p.lead { text-align: center; margin: 14px auto 4px; }
+  /* Ritmo vertical del hero: título → texto → botón con aire proporcional */
+  .hero p.lead { text-align: center; margin: 18px auto 28px; }
   .hero-actions { justify-content: center; }
   .hero-badges { justify-content: center; margin-top: 16px; }
   /* Tarjeta del logo en la sección "Sobre nosotras" */
@@ -979,7 +980,7 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 
   /* Hero centrado y compacto */
   .hero h1 { font-size: 37px; line-height: 1.12; }
-  .hero p.lead { font-size: 15px; }
+  .hero p.lead { font-size: 15px; margin: 16px auto 26px; }
   .hero-badges { gap: 8px; }
   .hero-badges span { padding: 6px 12px; font-size: 12px; }
   .btn { padding: 12px 22px; font-size: 14px; }
