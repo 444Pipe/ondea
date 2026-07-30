@@ -141,6 +141,31 @@ const ONDEA_PRODUCTS = [
     ingredients: "Tejido satinado (poliéster) con elástico interno resistente.",
   },
   {
+    id: "toalla-microfibra-gorro",
+    dropiId: "1448861", // ID en el catálogo de Dropi (SKU 821038, proveedor Mundo Tendencias / Serum 10, Medellín)
+    name: "Toalla-Gorro de Microfibra «Seca sin Frizz»",
+    category: "accesorios",
+    categoryLabel: "Accesorios",
+    types: ["ondulado", "rizado", "afro"],
+    price: 29900,
+    cost: 8970,
+    size: "Talla única",
+    rating: 4.8,
+    reviews: 0,
+    badge: "Nuevo",
+    badgeClass: "",
+    art: "towel",
+    images: [
+      "Statics/productos/toalla-microfibra-gorro/1.webp",
+      "Statics/productos/toalla-microfibra-gorro/2.webp",
+    ],
+    short: "Gorra de microfibra superabsorbente: seca tu rizo rápido y sin la fricción que causa frizz.",
+    desc: "Toalla en forma de gorra hecha de microfibra polar superabsorbente: se coloca sobre la cabeza y absorbe la humedad del cabello mientras haces otras cosas. A diferencia de la toalla de algodón, la microfibra no levanta la cutícula ni deshace el patrón del rizo — secas más rápido y sin frizz. Suave, cómoda y ligera, apta para cualquier largo y textura de cabello.",
+    benefits: ["Microfibra polar superabsorbente", "Seca rápido sin fricción ni frizz", "Manos libres: absorbe mientras haces otras cosas", "Apta para todo largo y textura", "Suave, ligera y cómoda"],
+    howto: "Después del baño (o tras aplicar tus productos de definición), inclina la cabeza, acomoda el cabello dentro de la gorra y ajústala. Déjala actuar 10-15 minutos para retirar el exceso de agua antes de secar al aire o con difusor.",
+    ingredients: "Microfibra polar (poliéster) superabsorbente con elástico de ajuste.",
+  },
+  {
     id: "kit-emergencia-reparacion-milagros",
     dropiId: "1977270", // ID en el catálogo de Dropi (SKU KIT-00035, proveedor LIVANA COLOMBIA SAS)
     name: "Kit Emergencia y Reparación «Milagros»",
