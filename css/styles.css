@@ -330,6 +330,8 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   background: var(--pink); border-color: var(--pink);
   color: var(--brown-deep); transform: translateY(-2px);
 }
+.btn-cta .cta-arrow { display: inline-block; margin-left: 4px; transition: transform 0.22s ease; }
+.btn-cta:hover .cta-arrow { transform: translateX(4px); }
 .btn-block { width: 100%; }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
