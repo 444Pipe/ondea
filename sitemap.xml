@@ -51,6 +51,16 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.rizosondea.com/producto.html?id=pack-skala-divino-potao-x2</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.rizosondea.com/producto.html?id=pack-karseell-collagen-x2</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.rizosondea.com/producto.html?id=gel-definidor-etniker-1000g</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

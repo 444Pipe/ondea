@@ -108,7 +108,7 @@ function httpsJSON(method, urlStr, headers, body) {
    de Dropi (POST /orders/myorders). Cuando tengas tu cuenta, confirma los
    nombres exactos de los campos con la documentación oficial que entrega
    Dropi al generar la llave, y ajústalos SOLO en esta función. */
-function buildDropiOrder(pedido) {
+function buildDropiOrder(pedido, products, totalOrden, sufijo) {
   const partes = (pedido.cliente.nombre || "").trim().split(/\s+/);
   return {
     state: pedido.cliente.depto,
@@ -118,39 +118,70 @@ function buildDropiOrder(pedido) {
     dir: pedido.cliente.direccion,
     phone: pedido.cliente.telefono,
     payment_method_id: DROPI.paymentMethodId,
-    total_order: pedido.total,
-    notes: ("Pedido web " + pedido.id + (pedido.cliente.notas ? " · " + pedido.cliente.notas : "")).slice(0, 250),
-    products: pedido.items
-      .filter((i) => i.dropiId)
-      .map((i) => ({ id: i.dropiId, quantity: i.qty })),
+    total_order: totalOrden,
+    notes: ("Pedido web " + pedido.id + (sufijo || "") + (pedido.cliente.notas ? " · " + pedido.cliente.notas : "")).slice(0, 250),
+    products: products,
   };
 }
 
+/* Dropi maneja una orden (y un flete) por bodega: los ítems se agrupan por
+   proveedor y se crea una orden por grupo. Los combos y packs ×2 llevan
+   dropiItems con varios productos Dropi dentro de un mismo ítem. */
 async function dropiSendOrder(pedido) {
   if (!DROPI.enabled || !DROPI.key) {
     return { ok: false, error: "Dropi no está configurado: define DROPI_ENABLED y DROPI_INTEGRATION_KEY en las variables de entorno." };
   }
-  const mapeados = pedido.items.filter((i) => i.dropiId);
-  if (!mapeados.length) {
+
+  const grupos = {};
+  pedido.items.forEach((i) => {
+    const conDropi = i.dropiId || (Array.isArray(i.dropiItems) && i.dropiItems.length);
+    if (!conDropi) return;
+    const clave = i.proveedor || "principal";
+    (grupos[clave] = grupos[clave] || []).push(i);
+  });
+  const claves = Object.keys(grupos);
+  if (!claves.length) {
     return { ok: false, error: "Ningún producto de este pedido tiene dropiId. Agrégalo en js/data.js con el ID del catálogo de Dropi." };
   }
+
+  const valorGrupo = (items) => items.reduce((s, i) => s + (i.price || 0) * i.qty, 0);
+  claves.sort((a, b) => valorGrupo(grupos[b]) - valorGrupo(grupos[a]));
+
   const ahora = new Date().toISOString();
-  try {
-    const r = await httpsJSON("POST", DROPI.base + "/orders/myorders", { "dropi-integration-key": DROPI.key }, buildDropiOrder(pedido));
-    if (r.status >= 200 && r.status < 300) {
-      const dropiId = (r.body && (r.body.id || (r.body.order && r.body.order.id) || (r.body.data && r.body.data.id))) || null;
-      pedido.dropi = { estado: "enviado", fecha: ahora, id: dropiId, respuesta: r.body };
-      savePedidos();
-      return { ok: true, dropi: pedido.dropi };
+  const ordenes = [];
+  for (const clave of claves) {
+    const items = grupos[clave];
+    const products = [];
+    items.forEach((i) => {
+      if (Array.isArray(i.dropiItems) && i.dropiItems.length) {
+        i.dropiItems.forEach((d) => products.push({ id: d.id, quantity: d.qty * i.qty }));
+      } else {
+        products.push({ id: i.dropiId, quantity: i.qty });
+      }
+    });
+    // El envío que pagó la clienta se suma a la orden de mayor valor
+    const total = valorGrupo(items) + (clave === claves[0] ? pedido.envio || 0 : 0);
+    const sufijo = claves.length > 1 ? " · bodega " + clave : "";
+    try {
+      const r = await httpsJSON("POST", DROPI.base + "/orders/myorders", { "dropi-integration-key": DROPI.key }, buildDropiOrder(pedido, products, total, sufijo));
+      const idDropi = (r.body && (r.body.id || (r.body.order && r.body.order.id) || (r.body.data && r.body.data.id))) || null;
+      ordenes.push({ proveedor: clave, ok: r.status >= 200 && r.status < 300, status: r.status, id: idDropi, respuesta: r.body });
+    } catch (e) {
+      ordenes.push({ proveedor: clave, ok: false, error: e.message });
     }
-    pedido.dropi = { estado: "error", fecha: ahora, error: "HTTP " + r.status, respuesta: r.body };
-    savePedidos();
-    return { ok: false, error: "Dropi respondió HTTP " + r.status, detalle: r.body };
-  } catch (e) {
-    pedido.dropi = { estado: "error", fecha: ahora, error: e.message };
-    savePedidos();
-    return { ok: false, error: e.message };
   }
+
+  const exitosas = ordenes.filter((o) => o.ok);
+  pedido.dropi = {
+    estado: exitosas.length === ordenes.length ? "enviado" : exitosas.length ? "parcial" : "error",
+    fecha: ahora,
+    id: exitosas.length ? exitosas[0].id : null,
+    ordenes: ordenes,
+  };
+  savePedidos();
+  if (pedido.dropi.estado === "enviado") return { ok: true, dropi: pedido.dropi };
+  const fallas = ordenes.filter((o) => !o.ok).map((o) => o.proveedor + " → " + (o.error || "HTTP " + o.status)).join("; ");
+  return { ok: false, error: "Dropi: " + fallas, detalle: pedido.dropi };
 }
 
 /* ---------- Almacenamiento de pedidos ---------- */
@@ -269,6 +300,13 @@ async function handleApi(req, res, urlPath) {
         qty: Math.max(1, Math.min(99, parseInt(i.qty, 10) || 1)),
         price: Math.max(0, parseInt(i.price, 10) || 0),
         dropiId: i.dropiId ? String(i.dropiId).slice(0, 40) : null,
+        dropiItems: Array.isArray(i.dropiItems)
+          ? i.dropiItems.slice(0, 10).map((d) => ({
+              id: String(d.id || "").slice(0, 40),
+              qty: Math.max(1, Math.min(99, parseInt(d.qty, 10) || 1)),
+            }))
+          : null,
+        proveedor: i.proveedor ? String(i.proveedor).slice(0, 40) : null,
       })),
       subtotal: Math.max(0, parseInt(body.subtotal, 10) || 0),
       envio: Math.max(0, parseInt(body.envio, 10) || 0),

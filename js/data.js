@@ -25,6 +25,7 @@ const ONDEA_PRODUCTS = [
   {
     id: "tratamiento-skala-divino-potao",
     dropiId: "2145296", // ID en el catálogo de Dropi (proveedor FOCUS, bodega Medellín)
+    proveedor: "FOCUS", // bodega Dropi — agrupa órdenes y fletes
     name: "Tratamiento Skala «Divino Potão» 2 en 1",
     category: "definicion",
     categoryLabel: "Definición",
@@ -45,8 +46,34 @@ const ONDEA_PRODUCTS = [
     ingredients: "Óleos, queratina vegetal y colágeno vegetal. 100% vegano, 0% origen animal. Fórmula liberada: sin sulfatos ni parabenos. Uso externo.",
   },
   {
+    id: "pack-skala-divino-potao-x2",
+    dropiId: null,
+    dropiItems: [{ id: "2145296", qty: 2 }], // 2 unidades del Divino Potão en una sola orden (un solo flete)
+    proveedor: "FOCUS", // bodega Dropi — agrupa órdenes y fletes
+    name: "Pack ×2 Skala «Divino Potão» — 2 kilos",
+    category: "definicion",
+    categoryLabel: "Definición",
+    types: ["rizado", "afro"],
+    price: 69900,
+    cost: 37000,
+    oldPrice: 77800,
+    size: "2 potes × 1000 g",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Ahorra $7.900",
+    badgeClass: "badge-pink",
+    art: "tube",
+    images: ["Statics/productos/tratamiento-skala-divino-potao/1.png"],
+    short: "Dos kilos del viral Divino Potão en un solo envío: pagas $69.900 en vez de $77.800 por separado.",
+    desc: "El pack para las que ya saben que el Divino Potão es su religión: dos potes de 1000 g del viral tratamiento 2 en 1 de Skala Expert (crema para peinar + hidratante intensiva) en un solo pedido y un solo envío. Comprándolos por separado pagarías $77.800 — en pack te quedan en $69.900. Rinde para meses de rutina, o para compartir con tu mamá, hermana o amiga curly.",
+    benefits: ["Ahorras $7.900 frente a comprar dos por separado", "Un solo envío para los dos potes", "2 kg de producto: rinde meses", "2 en 1: crema para peinar + hidratante intensiva", "100% vegano, sin sulfatos ni parabenos"],
+    howto: "Como crema para peinar: sobre cabello húmedo, aplica por secciones, distribuye con praying hands y define con scrunch. Como hidratante intensiva: aplica una capa generosa mechón por mechón, deja actuar 15-20 minutos y enjuaga.",
+    ingredients: "Óleos, queratina vegetal y colágeno vegetal. 100% vegano, 0% origen animal. Fórmula liberada: sin sulfatos ni parabenos. Uso externo.",
+  },
+  {
     id: "duo-rizos-definidos",
     dropiId: "1977942", // ID en el catálogo de Dropi (proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
     name: "Dúo Rizos Definidos «Milagros»",
     category: "hidratacion",
     categoryLabel: "Hidratación",
@@ -73,6 +100,7 @@ const ONDEA_PRODUCTS = [
   {
     id: "mantequilla-rizos-menta-hair",
     dropiId: "1945534", // ID en el catálogo de Dropi (SKU MANT-RIZ-3EN1, proveedor BYB IMPORTACIONES)
+    proveedor: "BYB", // bodega Dropi — agrupa órdenes y fletes
     name: "Mantequilla para Rizos 3 en 1 «Menta Hair»",
     category: "hidratacion",
     categoryLabel: "Hidratación",
@@ -95,6 +123,7 @@ const ONDEA_PRODUCTS = [
   {
     id: "gel-definidor-etniker-1000g",
     dropiId: "1035124", // ID en el catálogo de Dropi (SKU GDREX1000G, proveedor Likemas, Medellín)
+    proveedor: "LIKEMAS", // bodega Dropi — agrupa órdenes y fletes
     name: "Gel Definidor de Rizos Etniker 1000 g",
     category: "definicion",
     categoryLabel: "Definición",
@@ -117,6 +146,7 @@ const ONDEA_PRODUCTS = [
   {
     id: "termoprotector-rizos-ondas",
     dropiId: "1971696", // ID en el catálogo de Dropi (SKU 7709122487715, marca Leche Pal Pelo)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
     name: "Termoprotector «Rizos y Ondas» Leche Pal Pelo",
     category: "definicion",
     categoryLabel: "Definición",
@@ -139,6 +169,7 @@ const ONDEA_PRODUCTS = [
   {
     id: "monas-saten-scrunchies-x5",
     dropiId: "2208837", // ID en el catálogo de Dropi (proveedor Nani Makeup, Cali)
+    proveedor: "NANI", // bodega Dropi — agrupa órdenes y fletes
     name: "Moñas de Satín ×5 «Scrunchies»",
     category: "accesorios",
     categoryLabel: "Accesorios",
@@ -165,6 +196,7 @@ const ONDEA_PRODUCTS = [
   {
     id: "tratamiento-karseell-collagen",
     dropiId: "1596274", // ID en el catálogo de Dropi (proveedor PRODUCTOSNOVEDOSOS, Bogotá)
+    proveedor: "PRODUCTOSNOVEDOSOS", // bodega Dropi — agrupa órdenes y fletes
     name: "Tratamiento Capilar Karseell «Collagen»",
     category: "hidratacion",
     categoryLabel: "Hidratación",
@@ -189,8 +221,38 @@ const ONDEA_PRODUCTS = [
     ingredients: "Esencia de maca, colágeno, aceite de argán rico en vitamina E y extractos de hierbas seleccionadas. Libre de sulfatos y fosfatos. Uso externo.",
   },
   {
+    id: "pack-karseell-collagen-x2",
+    dropiId: null,
+    dropiItems: [{ id: "1596274", qty: 2 }], // 2 unidades del Karseell en una sola orden (un solo flete)
+    proveedor: "PRODUCTOSNOVEDOSOS", // bodega Dropi — agrupa órdenes y fletes
+    name: "Pack ×2 Karseell «Collagen» — 1 litro",
+    category: "hidratacion",
+    categoryLabel: "Hidratación",
+    types: ["ondulado", "rizado", "afro"],
+    price: 149900,
+    cost: 80000,
+    oldPrice: 159800,
+    size: "2 potes × 500 ml",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Ahorra $9.900",
+    badgeClass: "badge-pink",
+    art: "jar",
+    images: [
+      "Statics/productos/tratamiento-karseell-collagen/1.webp",
+      "Statics/productos/tratamiento-karseell-collagen/2.webp",
+      "Statics/productos/tratamiento-karseell-collagen/3.webp",
+    ],
+    short: "Un litro del viral Karseell: dos potes de 500 ml por $149.900 en vez de $159.800 por separado.",
+    desc: "El pack inteligente del tratamiento más viral: dos potes de Karseell Maca Power Collagen (500 ml cada uno) en un solo pedido. La propia marca recomienda usarlo con constancia mínimo un mes — con este litro tienes tratamiento de sobra y ahorras $9.900 frente a comprarlos por separado. Colágeno, esencia de maca y aceite de argán que reparan a profundidad el cabello seco, poroso o con procesos químicos. Libre de sulfatos y fosfatos, cruelty-free.",
+    benefits: ["Ahorras $9.900 frente a comprar dos por separado", "Un litro completo: el tratamiento constante que recomienda la marca", "Reparación profunda con colágeno, maca y argán", "Libre de sulfatos y fosfatos, cruelty-free", "Un solo envío para los dos potes"],
+    howto: "Sobre cabello limpio y húmedo, aplica una capa generosa de medios a puntas, masajea y deja actuar 5-10 minutos; enjuaga con abundante agua. Úsalo 1-2 veces por semana de forma constante.",
+    ingredients: "Esencia de maca, colágeno, aceite de argán rico en vitamina E y extractos de hierbas seleccionadas. Libre de sulfatos y fosfatos. Uso externo.",
+  },
+  {
     id: "toalla-microfibra-gorro",
     dropiId: "1448861", // ID en el catálogo de Dropi (SKU 821038, proveedor Mundo Tendencias / Serum 10, Medellín)
+    proveedor: "MUNDOTENDENCIAS", // bodega Dropi — agrupa órdenes y fletes
     name: "Toalla-Gorro de Microfibra «Seca sin Frizz»",
     category: "accesorios",
     categoryLabel: "Accesorios",
@@ -216,6 +278,7 @@ const ONDEA_PRODUCTS = [
   {
     id: "kit-emergencia-reparacion-milagros",
     dropiId: "1977270", // ID en el catálogo de Dropi (SKU KIT-00035, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
     name: "Kit Emergencia y Reparación «Milagros»",
     category: "kits",
     categoryLabel: "Kits",
@@ -244,6 +307,7 @@ const ONDEA_PRODUCTS = [
   {
     id: "kit-rizos-largos-abundantes",
     dropiId: "2207916", // ID en el catálogo de Dropi (SKU KIT-00039, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
     name: "Kit Rizos Largos y Abundantes «Tongolé»",
     category: "kits",
     categoryLabel: "Kits",
@@ -271,6 +335,7 @@ const ONDEA_PRODUCTS = [
   {
     id: "kit-reparacion-profunda-pocion",
     dropiId: "2012557", // ID en el catálogo de Dropi (SKU KIT-00043, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
     name: "Kit Reparación Profunda «La Poción»",
     category: "kits",
     categoryLabel: "Kits",
@@ -300,6 +365,7 @@ const ONDEA_PRODUCTS = [
   {
     id: "kit-rizos-la-pocion",
     dropiId: "1893635", // ID en el catálogo de Dropi (SKU KIT-00085, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
     name: "Kit para Rizos Tongolé «La Poción»",
     category: "kits",
     categoryLabel: "Kits",
@@ -330,6 +396,7 @@ const ONDEA_PRODUCTS = [
   {
     id: "kit-rizos-lavado-etniker",
     dropiId: "1979862", // ID en el catálogo de Dropi (SKU KIT-00079, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
     name: "Kit Rizos Lavado Etniker",
     category: "kits",
     categoryLabel: "Kits",

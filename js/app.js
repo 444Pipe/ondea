@@ -593,6 +593,23 @@
       }
       if (summaryWrap) summaryWrap.style.display = "";
 
+      // Venta cruzada: sugiere complementos de buen margen que no estén ya en el carrito
+      var bumpIds = ["monas-saten-scrunchies-x5", "toalla-microfibra-gorro", "termoprotector-rizos-ondas"]
+        .filter(function (id) { return getProduct(id) && !cart.some(function (i) { return i.id === id; }); })
+        .slice(0, 2);
+      var bumpHTML = bumpIds.length
+        ? '<div class="cart-bump"><h3>✦ Completa tu pedido</h3>' + bumpIds.map(function (id) {
+            var p = getProduct(id);
+            return (
+              '<div class="bump-item">' +
+              '<a class="thumb' + (hasPhotos(p) ? " has-photo" : "") + '" href="producto.html?id=' + p.id + '">' + visualFor(p) + "</a>" +
+              '<div class="bump-info"><strong>' + p.name + "</strong><span>" + fmtCOP(p.price) + "</span></div>" +
+              '<button class="btn btn-pink btn-sm" data-bump="' + p.id + '">Agregar</button>' +
+              "</div>"
+            );
+          }).join("") + "</div>"
+        : "";
+
       itemsWrap.innerHTML = cart.map(function (i) {
         var p = getProduct(i.id);
         if (!p) return "";
@@ -610,7 +627,14 @@
           "<button class='remove' data-remove>Quitar</button>" +
           "</div></div>"
         );
-      }).join("");
+      }).join("") + bumpHTML;
+
+      qsa("[data-bump]", itemsWrap).forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          addToCart(btn.getAttribute("data-bump"), 1);
+          render();
+        });
+      });
 
       qsa(".cart-item", itemsWrap).forEach(function (row) {
         var id = row.getAttribute("data-id");
@@ -703,6 +727,8 @@
               qty: i.qty,
               price: p ? p.price : 0,
               dropiId: p && p.dropiId ? p.dropiId : null,
+              dropiItems: p && p.dropiItems ? p.dropiItems : null,
+              proveedor: p && p.proveedor ? p.proveedor : null,
             };
           }),
           subtotal: subtotal,

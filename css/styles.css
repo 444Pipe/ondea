@@ -679,6 +679,24 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 }
 .cart-item .thumb.has-photo { padding: 0; overflow: hidden; background: var(--white); }
 .cart-item .thumb.has-photo .prod-photo { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
+
+/* Completa tu pedido: venta cruzada dentro del carrito */
+.cart-bump {
+  background: var(--white); border: 2px dashed var(--pink);
+  border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 12px;
+}
+.cart-bump h3 { font-size: 15px; color: var(--brown); }
+.bump-item { display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; align-items: center; }
+.bump-item .thumb {
+  border-radius: 10px; overflow: hidden; display: block;
+  background: linear-gradient(150deg, var(--pink-soft), var(--cream-2));
+}
+.bump-item .thumb.has-photo { background: var(--white); }
+.bump-item .thumb .prod-photo { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
+.bump-item .thumb svg { width: 100%; height: auto; padding: 6px; display: block; }
+.bump-info { display: grid; gap: 2px; }
+.bump-info strong { font-size: 13.5px; color: var(--brown); line-height: 1.25; }
+.bump-info span { font-size: 13px; color: var(--pink-strong); font-weight: 600; }
 .cart-item h3 { font-size: 15.5px; }
 .cart-item .unit { font-size: 13px; color: var(--brown-soft); }
 .cart-item .line-right { display: grid; gap: 8px; justify-items: end; }
