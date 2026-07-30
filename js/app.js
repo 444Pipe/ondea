@@ -319,7 +319,7 @@
 
     var grid = qs("#destacados-grid");
     if (grid) {
-      var ids = ["crema-define-rizos", "kit-rizos-la-pocion", "shampoo-low-poo", "mascarilla-nutritiva"];
+      var ids = ["crema-define-rizos", "kit-rizos-la-pocion", "shampoo-low-poo", "duo-rizos-definidos"];
       grid.innerHTML = ids.map(function (id) { return productCard(getProduct(id)); }).join("");
       bindAddButtons(grid);
     }
@@ -818,7 +818,7 @@
       ids.push("crema-define-rizos");
     }
     if (ans.objetivo === "definicion") ids.push("gel-cristal");
-    if (ans.estado === "seco" || ans.estado === "danado" || ans.tipo === "afro") ids.push("mascarilla-nutritiva");
+    if (ans.estado === "seco" || ans.estado === "danado" || ans.tipo === "afro") ids.push("duo-rizos-definidos");
     if (ans.estado === "danado" || ans.objetivo === "hidratacion") ids.push("aceite-argan");
     if (ans.frecuencia === "diario") ids.push("leave-in-rizos-vivos");
     if (ans.noche === "no") ids.push("gorro-saten");
