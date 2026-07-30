@@ -141,6 +141,32 @@ const ONDEA_PRODUCTS = [
     ingredients: "Tejido satinado (poliéster) con elástico interno resistente.",
   },
   {
+    id: "tratamiento-karseell-collagen",
+    dropiId: "1596274", // ID en el catálogo de Dropi (proveedor PRODUCTOSNOVEDOSOS, Bogotá)
+    name: "Tratamiento Capilar Karseell «Collagen»",
+    category: "hidratacion",
+    categoryLabel: "Hidratación",
+    types: ["ondulado", "rizado", "afro"],
+    price: 55000,
+    cost: 40000,
+    size: "500 ml",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Viral ✦",
+    badgeClass: "badge-pink",
+    art: "jar",
+    images: [
+      "Statics/productos/tratamiento-karseell-collagen/1.webp",
+      "Statics/productos/tratamiento-karseell-collagen/2.webp",
+      "Statics/productos/tratamiento-karseell-collagen/3.webp",
+    ],
+    short: "La viral mascarilla de colágeno y maca que repara a profundidad el cabello seco o maltratado.",
+    desc: "El famoso tratamiento Karseell Maca Power Collagen (500 ml): esencia de maca y aceite de argán rico en vitamina E que reparan las puntas abiertas, rellenan las cavidades de la fibra dañada y devuelven la suavidad y el brillo desde la raíz hasta las puntas, con protección frente al daño UV. Elaborado con hierbas seleccionadas de alta calidad; libre de sulfatos y fosfatos, y cruelty-free. Apto para uso en casa o en salón, ideal para cabello seco, poroso o con procesos químicos.",
+    benefits: ["Reparación profunda de la fibra dañada", "Colágeno + esencia de maca + aceite de argán", "Repara puntas abiertas y aporta brillo", "Protege contra el daño UV", "Libre de sulfatos y fosfatos, cruelty-free"],
+    howto: "Sobre cabello limpio y húmedo, aplica una capa generosa de medios a puntas, masajea y deja actuar 5-10 minutos; enjuaga con abundante agua. Úsalo 1-2 veces por semana de forma constante para resultados visibles.",
+    ingredients: "Esencia de maca, colágeno, aceite de argán rico en vitamina E y extractos de hierbas seleccionadas. Libre de sulfatos y fosfatos. Uso externo.",
+  },
+  {
     id: "toalla-microfibra-gorro",
     dropiId: "1448861", // ID en el catálogo de Dropi (SKU 821038, proveedor Mundo Tendencias / Serum 10, Medellín)
     name: "Toalla-Gorro de Microfibra «Seca sin Frizz»",
