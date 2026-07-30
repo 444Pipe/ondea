@@ -50,6 +50,34 @@ const ONDEA_PRODUCTS = [
     ingredients: "Extractos naturales de plantas, proteínas vegetales y complejos hidratantes con aminoácidos esenciales. Bio Repolarizador: pro vitamina B5, keratina, aceite de argán, pulpa de coco y vitamina E. Nutrición y Crecimiento: mantequilla de mango, complejo botánico de aminoácidos y vitamina E. Uso externo; evitar el contacto con los ojos.",
   },
   {
+    id: "kit-curl-boost-etniker",
+    dropiId: "2020761", // ID en el catálogo de Dropi (SKU KIT-00092, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Curl Boost Etniker",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado", "afro"],
+    price: 129900,
+    cost: 71900,
+    size: "3 productos + estuche",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Nuevo",
+    badgeClass: "",
+    art: "kitSmall",
+    images: [
+      "Statics/productos/kit-curl-boost-etniker/1.png",
+      "Statics/productos/kit-curl-boost-etniker/2.jpg",
+      "Statics/productos/kit-curl-boost-etniker/3.jpg",
+      "Statics/productos/kit-curl-boost-etniker/4.jpg",
+    ],
+    short: "Crema + Jelly Gel + Hydroelixir Etniker: definición flexible, brillo intenso y cero frizz, sin peso.",
+    desc: "El kit de estilizado exprés de Etniker Afro Hair Care para realzar la forma natural del rizo. Incluye la Crema para Peinar Curl Defining (290 g — hidrata y prepara el rizo como base de estilizado), el Gel Fluido Jelly Gel (300 g — define, moldea y fija con brillo, sin acartonar) y el Hydroelixir (38 ml — aceite ligero que sella la hidratación y controla el frizz), más un estuche/llavero Etniker para llevar tus esenciales. Con coco, karité, monoï de Tahití y linaza: hidratación profunda sin sensación pesada. Ideal para wash & go, twist out y el refresh diario, en rizos 2C a 4A.",
+    benefits: ["Definición flexible desde la raíz hasta las puntas", "Brillo intenso sin efecto graso", "Control del frizz incluso en clima húmedo", "Hidratación ligera que no aplasta el rizo", "Incluye estuche/llavero Etniker de regalo"],
+    howto: "1) Sobre cabello limpio y húmedo, aplica la Crema para Peinar por secciones. 2) Encima aplica el Jelly Gel y define con las manos o con rake & shake. 3) Finaliza con unas gotas del Hydroelixir para sellar puntas y dar brillo (o úsalo al día siguiente para el refresh). Tip: mezcla crema + gel para una definición personalizada.",
+    ingredients: "Coco, karité, monoï de Tahití y linaza. Sin sal, sin sulfatos, sin parabenos; gel sin alcohol ni residuos. Uso externo.",
+  },
+  {
     id: "kit-emergencia-reparacion-milagros",
     dropiId: "1977270", // ID en el catálogo de Dropi (SKU KIT-00035, proveedor LIVANA COLOMBIA SAS)
     proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
