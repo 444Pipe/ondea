@@ -319,7 +319,7 @@
 
     var grid = qs("#destacados-grid");
     if (grid) {
-      var ids = ["tratamiento-skala-divino-potao", "kit-rizos-la-pocion", "shampoo-low-poo", "duo-rizos-definidos"];
+      var ids = ["tratamiento-skala-divino-potao", "kit-rizos-la-pocion", "kit-rizos-lavado-etniker", "duo-rizos-definidos"];
       grid.innerHTML = ids.map(function (id) { return productCard(getProduct(id)); }).join("");
       bindAddButtons(grid);
     }
@@ -811,17 +811,15 @@
   var QUIZ_TYPE_LABEL = { ondulado: "Ondulada 2A-2C", rizado: "Rizada 3A-3C", afro: "Afro 4A-4C" };
 
   function buildRoutine(ans) {
-    var ids = ["shampoo-low-poo", "acondicionador-coco"];
-    if (ans.objetivo === "volumen" || (ans.tipo === "ondulado" && ans.objetivo !== "definicion")) {
-      ids.push("espuma-onda-ligera");
-    } else {
+    // Rutina armada solo con el catálogo real conectado a Dropi
+    var ids = ["kit-rizos-lavado-etniker"]; // base: limpia, hidrata y define en 3 pasos
+    if (ans.objetivo === "definicion" || ans.tipo === "rizado" || ans.tipo === "afro") {
       ids.push("tratamiento-skala-divino-potao");
     }
-    if (ans.objetivo === "definicion") ids.push("gel-cristal");
     if (ans.estado === "seco" || ans.estado === "danado" || ans.tipo === "afro") ids.push("duo-rizos-definidos");
-    if (ans.estado === "danado" || ans.objetivo === "hidratacion") ids.push("aceite-argan");
-    if (ans.frecuencia === "diario") ids.push("leave-in-rizos-vivos");
-    if (ans.noche === "no") ids.push("gorro-saten");
+    if (ans.objetivo === "hidratacion" || ans.estado === "seco") ids.push("mantequilla-rizos-menta-hair");
+    if (ans.frecuencia === "diario" || ans.objetivo === "volumen") ids.push("termoprotector-rizos-ondas");
+    if (ans.estado === "danado" || ans.objetivo === "hidratacion") ids.push("kit-rizos-la-pocion");
 
     var seen = {};
     return ids.filter(function (id) {

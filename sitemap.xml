@@ -36,22 +36,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.rizosondea.com/producto.html?id=shampoo-low-poo</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.rizosondea.com/producto.html?id=acondicionador-coco</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://www.rizosondea.com/producto.html?id=tratamiento-skala-divino-potao</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.rizosondea.com/producto.html?id=gel-cristal</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -59,21 +44,6 @@
     <loc>https://www.rizosondea.com/producto.html?id=duo-rizos-definidos</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.rizosondea.com/producto.html?id=aceite-argan</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.rizosondea.com/producto.html?id=leave-in-rizos-vivos</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.rizosondea.com/producto.html?id=espuma-onda-ligera</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=mantequilla-rizos-menta-hair</loc>
@@ -89,21 +59,6 @@
     <loc>https://www.rizosondea.com/producto.html?id=kit-rizos-la-pocion</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.rizosondea.com/producto.html?id=gorro-saten</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.rizosondea.com/producto.html?id=toalla-microfibra</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.rizosondea.com/producto.html?id=difusor-universal</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-rizos-lavado-etniker</loc>

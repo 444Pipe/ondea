@@ -365,7 +365,7 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 .trust-item strong { display: block; font-size: 14.5px; color: var(--pink); }
 
 /* ---------- Categorías ---------- */
-.cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
 .cat-card {
   background: var(--white); border-radius: var(--radius); padding: 28px 22px;
   text-align: center; box-shadow: var(--shadow); transition: 0.25s;
