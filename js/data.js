@@ -248,6 +248,31 @@ const ONDEA_PRODUCTS = [
     ingredients: "Aceite de argán (nutre y da brillo), leche de avena (suavidad e hidratación), leche de coco (fortalece y protege) y proteína de trigo (mejora la estructura capilar). Uso externo; evitar el contacto con los ojos.",
   },
   {
+    id: "kit-tradicional-leche-pal-pelo",
+    dropiId: null, // ⚠️ PENDIENTE: falta el ID de Dropi (SKU KIT-00042) — sin él este kit no viaja automático a Dropi
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Tradicional Leche pal Pelo",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado", "afro"],
+    price: 149900,
+    cost: 73017,
+    size: "4 productos",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Nuevo",
+    badgeClass: "",
+    art: "kit",
+    images: [
+      "Statics/productos/kit-tradicional-leche-pal-pelo/1.webp",
+    ],
+    short: "La rutina clásica Leche pal Pelo: shampoo + reconstructor + termoprotector + chía oil para reparar y proteger.",
+    desc: "La rutina capilar completa de Leche pal Pelo para hidratar, reparar y proteger el cabello de la raíz a las puntas. Incluye el Shampoo Tradicional (limpieza profunda sin resecar), el Reconstructor Instantáneo (reparación intensiva con proteína de leche), el Tratamiento Termoprotector (escudo contra el calor de planchas, secadores y el ambiente) y el Finish Chía Oil (sella puntas, controla el frizz y da brillo final). Cuatro productos que trabajan en sinergia para devolverle al cabello su fuerza, suavidad y movimiento natural. Ideal para cabello seco, maltratado o procesado químicamente. Libre de sal y parabenos, no testado en animales.",
+    benefits: ["Limpieza profunda sin resecar", "Reparación intensiva con proteína de leche", "Protege del calor de planchas y secadores", "Sella las cutículas y controla el frizz", "Repara puntas abiertas y mejora la elasticidad", "Libre de sal y parabenos, cruelty free"],
+    howto: "1) Lava con el Shampoo Tradicional masajeando el cuero cabelludo y enjuaga. 2) Aplica el Reconstructor Instantáneo de medios a puntas, deja actuar 3-5 minutos y enjuaga. 3) Sobre el cabello húmedo aplica el Termoprotector de medios a puntas antes del secado o planchado (no se enjuaga). 4) Termina con unas gotas del Finish Chía Oil sobre cabello seco o húmedo para sellar puntas y dar brillo.",
+    ingredients: "Proteína de leche (repara e hidrata), keratina y aminoácidos (reconstruyen la fibra), pantenol/pro-vitamina B5 (suavidad), aceites de chía y argán (brillo y control del frizz) y vitamina E (protección). Libre de sal y parabenos. Uso externo; evitar el contacto con los ojos.",
+  },
+  {
     id: "kit-rescate-nutritivo-milagros",
     dropiId: "2127615", // ID en el catálogo de Dropi (SKU KIT-00031, proveedor LIVANA COLOMBIA SAS)
     proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
