@@ -17,6 +17,7 @@ const https = require("https");
 const fs = require("fs");
 const path = require("path");
 const zlib = require("zlib");
+const crypto = require("crypto");
 
 const ROOT = __dirname;
 const PORT = process.env.PORT || 3000;
@@ -45,6 +46,31 @@ const DROPI = {
   paymentMethodId: parseInt(process.env.DROPI_PAYMENT_METHOD_ID, 10) || 1,
   autoSend: process.env.DROPI_AUTO_SEND === "true",
 };
+
+/* ---------- Integración con Wompi (pasarela de pagos) ----------
+   Desactivada por defecto. Para activarla, define en Railway:
+   - WOMPI_ENABLED=true
+   - WOMPI_PUBLIC_KEY=<llave pública (pub_test_… para pruebas, pub_prod_… en vivo)>
+   - WOMPI_INTEGRITY_SECRET=<secreto de integridad — Wompi → Desarrolladores>
+   - WOMPI_EVENTS_SECRET=<secreto de eventos, valida la firma del webhook>
+   - WOMPI_REDIRECT_BASE=<opcional; por defecto https://www.rizosondea.com>
+   En el panel de Wompi registra como URL de eventos (webhook):
+     https://www.rizosondea.com/api/wompi/eventos
+   Flujo: el checkout crea el pedido con pago pendiente y redirige a Wompi;
+   cuando el webhook reporta la transacción APPROVED, el pedido se envía a
+   Dropi automáticamente (si Dropi está activo).                          */
+
+const WOMPI = {
+  enabled: process.env.WOMPI_ENABLED === "true",
+  publicKey: process.env.WOMPI_PUBLIC_KEY || "",
+  integritySecret: process.env.WOMPI_INTEGRITY_SECRET || "",
+  eventsSecret: process.env.WOMPI_EVENTS_SECRET || "",
+  redirectBase: (process.env.WOMPI_REDIRECT_BASE || "https://www.rizosondea.com").replace(/\/+$/, ""),
+};
+
+function wompiActivo() {
+  return WOMPI.enabled && !!WOMPI.publicKey && !!WOMPI.integritySecret;
+}
 
 function httpsJSON(method, urlStr, headers, body) {
   return new Promise((resolve, reject) => {
@@ -251,15 +277,108 @@ async function handleApi(req, res, urlPath) {
     };
 
     if (DROPI.enabled) pedido.dropi = { estado: "pendiente" };
+
+    // Pedido pagado en línea con Wompi: queda "pendiente de pago" y NO se
+    // envía a Dropi todavía — eso lo dispara el webhook cuando el pago
+    // quede APPROVED (ver /api/wompi/eventos).
+    const esWompi = wompiActivo() && pedido.pago === "wompi" && pedido.total > 0;
+    if (esWompi) pedido.pagoOnline = { metodo: "wompi", estado: "pendiente" };
+
     pedidos.push(pedido);
     savePedidos();
 
     // Reenvío automático a Dropi (no bloquea la respuesta a la clienta)
-    if (DROPI.enabled && DROPI.autoSend) {
+    if (DROPI.enabled && DROPI.autoSend && !esWompi) {
       dropiSendOrder(pedido).catch((e) => console.error("Dropi auto-send:", e.message));
     }
 
+    if (esWompi) {
+      const amountInCents = pedido.total * 100;
+      const firma = crypto
+        .createHash("sha256")
+        .update(pedido.id + amountInCents + "COP" + WOMPI.integritySecret)
+        .digest("hex");
+      return sendJSON(res, 201, {
+        ok: true,
+        id: pedido.id,
+        wompi: {
+          publicKey: WOMPI.publicKey,
+          currency: "COP",
+          amountInCents: amountInCents,
+          reference: pedido.id,
+          signature: firma,
+          redirectUrl: WOMPI.redirectBase + "/gracias.html?pedido=" + pedido.id,
+        },
+      });
+    }
+
     return sendJSON(res, 201, { ok: true, id: pedido.id });
+  }
+
+  // ¿Está activo el pago online? (lo consulta el checkout — público)
+  if (urlPath === "/api/wompi/config" && req.method === "GET") {
+    return sendJSON(res, 200, { ok: true, enabled: wompiActivo() });
+  }
+
+  // Estado del pago de un pedido (lo consulta la página de gracias — público)
+  const matchPago = urlPath.match(/^\/api\/pedidos\/([A-Za-z0-9-]+)\/pago$/);
+  if (matchPago && req.method === "GET") {
+    const pedido = pedidos.find((p) => p.id === matchPago[1]);
+    if (!pedido) return sendJSON(res, 404, { ok: false, error: "Pedido no encontrado" });
+    return sendJSON(res, 200, {
+      ok: true,
+      estado: pedido.pagoOnline ? pedido.pagoOnline.estado : "na",
+    });
+  }
+
+  // Webhook de eventos de Wompi (público; validado con el secreto de eventos)
+  if (urlPath === "/api/wompi/eventos" && req.method === "POST") {
+    let body;
+    try { body = await readBody(req); }
+    catch (e) { return sendJSON(res, 400, { ok: false, error: e.message }); }
+
+    const trans = body && body.data && body.data.transaction;
+    const sig = body && body.signature;
+    if (!trans || !trans.reference || !sig || !Array.isArray(sig.properties)) {
+      return sendJSON(res, 400, { ok: false, error: "Evento incompleto" });
+    }
+
+    // Verificación de autenticidad: SHA256(valores de properties + timestamp + secreto)
+    if (WOMPI.eventsSecret) {
+      const valor = (ruta) => ruta.split(".").reduce((o, k) => (o == null ? undefined : o[k]), body.data);
+      const concatenado = sig.properties.map((p) => String(valor(p))).join("");
+      const esperado = crypto
+        .createHash("sha256")
+        .update(concatenado + body.timestamp + WOMPI.eventsSecret)
+        .digest("hex");
+      if (esperado !== sig.checksum) {
+        return sendJSON(res, 401, { ok: false, error: "Firma del evento inválida" });
+      }
+    }
+
+    const pedido = pedidos.find((p) => p.id === trans.reference);
+    if (pedido) {
+      const MAPA = { APPROVED: "aprobado", DECLINED: "rechazado", VOIDED: "anulado", ERROR: "error" };
+      const estadoNuevo = MAPA[trans.status] || "pendiente";
+      const yaAprobado = pedido.pagoOnline && pedido.pagoOnline.estado === "aprobado";
+      pedido.pagoOnline = {
+        metodo: "wompi",
+        estado: estadoNuevo,
+        transaccion: String(trans.id || "").slice(0, 80),
+        fecha: new Date().toISOString(),
+      };
+      savePedidos();
+
+      // Pago aprobado → el encargo sale hacia Dropi de una (idempotente)
+      if (estadoNuevo === "aprobado" && !yaAprobado && DROPI.enabled) {
+        const dropiYaEnviado = pedido.dropi && pedido.dropi.estado === "enviado";
+        if (!dropiYaEnviado) {
+          dropiSendOrder(pedido).catch((e) => console.error("Dropi tras pago Wompi:", e.message));
+        }
+      }
+    }
+
+    return sendJSON(res, 200, { ok: true });
   }
 
   // Todo lo demás requiere la clave del admin
@@ -278,6 +397,18 @@ async function handleApi(req, res, urlPath) {
       keySet: !!DROPI.key,
       autoSend: DROPI.autoSend,
       base: DROPI.base,
+    });
+  }
+
+  // Estado de la integración con Wompi (para el panel)
+  if (urlPath === "/api/wompi/estado" && req.method === "GET") {
+    return sendJSON(res, 200, {
+      ok: true,
+      enabled: WOMPI.enabled,
+      publicKeySet: !!WOMPI.publicKey,
+      integritySecretSet: !!WOMPI.integritySecret,
+      eventsSecretSet: !!WOMPI.eventsSecret,
+      activo: wompiActivo(),
     });
   }
 

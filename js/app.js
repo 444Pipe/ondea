@@ -649,6 +649,29 @@
     if (form) {
       qs("#f-ciudad").addEventListener("input", renderSummary);
 
+      // Pago online (Wompi): la opción solo aparece si el servidor la tiene activa
+      if (window.fetch && location.protocol.indexOf("http") === 0) {
+        fetch("/api/wompi/config")
+          .then(function (r) { return r.json(); })
+          .then(function (c) {
+            var opt = qs("#pay-wompi");
+            if (c && c.enabled && opt) opt.hidden = false;
+          })
+          .catch(function () {});
+      }
+
+      // El texto del botón cambia según el método de pago elegido
+      var submitBtn = qs('#checkout-form button[type="submit"]');
+      var submitHTML = submitBtn ? submitBtn.innerHTML : "";
+      qsa('input[name="pago"]').forEach(function (radio) {
+        radio.addEventListener("change", function () {
+          if (!submitBtn) return;
+          submitBtn.innerHTML = radio.checked && radio.value === "wompi"
+            ? "Pagar en línea de forma segura ✦"
+            : submitHTML;
+        });
+      });
+
       form.addEventListener("submit", function (ev) {
         ev.preventDefault();
 
@@ -670,25 +693,56 @@
           return "• " + i.qty + " x " + p.name + " — " + fmtCOP(p.price * i.qty);
         });
 
+        var orderPayload = {
+          cliente: { nombre: nombre, telefono: telefono, direccion: direccion, ciudad: ciudad, depto: depto, notas: notas },
+          items: cart.map(function (i) {
+            var p = getProduct(i.id);
+            return {
+              id: i.id,
+              name: p ? p.name : i.id,
+              qty: i.qty,
+              price: p ? p.price : 0,
+              dropiId: p && p.dropiId ? p.dropiId : null,
+            };
+          }),
+          subtotal: subtotal,
+          envio: envio,
+          total: subtotal + envio,
+          pago: pago,
+        };
+
+        // Pago online: crea el pedido y redirige al checkout seguro de Wompi.
+        // El carrito NO se vacía aquí — lo vacía gracias.html si el pago aprueba.
+        if (pago === "wompi") {
+          var btnPagar = qs('#checkout-form button[type="submit"]');
+          var btnPagarHTML = btnPagar ? btnPagar.innerHTML : "";
+          if (btnPagar) { btnPagar.disabled = true; btnPagar.textContent = "Llevándote al pago seguro…"; }
+          fetch("/api/pedidos", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderPayload),
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              if (!data || !data.ok || !data.wompi) throw new Error("Wompi no disponible");
+              var w = data.wompi;
+              location.href =
+                "https://checkout.wompi.co/p/?public-key=" + encodeURIComponent(w.publicKey) +
+                "&currency=" + encodeURIComponent(w.currency) +
+                "&amount-in-cents=" + encodeURIComponent(w.amountInCents) +
+                "&reference=" + encodeURIComponent(w.reference) +
+                "&signature%3Aintegrity=" + encodeURIComponent(w.signature) +
+                "&redirect-url=" + encodeURIComponent(w.redirectUrl);
+            })
+            .catch(function () {
+              if (btnPagar) { btnPagar.disabled = false; btnPagar.innerHTML = btnPagarHTML; }
+              toast("No pudimos abrir el pago en línea. Intenta con otro método o por WhatsApp.");
+            });
+          return;
+        }
+
         // Registra el pedido en el panel admin (si el sitio corre sobre HTTP)
         if (window.fetch && location.protocol.indexOf("http") === 0) {
-          var orderPayload = {
-            cliente: { nombre: nombre, telefono: telefono, direccion: direccion, ciudad: ciudad, depto: depto, notas: notas },
-            items: cart.map(function (i) {
-              var p = getProduct(i.id);
-              return {
-                id: i.id,
-                name: p ? p.name : i.id,
-                qty: i.qty,
-                price: p ? p.price : 0,
-                dropiId: p && p.dropiId ? p.dropiId : null,
-              };
-            }),
-            subtotal: subtotal,
-            envio: envio,
-            total: subtotal + envio,
-            pago: pago,
-          };
           try {
             fetch("/api/pedidos", {
               method: "POST",

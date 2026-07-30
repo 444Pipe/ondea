@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Confirmación de tu pago | Rizos Ondea</title>
+  <meta name="description" content="Confirmación del pago de tu pedido en Rizos Ondea.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://www.rizosondea.com/gracias.html">
+
+  <link rel="icon" type="image/jpeg" href="Statics/logo.jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600;1,700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css?v=28">
+</head>
+<body data-page="gracias">
+
+  <div class="topbar">
+    <span><svg class="icon" aria-hidden="true"><use href="#i-truck"></use></svg> Envíos a toda Colombia</span>
+    <span><svg class="icon" aria-hidden="true"><use href="#i-pin"></use></svg> Hasta la puerta de tu casa</span>
+    <span><svg class="icon" aria-hidden="true"><use href="#i-sparkle"></use></svg> Envío GRATIS desde $150.000</span>
+  </div>
+
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Rizos Ondea — Inicio">
+        <img class="brand-logo" src="Statics/logo.jpeg" alt="Rizos Ondea — productos para cabello rizado" width="168" height="72">
+      </a>
+      <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+      <nav class="nav" aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="productos.html">Tienda</a>
+        <a href="test-capilar.html">Test capilar</a>
+        <a href="blog.html">Blog</a>
+        <a href="index.html#preguntas">Preguntas</a>
+        <a href="index.html#contacto">Contacto</a>
+      </nav>
+      <a class="cart-btn" href="carrito.html" aria-label="Ver carrito de compras"><svg class="icon" aria-hidden="true"><use href="#i-cart"></use></svg> Carrito <span class="cart-count">0</span></a>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-head">
+      <div class="container">
+        <h1>Tu pago <span style="font-style:italic;">Ondea</span> ✦</h1>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container" style="max-width: 560px; text-align: center;">
+        <h2 id="pe-titulo" style="margin-bottom: 14px;">Confirmando tu pago…</h2>
+        <p id="pe-texto" style="color: var(--brown-soft); margin-bottom: 26px;">
+          Estamos verificando la transacción con Wompi. Esto toma solo unos segundos ✦
+        </p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <a class="btn btn-pink" href="index.html" id="pe-inicio" hidden>Volver al inicio</a>
+          <a class="btn btn-outline" href="carrito.html" id="pe-carrito" hidden>Volver al carrito</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/data.js?v=28"></script>
+  <script src="js/app.js?v=28"></script>
+  <script>
+  /* Consulta el estado del pago del pedido (?pedido=PED-XXX) hasta que Wompi
+     confirme por webhook. Si aprueba, vacía el carrito. */
+  (function () {
+    var titulo = document.getElementById("pe-titulo");
+    var texto = document.getElementById("pe-texto");
+    var btnInicio = document.getElementById("pe-inicio");
+    var btnCarrito = document.getElementById("pe-carrito");
+
+    var pedido = null;
+    try { pedido = new URLSearchParams(location.search).get("pedido"); } catch (e) {}
+
+    function aprobado() {
+      try { localStorage.setItem("ondea_cart", "[]"); } catch (e) {}
+      titulo.textContent = "¡Pago aprobado! 💛";
+      texto.innerHTML = "Tu pedido <strong>" + pedido + "</strong> quedó confirmado y ya entró a preparación. " +
+        "Te escribiremos por WhatsApp con la guía de envío. ¡Gracias por ondear con nosotras! ✦";
+      btnInicio.hidden = false;
+    }
+
+    function fallido() {
+      titulo.textContent = "El pago no se completó";
+      texto.textContent = "No se realizó ningún cobro. Tu carrito sigue intacto: puedes intentarlo de nuevo o elegir otro método de pago.";
+      btnCarrito.hidden = false;
+    }
+
+    function pendiente() {
+      titulo.textContent = "Estamos confirmando tu pago";
+      texto.innerHTML = "Wompi aún no nos reporta el resultado de la transacción del pedido <strong>" + pedido + "</strong>. " +
+        "Apenas se confirme lo verás reflejado y te escribiremos por WhatsApp. Si tienes dudas, escríbenos.";
+      btnInicio.hidden = false;
+    }
+
+    if (!pedido) {
+      titulo.textContent = "¡Gracias por tu compra!";
+      texto.textContent = "Si acabas de pagar, en breve te confirmamos por WhatsApp.";
+      btnInicio.hidden = false;
+      return;
+    }
+
+    var intentos = 0;
+    function consultar() {
+      intentos++;
+      fetch("/api/pedidos/" + encodeURIComponent(pedido) + "/pago")
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var e = d && d.estado;
+          if (e === "aprobado") return aprobado();
+          if (e === "rechazado" || e === "anulado" || e === "error") return fallido();
+          if (intentos < 10) return setTimeout(consultar, 3000);
+          pendiente();
+        })
+        .catch(function () {
+          if (intentos < 10) return setTimeout(consultar, 3000);
+          pendiente();
+        });
+    }
+    consultar();
+  })();
+  </script>
+</body>
+</html>

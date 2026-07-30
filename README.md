@@ -28,6 +28,32 @@ El servidor trae un módulo listo para enviar pedidos al proveedor de dropshippi
 5. En el panel admin (Resumen) verás el estado de la conexión, y en Pedidos una columna
    Dropi con el botón de envío/reintento y el ID devuelto por Dropi.
 
+## 💳 Pasarela de pagos Wompi
+
+El checkout trae integrado el **Web Checkout de Wompi** (tarjeta, PSE, Nequi,
+botón Bancolombia). Está **desactivado por defecto** — la opción "Pago online
+seguro" ni siquiera aparece en el carrito hasta activarlo:
+
+1. Crea la cuenta en [Wompi](https://wompi.co) y copia de **Desarrolladores** las llaves.
+2. En Railway → *Variables* define:
+   - `WOMPI_ENABLED=true`
+   - `WOMPI_PUBLIC_KEY=<llave pública>` (usa `pub_test_…` para probar, `pub_prod_…` en vivo)
+   - `WOMPI_INTEGRITY_SECRET=<secreto de integridad>`
+   - `WOMPI_EVENTS_SECRET=<secreto de eventos>`
+3. En el panel de Wompi → **Desarrolladores → URL de eventos** registra:
+   `https://www.rizosondea.com/api/wompi/eventos`
+4. Flujo completo, ya cableado:
+   - La clienta elige "Pago online seguro (Wompi)" → el pedido se crea con pago
+     *pendiente* y se la redirige al checkout de Wompi (monto firmado con el
+     secreto de integridad — nadie puede alterar el precio).
+   - Wompi le cobra y la devuelve a `gracias.html`, que muestra el resultado.
+   - El **webhook** `/api/wompi/eventos` (firma verificada) marca el pedido como
+     `aprobado` / `rechazado` y, si quedó aprobado, **lo envía a Dropi
+     automáticamente** — sin intervención manual.
+   - Los pedidos Wompi NO usan `DROPI_AUTO_SEND`: solo viajan a Dropi cuando el
+     pago está aprobado.
+5. Verifica la configuración en `GET /api/wompi/estado` (con la clave de admin).
+
 ## Estructura
 
 | Archivo | Qué es |
