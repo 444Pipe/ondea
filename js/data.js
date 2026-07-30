@@ -185,6 +185,28 @@ const ONDEA_PRODUCTS = [
     ingredients: "Agua, proteína de trigo, pantenol, polímeros de fijación flexible, fragancia.",
   },
   {
+    id: "termoprotector-rizos-ondas",
+    dropiId: "1971696", // ID en el catálogo de Dropi (SKU 7709122487715, marca Leche Pal Pelo)
+    name: "Termoprotector «Rizos y Ondas» Leche Pal Pelo",
+    category: "definicion",
+    categoryLabel: "Definición",
+    types: ["ondulado", "rizado", "afro"],
+    price: 22000,
+    cost: 17556,
+    size: "250 ml",
+    rating: 4.8,
+    reviews: 0,
+    badge: "Nuevo",
+    badgeClass: "",
+    art: "pump",
+    images: ["Statics/productos/termoprotector-rizos-ondas/1.jpg"],
+    short: "Protege tus rizos del calor del difusor o la plancha mientras hidrata y define, sin alcohol.",
+    desc: "Termoprotector de Leche Pal Pelo formulado para cabello rizado y ondulado: crea una barrera ligera contra el calor de secadores, difusores, planchas y rizadores, evitando la deshidratación, el quiebre y la pérdida de elasticidad. Hidrata y define sin dejar los rizos pesados ni rígidos, y también sirve como escudo antes del sol o el cloro de la piscina. Ideal para texturas 2A a 4C.",
+    benefits: ["Protege del calor de secador, difusor y plancha", "Hidrata y evita el resecamiento", "Define rizos y ondas manteniendo su forma natural", "Controla el frizz y aporta brillo", "Sin alcohol, sulfatos ni parabenos"],
+    howto: "Aplica una cantidad moderada sobre el cabello limpio y húmedo, de medios a puntas, y distribuye con los dedos o un peine de dientes anchos. No enjuagues. Seca con difusor o al aire, y úsalo siempre antes de cualquier herramienta de calor. Evita el exceso para no apelmazar.",
+    ingredients: "Aceite de coco, aceite de argán, pantenol (pro-vitamina B5), extracto de linaza y vitamina E. Libre de alcohol, sulfatos y parabenos. Uso externo.",
+  },
+  {
     id: "kit-rizos-la-pocion",
     dropiId: "1893635", // ID en el catálogo de Dropi (SKU KIT-00085, proveedor LIVANA COLOMBIA SAS)
     name: "Kit para Rizos Tongolé «La Poción»",

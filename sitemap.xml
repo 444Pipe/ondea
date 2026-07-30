@@ -76,6 +76,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.rizosondea.com/producto.html?id=termoprotector-rizos-ondas</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-rizos-la-pocion</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
