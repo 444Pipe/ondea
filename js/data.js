@@ -79,6 +79,33 @@ const ONDEA_PRODUCTS = [
     ingredients: "Biotina y colágeno hidrolizado, provitamina B5 y queratina vegetal, pulpa de coco y vitamina E, extractos naturales y aminoácidos. Uso externo; evitar el contacto con los ojos.",
   },
   {
+    id: "kit-crecimiento-antifrizz-milagros",
+    dropiId: "2019484", // ID en el catálogo de Dropi (SKU KIT-00074, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Crecimiento Antifrizz «Milagros»",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado", "afro"],
+    price: 169900,
+    cost: 113724,
+    size: "3 productos",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Envío gratis",
+    badgeClass: "badge-pink",
+    art: "kit",
+    images: [
+      "Statics/productos/kit-crecimiento-antifrizz-milagros/1.png",
+      "Statics/productos/kit-crecimiento-antifrizz-milagros/2.webp",
+      "Statics/productos/kit-crecimiento-antifrizz-milagros/3.webp",
+    ],
+    short: "Shampoo + acondicionador con cebolla y péptidos + mascarilla profesional: crecimiento, menos caída y cero frizz.",
+    desc: "La rutina profesional de Milagros para estimular el crecimiento, reducir el frizz y reparar el cabello dañado. Incluye el Shampoo Crecimiento con extracto de cebolla y péptidos (450 ml) que restaura la fuerza y despierta el crecimiento desde la raíz, el Acondicionador Antifrizz fortalecedor (450 ml) que desenreda al instante y previene la caída por quiebre, y la Mascarilla Reparación Intensiva Milagros Professional (450 ml) que revierte el daño por decoloración, tinturas y calor. Cabello más fuerte, suave, manejable y con menos caída — apto para hombres y mujeres, y para uso frecuente.",
+    benefits: ["Estimula el crecimiento con extracto de cebolla y péptidos", "Controla el frizz y facilita el desenredo", "Repara el daño por tintes, decoloración y calor", "Fortalece la fibra y reduce la caída por quiebre", "Resultados que se potencian en 3-6 semanas de constancia"],
+    howto: "Lava con el Shampoo Crecimiento masajeando el cuero cabelludo (3-5 veces por semana). Aplica el Acondicionador Antifrizz de medios a puntas, deja actuar 2-5 minutos y enjuaga. Usa la Mascarilla Reparación Intensiva 1-2 veces por semana, dejándola actuar 15-20 minutos antes de enjuagar.",
+    ingredients: "Extracto de cebolla morada, péptidos fortalecedores, cafeína, activos antifrizz y componentes reparadores con aminoácidos. Uso externo; evitar el contacto con los ojos.",
+  },
+  {
     id: "kit-rescate-nutritivo-milagros",
     dropiId: "2127615", // ID en el catálogo de Dropi (SKU KIT-00031, proveedor LIVANA COLOMBIA SAS)
     proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
