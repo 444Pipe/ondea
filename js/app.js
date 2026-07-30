@@ -1005,7 +1005,23 @@
 
   /* ---------- Arranque ---------- */
 
+  /* Pantalla de carga: se desvanece cuando la página termina de cargar
+     (dejando ver la animación al menos 1 s) y nunca retiene más de 3,5 s */
+  function initSplash() {
+    var splash = qs("#splash");
+    if (!splash || splash.classList.contains("skip")) return;
+    var inicio = Date.now();
+    var ocultar = function () { splash.classList.add("done"); };
+    var alCargar = function () {
+      setTimeout(ocultar, Math.max(0, 1000 - (Date.now() - inicio)));
+    };
+    if (document.readyState === "complete") alCargar();
+    else window.addEventListener("load", alCargar);
+    setTimeout(ocultar, 3500);
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
+    initSplash();
     initCommon();
     var page = document.body.getAttribute("data-page");
     if (page === "inicio") initHome();
