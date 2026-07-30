@@ -157,6 +157,35 @@ const ONDEA_PRODUCTS = [
     ingredients: "Consulta la etiqueta de cada producto Tongolé y de los tónicos Oxy y Energy incluidos en el kit. Uso externo.",
   },
   {
+    id: "kit-secado-ondas-sonadas",
+    dropiId: "2013522", // ID en el catálogo de Dropi (SKU 733654185498, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Secado y Ondas Soñadas «La Poción»",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado"],
+    price: 199900,
+    cost: 129379,
+    size: "4 productos",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Envío gratis",
+    badgeClass: "badge-pink",
+    art: "kit",
+    images: [
+      "Statics/productos/kit-secado-ondas-sonadas/1.png",
+      "Statics/productos/kit-secado-ondas-sonadas/2.png",
+      "Statics/productos/kit-secado-ondas-sonadas/3.png",
+      "Statics/productos/kit-secado-ondas-sonadas/4.png",
+      "Statics/productos/kit-secado-ondas-sonadas/5.png",
+    ],
+    short: "La rutina para ondas con calor sin daño: protección térmica hasta 232 °C, reparación y brillo espejo.",
+    desc: "El kit para quienes modelan sus ondas con blower, plancha o tenaza sin sacrificar la salud del cabello. Incluye Bite Me Banano (250 ml — suplemento capilar antioxidante hidroreparador con extracto de banano y aceites de macadamia y aguacate), Shampoo Reparación (450 ml), Termoprotector Capilar B8 (protege hasta 450 °F / 232 °C, con complejo de ceramidas) y el Óleo B8 Brillo Infinito que sella las puntas con efecto espejo. Previene el daño térmico, repara la fibra, controla el frizz y permite styling frecuente sin quiebre.",
+    benefits: ["Protección térmica real hasta 232 °C (450 °F)", "Repara la fibra y evita el quiebre por calor", "Brillo con efecto espejo y control del frizz", "Puntas selladas con el Óleo B8", "Permite modelar el cabello con frecuencia sin dañarlo"],
+    howto: "Aplica Bite Me como pre-shampoo para desintoxicar. Lava con el Shampoo Reparación y enjuaga. Vuelve a usar Bite Me como acondicionador, deja actuar y enjuaga. Sobre el cabello húmedo aplica el Termoprotector antes del blower, plancha o tenaza. Finaliza con unas gotas del Óleo B8 para brillo y control del frizz.",
+    ingredients: "Bite Me: extracto de banano, aceites de macadamia y aguacate. Termoprotector: complejo de ceramidas y siliconas volátiles. Óleo B8: mezcla de aceites vegetales selladores. Uso externo.",
+  },
+  {
     id: "kit-reparacion-profunda-pocion",
     dropiId: "2012557", // ID en el catálogo de Dropi (SKU KIT-00043, proveedor LIVANA COLOMBIA SAS)
     proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
