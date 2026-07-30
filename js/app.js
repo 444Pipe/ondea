@@ -816,6 +816,7 @@
     if (ans.objetivo === "definicion" || ans.tipo === "rizado" || ans.tipo === "afro") {
       ids.push("tratamiento-skala-divino-potao");
     }
+    if (ans.objetivo === "definicion") ids.push("gel-definidor-etniker-1000g");
     if (ans.estado === "seco" || ans.estado === "danado" || ans.tipo === "afro") ids.push("duo-rizos-definidos");
     if (ans.objetivo === "hidratacion" || ans.estado === "seco") ids.push("mantequilla-rizos-menta-hair");
     if (ans.frecuencia === "diario" || ans.objetivo === "volumen") ids.push("termoprotector-rizos-ondas");

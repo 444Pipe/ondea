@@ -93,6 +93,28 @@ const ONDEA_PRODUCTS = [
     ingredients: "Consulta la etiqueta del producto para la lista completa de ingredientes. Uso externo.",
   },
   {
+    id: "gel-definidor-etniker-1000g",
+    dropiId: "1035124", // ID en el catálogo de Dropi (SKU GDREX1000G, proveedor Likemas, Medellín)
+    name: "Gel Definidor de Rizos Etniker 1000 g",
+    category: "definicion",
+    categoryLabel: "Definición",
+    types: ["ondulado", "rizado", "afro"],
+    price: 79900,
+    cost: 60900,
+    size: "1000 g",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Tamaño XL",
+    badgeClass: "",
+    art: "jarGel",
+    images: ["Statics/productos/gel-definidor-etniker-1000g/1.jpg"],
+    short: "El Curl Defining Gel de Etniker en formato de 1 kilo: control, moldeo y definición sin residuo ni rigidez.",
+    desc: "El Curl Defining Gel de Etniker Afro Hair Care en su formato gigante de 1000 g. Enriquecido con coco y linaza, aporta el balance perfecto para controlar, moldear, definir y mantener las texturas del cabello ondulado, rizado y afro por más tiempo — sin efecto residual (non flakes), sin sensación pegajosa ni acartonada, y con mucho brillo. Su fórmula también facilita el manejo de los baby hairs de frente y sien (edge control). Apto para cabellos en transición. Sin alcohol ni parabenos.",
+    benefits: ["Control, moldeo y definición duradera", "Sin residuo blanco, sin rigidez ni sensación pegajosa", "Con coco y linaza, brillo natural", "Sirve como edge control para baby hairs", "1 kilo: rinde para meses de wash days"],
+    howto: "Prepara tu cabello con shampoo, acondicionador y, si lo necesitas, crema para peinar. Toma una cantidad suficiente de gel, frótala entre las palmas y aplícala sobre el cabello húmedo. Define con tu técnica preferida: fitagem, plopping, finger coils o scrunch.",
+    ingredients: "Enriquecido con coco y linaza. Sin alcohol, sin parabenos y sin residuos. Uso externo.",
+  },
+  {
     id: "termoprotector-rizos-ondas",
     dropiId: "1971696", // ID en el catálogo de Dropi (SKU 7709122487715, marca Leche Pal Pelo)
     name: "Termoprotector «Rizos y Ondas» Leche Pal Pelo",
