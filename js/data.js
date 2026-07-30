@@ -214,6 +214,36 @@ const ONDEA_PRODUCTS = [
     ingredients: "Bio-repolarizadores con pro vitamina B5, keratina, aceite de argán, pulpa de coco y vitamina E; mascarilla con multivitaminas y aminoácidos; Magia Capilar con ácido hialurónico, extracto de lino, aceite de sacha inchi y vitaminas A, B5 y H. Uso externo.",
   },
   {
+    id: "kit-reconstruccion-rizos-pocion",
+    dropiId: "2013217", // ID en el catálogo de Dropi (SKU 7536851254598, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Reconstrucción de Rizos «Tongolé × R3START Plex»",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado"],
+    price: 239900,
+    cost: 169578,
+    size: "5 productos",
+    rating: 5.0,
+    reviews: 0,
+    badge: "Envío gratis",
+    badgeClass: "badge-pink",
+    art: "kit",
+    images: [
+      "Statics/productos/kit-reconstruccion-rizos-pocion/1.png",
+      "Statics/productos/kit-reconstruccion-rizos-pocion/2.png",
+      "Statics/productos/kit-reconstruccion-rizos-pocion/3.png",
+      "Statics/productos/kit-reconstruccion-rizos-pocion/4.png",
+      "Statics/productos/kit-reconstruccion-rizos-pocion/5.jpg",
+      "Statics/productos/kit-reconstruccion-rizos-pocion/6.png",
+    ],
+    short: "La rutina Tongolé completa + R3START Plex: reconstrucción molecular para rizos dañados o sin forma.",
+    desc: "El sistema para reparar, fortalecer y revivir rizos dañados, débiles o sin forma. Combina la hidratación y definición de Tongolé — Shampoo (450 ml), Tratamiento (450 ml), Mascarilla Capilar (350 ml) y Crema para Peinar (450 ml) — con la reconstrucción avanzada del Tratamiento Constructor R3START Plex (100 ml), una tecnología molecular que repara la fibra desde adentro, sella la cutícula y reduce el quiebre con cada aplicación. Devuelve elasticidad, suavidad y vitalidad desde la primera semana. Ideal para rizos 2A a 3C que pasaron por tintes, decoloración, plancha o procesos químicos.",
+    benefits: ["Reconstrucción molecular con R3START Plex", "Restaura la elasticidad de rizos sin vida o sin forma", "Reduce el quiebre y fortalece la hebra", "Hidratación profunda con control del frizz", "Definición con acabado natural y movimiento"],
+    howto: "Lava con el Shampoo Tongolé, aplica el Tratamiento y enjuaga. Usa la Mascarilla 1-2 veces por semana. Aplica el R3START Plex de medios a puntas sobre cabello húmedo o seco, sin enjuagar. Finaliza definiendo con la Crema para Peinar Tongolé.",
+    ingredients: "Línea Tongolé con aceites naturales; R3START Plex con tecnología de reconstrucción molecular que construye y mejora los enlaces del cabello. Consulta las etiquetas para la lista completa. Uso externo.",
+  },
+  {
     id: "kit-pre-decoloracion-pocion",
     dropiId: "2013612", // ID en el catálogo de Dropi (SKU 795486215936, proveedor LIVANA COLOMBIA SAS)
     proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes

@@ -71,6 +71,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.rizosondea.com/producto.html?id=kit-reconstruccion-rizos-pocion</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-pre-decoloracion-pocion</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
