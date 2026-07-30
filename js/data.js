@@ -78,6 +78,34 @@ const ONDEA_PRODUCTS = [
     ingredients: "Coco, karité, monoï de Tahití y linaza. Sin sal, sin sulfatos, sin parabenos; gel sin alcohol ni residuos. Uso externo.",
   },
   {
+    id: "kit-curl-define-etniker",
+    dropiId: "2020544", // ID en el catálogo de Dropi (SKU 7701256542387, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Curl Define Etniker",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado", "afro"],
+    price: 119900,
+    cost: 63078,
+    size: "3 productos + cepillo",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Nuevo",
+    badgeClass: "",
+    art: "kitSmall",
+    images: [
+      "Statics/productos/kit-curl-define-etniker/1.png",
+      "Statics/productos/kit-curl-define-etniker/2.jpg",
+      "Statics/productos/kit-curl-define-etniker/3.jpg",
+      "Statics/productos/kit-curl-define-etniker/4.jpg",
+    ],
+    short: "Shampoo + mascarilla + gel definidor Etniker con cepillo profesional: hidratación y definición duradera.",
+    desc: "La rutina para recuperar la hidratación, suavidad y definición de rizos y afros. Incluye el Shampoo Coco & Karité (250 ml — limpia suavemente sin resecar), la Mascarilla Deep Conditioner (300 g — coco, karité y mango que reparan y fortalecen), el Curl Defining Gel (300 g — fijación suave-media que activa el rizo sin rigidez) y el Cepillo Profesional Etniker para definir por mechones. Hidratación profunda, mejor elasticidad y frizz bajo control, con rizos definidos, brillantes y con movimiento natural. Ideal para rizos 2C a 3C y afros 4A a 4C, en cabello natural, en transición o procesado.",
+    benefits: ["Hidratación profunda para rizos secos o maltratados", "Definición flexible y duradera, sin rigidez", "Nutrición intensiva con coco, karité y mango", "Control del frizz incluso en clima húmedo", "Incluye cepillo profesional de definición"],
+    howto: "1) Lava con el Shampoo 2-3 veces por semana. 2) Aplica la Mascarilla de medios a puntas 10-15 minutos y enjuaga (en rizos tipo 4 puedes dejar un poco como crema). 3) Sobre cabello húmedo aplica el Gel Definidor y define por mechones con el Cepillo Etniker (rake & shake, twist out o shingling). 4) Seca con difusor o al aire. Tip: reactiva al día siguiente con agua en atomizador.",
+    ingredients: "Coco, karité, manteca de mango y linaza. Sin sal, sin sulfatos, sin parabenos. Uso externo.",
+  },
+  {
     id: "kit-hydracurl-etniker",
     dropiId: "2020507", // ID en el catálogo de Dropi (SKU KIT-00093, proveedor LIVANA COLOMBIA SAS)
     proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
