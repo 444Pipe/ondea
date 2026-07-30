@@ -13,10 +13,9 @@ const ONDEA_CONFIG = {
 };
 
 /* Catálogo real, conectado a Dropi.
-   Categorías activas: hidratacion · definicion · kits
-   (limpieza y accesorios quedaron vacías al retirar los demo; al agregar
-   productos de esas categorías, restaura sus chips en productos.html y su
-   tarjeta en index.html)
+   Categorías activas: hidratacion · definicion · accesorios · kits
+   (limpieza sigue vacía; al agregar shampoos sueltos, restaura su chip en
+   productos.html y su tarjeta en index.html)
    Tipos de rizo: ondulado (2A-2C) · rizado (3A-3C) · afro (4A-4C)
 
    🔌 INTEGRACIÓN DROPI: cada producto lleva  dropiId  con su ID del
@@ -114,6 +113,32 @@ const ONDEA_PRODUCTS = [
     benefits: ["Protege del calor de secador, difusor y plancha", "Hidrata y evita el resecamiento", "Define rizos y ondas manteniendo su forma natural", "Controla el frizz y aporta brillo", "Sin alcohol, sulfatos ni parabenos"],
     howto: "Aplica una cantidad moderada sobre el cabello limpio y húmedo, de medios a puntas, y distribuye con los dedos o un peine de dientes anchos. No enjuagues. Seca con difusor o al aire, y úsalo siempre antes de cualquier herramienta de calor. Evita el exceso para no apelmazar.",
     ingredients: "Aceite de coco, aceite de argán, pantenol (pro-vitamina B5), extracto de linaza y vitamina E. Libre de alcohol, sulfatos y parabenos. Uso externo.",
+  },
+  {
+    id: "monas-saten-scrunchies-x5",
+    dropiId: "2208837", // ID en el catálogo de Dropi (proveedor Nani Makeup, Cali)
+    name: "Moñas de Satín ×5 «Scrunchies»",
+    category: "accesorios",
+    categoryLabel: "Accesorios",
+    types: ["ondulado", "rizado", "afro"],
+    price: 8000,
+    cost: 5000,
+    size: "Set × 5",
+    rating: 4.8,
+    reviews: 0,
+    badge: "Nuevo",
+    badgeClass: "",
+    art: "bonnet",
+    images: [
+      "Statics/productos/monas-saten-scrunchies-x5/1.jpeg",
+      "Statics/productos/monas-saten-scrunchies-x5/2.jpeg",
+      "Statics/productos/monas-saten-scrunchies-x5/3.jpeg",
+    ],
+    short: "Set de 5 scrunchies satinadas que recogen tu rizo sin frizz, sin enredos y sin marcas.",
+    desc: "Set de 5 moñas de tejido satinado en colores neutros (blanco, café, rosado y negro) que combinan con todo. El satín reduce la fricción entre el cabello y el accesorio: menos frizz, menos enredos y sin las marcas que dejan las ligas tradicionales. Suaves, resistentes y aptas para todo tipo de cabello — perfectas para la piña de noche, el refresh del día siguiente o un recogido con estilo.",
+    benefits: ["El satín reduce frizz, enredos y quiebre", "No dejan marca en el cabello", "5 colores neutros que combinan con todo", "Ideales para la piña nocturna y recogidos diarios", "Aptas para todo tipo de cabello"],
+    howto: "Úsalas para recogidos diarios o para la piña (pineapple) de noche: recoge los rizos en la coronilla sin apretar y asegura con la moña. Al ser de satín, no absorben tus productos ni deshacen la definición.",
+    ingredients: "Tejido satinado (poliéster) con elástico interno resistente.",
   },
   {
     id: "kit-emergencia-reparacion-milagros",
