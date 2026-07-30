@@ -426,7 +426,7 @@
       grid.innerHTML = list.length
         ? list.map(productCard).join("")
         : '<div class="shop-empty">' +
-          "<strong>No encontramos productos con esos filtros.</strong>" +
+          "<strong>No encontramos kits con esos filtros.</strong>" +
           "<span>Prueba con otra búsqueda o mira todo el catálogo ✦</span>" +
           '<button class="btn btn-outline btn-sm" id="empty-limpiar">Quitar los filtros</button>' +
           "</div>";
@@ -436,8 +436,8 @@
       var count = qs("#result-count");
       if (count) {
         count.textContent = list.length === ONDEA_PRODUCTS.length
-          ? list.length + " productos"
-          : list.length + " de " + ONDEA_PRODUCTS.length + " productos";
+          ? list.length + " kits"
+          : list.length + " de " + ONDEA_PRODUCTS.length + " kits";
       }
 
       qsa(".chip[data-cat]").forEach(function (chip) {
@@ -587,7 +587,7 @@
         itemsWrap.innerHTML =
           '<div class="cart-empty"><svg class="icon icon-big" aria-hidden="true"><use href="#i-cart"></use></svg><h2>Tu carrito está vacío</h2>' +
           "<p>Descubre nuestra colección para rizos, ondas y afros con envío a toda Colombia.</p>" +
-          '<a class="btn btn-pink" href="productos.html">Ver la tienda</a></div>';
+          '<a class="btn btn-pink" href="productos.html">Ver los kits</a></div>';
         if (summaryWrap) summaryWrap.style.display = "none";
         return;
       }
@@ -903,7 +903,7 @@
         routine.map(productCard).join("") +
         "</div>" +
         '<div class="qr-total">' +
-        '<div class="qr-price">' + fmtCOP(total) + "<small>" + routine.length + " productos · " + (envioGratis ? "con envío GRATIS a toda Colombia" : "envíos a toda Colombia") + "</small></div>" +
+        '<div class="qr-price">' + fmtCOP(total) + "<small>" + routine.length + " kits · " + (envioGratis ? "con envío GRATIS a toda Colombia" : "envíos a toda Colombia") + "</small></div>" +
         '<div class="qr-actions">' +
         '<button class="btn btn-pink" id="qr-add-all">Agregar toda mi rutina ' + icon("cart") + "</button>" +
         '<a class="btn btn-outline" id="qr-wa" target="_blank" rel="noopener">Asesoría ' + icon("wa") + "</a>" +
@@ -923,7 +923,7 @@
 
       qs("#qr-add-all").addEventListener("click", function () {
         routine.forEach(function (p) { addToCart(p.id, 1); });
-        toast("✓ Rutina completa agregada al carrito (" + routine.length + " productos)");
+        toast("✓ Rutina completa agregada al carrito (" + routine.length + " kits)");
       });
 
       qs("#quiz-restart").addEventListener("click", function () {
@@ -1071,7 +1071,7 @@
     }
 
     qsa(".wa-link").forEach(function (a) {
-      var msg = a.getAttribute("data-msg") || "¡Hola Rizos Ondea! ✨ Quiero información sobre sus productos para rizos.";
+      var msg = a.getAttribute("data-msg") || "¡Hola Rizos Ondea! ✨ Quiero información sobre sus kits para rizos.";
       a.href = "https://wa.me/" + ONDEA_CONFIG.whatsapp + "?text=" + encodeURIComponent(msg);
     });
 
