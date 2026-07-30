@@ -66,6 +66,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.rizosondea.com/producto.html?id=kit-rizos-largos-abundantes</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-reparacion-profunda-pocion</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

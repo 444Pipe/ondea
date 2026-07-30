@@ -169,6 +169,33 @@ const ONDEA_PRODUCTS = [
     ingredients: "Biotina y colágeno hidrolizado, provitamina B5 y queratina vegetal, pulpa de coco y vitamina E, extractos naturales y aminoácidos. Uso externo; evitar el contacto con los ojos.",
   },
   {
+    id: "kit-rizos-largos-abundantes",
+    dropiId: "2207916", // ID en el catálogo de Dropi (SKU KIT-00039, proveedor LIVANA COLOMBIA SAS)
+    name: "Kit Rizos Largos y Abundantes «Tongolé»",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado"],
+    price: 213900,
+    cost: 158358,
+    size: "6 productos",
+    rating: 5.0,
+    reviews: 0,
+    badge: "Envío gratis",
+    badgeClass: "badge-pink",
+    art: "kit",
+    images: [
+      "Statics/productos/kit-rizos-largos-abundantes/1.png",
+      "Statics/productos/kit-rizos-la-pocion/3.jpeg",
+      "Statics/productos/kit-rizos-la-pocion/4.jpeg",
+      "Statics/productos/kit-rizos-la-pocion/5.jpeg",
+    ],
+    short: "La rutina Tongolé completa + tónicos Oxy y Energy: hidratación, definición y crecimiento en 6 pasos.",
+    desc: "El sistema para conseguir rizos definidos, hidratados, más largos y con volumen natural. Combina la nutrición profunda de Tongolé — Shampoo (450 ml), Tratamiento (450 ml), Crema para Peinar (450 ml) y Mascarilla Capilar (350 ml) — con el poder estimulante de los tónicos Poción: Oxy Tonic (40 ml, diurno, oxigena y revitaliza la raíz) y Energy Tonic (40 ml, nocturno, estimula el crecimiento). Fortalece la raíz, mejora el crecimiento y potencia la forma natural del rizo sin frizz ni pesadez. Ideal para texturas 2A a 3C que buscan crecer sanas, fuertes y con abundancia.",
+    benefits: ["Activa el crecimiento y fortalece la raíz", "Hidratación profunda sin apelmazar", "Rizos más abundantes, definidos y con movimiento", "Reduce el frizz y sella la cutícula", "Evita el quiebre y la caída por debilitamiento"],
+    howto: "Lava con el Shampoo Tongolé, aplica el Tratamiento y enjuaga. Usa la Mascarilla 1-2 veces por semana. Aplica el Oxy Tonic de día y el Energy Tonic de noche directamente en el cuero cabelludo. Define con la Crema para Peinar sobre cabello húmedo.",
+    ingredients: "Consulta la etiqueta de cada producto Tongolé y de los tónicos Oxy y Energy incluidos en el kit. Uso externo.",
+  },
+  {
     id: "kit-reparacion-profunda-pocion",
     dropiId: "2012557", // ID en el catálogo de Dropi (SKU KIT-00043, proveedor LIVANA COLOMBIA SAS)
     name: "Kit Reparación Profunda «La Poción»",
