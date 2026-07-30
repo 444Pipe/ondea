@@ -147,9 +147,20 @@ async function dropiSendOrder(pedido) {
   const valorGrupo = (items) => items.reduce((s, i) => s + (i.price || 0) * i.qty, 0);
   claves.sort((a, b) => valorGrupo(grupos[b]) - valorGrupo(grupos[a]));
 
+  // Reintentos: las bodegas que ya tienen orden creada en Dropi no se
+  // vuelven a enviar (evita duplicar órdenes cuando el envío fue parcial)
+  const yaEnviadas = {};
+  if (pedido.dropi && Array.isArray(pedido.dropi.ordenes)) {
+    pedido.dropi.ordenes.forEach((o) => { if (o.ok) yaEnviadas[o.proveedor] = o; });
+  }
+
   const ahora = new Date().toISOString();
   const ordenes = [];
   for (const clave of claves) {
+    if (yaEnviadas[clave]) {
+      ordenes.push(yaEnviadas[clave]);
+      continue;
+    }
     const items = grupos[clave];
     const products = [];
     items.forEach((i) => {
