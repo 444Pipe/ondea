@@ -319,7 +319,7 @@
 
     var grid = qs("#destacados-grid");
     if (grid) {
-      var ids = ["crema-define-rizos", "kit-rizos-la-pocion", "shampoo-low-poo", "duo-rizos-definidos"];
+      var ids = ["tratamiento-skala-divino-potao", "kit-rizos-la-pocion", "shampoo-low-poo", "duo-rizos-definidos"];
       grid.innerHTML = ids.map(function (id) { return productCard(getProduct(id)); }).join("");
       bindAddButtons(grid);
     }
@@ -815,7 +815,7 @@
     if (ans.objetivo === "volumen" || (ans.tipo === "ondulado" && ans.objetivo !== "definicion")) {
       ids.push("espuma-onda-ligera");
     } else {
-      ids.push("crema-define-rizos");
+      ids.push("tratamiento-skala-divino-potao");
     }
     if (ans.objetivo === "definicion") ids.push("gel-cristal");
     if (ans.estado === "seco" || ans.estado === "danado" || ans.tipo === "afro") ids.push("duo-rizos-definidos");
