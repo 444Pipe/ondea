@@ -79,6 +79,29 @@ const ONDEA_PRODUCTS = [
     ingredients: "Biotina y colágeno hidrolizado, provitamina B5 y queratina vegetal, pulpa de coco y vitamina E, extractos naturales y aminoácidos. Uso externo; evitar el contacto con los ojos.",
   },
   {
+    id: "kit-rescate-nutritivo-milagros",
+    dropiId: "2127615", // ID en el catálogo de Dropi (SKU KIT-00031, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Rescate Nutritivo «Milagros»",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado", "afro"],
+    price: 179900,
+    cost: 125810,
+    size: "4 productos",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Envío gratis",
+    badgeClass: "badge-pink",
+    art: "kit",
+    images: ["Statics/productos/kit-rescate-nutritivo-milagros/1.png"],
+    short: "Shampoo + tratamiento + mascarilla + leave-in Milagros: la rutina completa que recupera, nutre y da brillo.",
+    desc: "La rutina completa de recuperación capilar de Milagros para cabello maltratado por químicos, calor o decoloración. Incluye el Shampoo Bio-repolarizador (450 ml) que limpia mientras reconstruye la fibra, el Tratamiento Bio Repolarizador Capilar (450 ml) que repara e hidrata con protección UV, la Mascarilla Multivitamínica con aminoácidos (450 ml) que fortalece y ayuda a reducir la caída, y el Tratamiento Magia Capilar sin enjuague (150 ml) que controla el frizz, hidrata las puntas y da brillo inmediato durante el día. Resultados visibles desde las primeras aplicaciones.",
+    benefits: ["Reparación profunda del daño por químicos, calor o decoloración", "Hidratación intensiva y nutrición completa", "Reduce el frizz y las puntas secas", "Cabello más fuerte, brillante y sedoso", "Incluye leave-in para mantener el resultado todo el día"],
+    howto: "Lava con el Shampoo Bio-repolarizador y aplica el Tratamiento Bio Repolarizador de medios a puntas; enjuaga. Usa la Mascarilla Multivitamínica 1-2 veces por semana dejándola actuar 15-20 minutos. Finaliza con el Magia Capilar sin enjuague sobre cabello húmedo o seco para controlar el frizz y sellar las puntas.",
+    ingredients: "Bio-repolarizadores con pro vitamina B5, keratina, aceite de argán, pulpa de coco y vitamina E; mascarilla con multivitaminas y aminoácidos; Magia Capilar con ácido hialurónico, extracto de lino, aceite de sacha inchi y vitaminas A, B5 y H. Uso externo.",
+  },
+  {
     id: "kit-rizos-largos-abundantes",
     dropiId: "2207916", // ID en el catálogo de Dropi (SKU KIT-00039, proveedor LIVANA COLOMBIA SAS)
     proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
