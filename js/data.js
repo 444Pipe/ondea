@@ -157,6 +157,35 @@ const ONDEA_PRODUCTS = [
     ingredients: "Consulta la etiqueta de cada producto Tongolé y de los tónicos Oxy y Energy incluidos en el kit. Uso externo.",
   },
   {
+    id: "kit-fortalece-hidrata-pocion",
+    dropiId: "1888742", // ID en el catálogo de Dropi (SKU KIT-00044, proveedor LIVANA COLOMBIA SAS)
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Fortalece e Hidrata «La Poción»",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado", "afro"],
+    price: 184900,
+    cost: 133682,
+    size: "4 productos",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Envío gratis",
+    badgeClass: "badge-pink",
+    art: "kit",
+    images: [
+      "Statics/productos/kit-fortalece-hidrata-pocion/1.jpeg",
+      "Statics/productos/kit-fortalece-hidrata-pocion/2.png",
+      "Statics/productos/kit-fortalece-hidrata-pocion/3.png",
+      "Statics/productos/kit-fortalece-hidrata-pocion/4.png",
+      "Statics/productos/kit-fortalece-hidrata-pocion/5.png",
+    ],
+    short: "Nutrición, reparación y fortaleza: la rutina Poción de 4 pasos para cabello seco, opaco o maltratado.",
+    desc: "El sistema para restaurar, hidratar y fortalecer el cabello desde la raíz hasta las puntas. Incluye el Shampoo La Poción (450 ml — limpieza nutritiva que protege), el Tratamiento Renovador (450 ml — nutrición intensiva para cabellos secos o dañados), la Mascarilla Ancestral (350 ml — rica en vitaminas A, B1, B2, B6, B12, C y E) y la Crema para Peinar Dual (450 ml — control, suavidad y definición sin peso). Repara el daño químico, reduce la ruptura y el frizz, y devuelve brillo natural sin sensación grasa. Apto para todo tipo de cabello, incluidos rizados y procesados.",
+    benefits: ["Repara cabello maltratado o con daño químico", "Nutre desde la fibra interna hasta la cutícula", "Fortalece la hebra: menos ruptura y frizz", "Brillo natural sin sensación grasa", "Rutina completa de 4 pasos con crema para peinar incluida"],
+    howto: "Lava con el Shampoo La Poción. Aplica el Tratamiento Renovador de medios a puntas y enjuaga. Usa la Mascarilla Ancestral 2-3 veces por semana dejándola actuar 10-15 minutos. Finaliza con la Crema para Peinar sobre cabello húmedo o seco, y peina como prefieras.",
+    ingredients: "Mascarilla Ancestral con vitaminas A, B1, B2, B6, B12, C y E. Consulta la etiqueta de cada producto Poción del kit para la lista completa. Uso externo.",
+  },
+  {
     id: "kit-milagro-herbal",
     dropiId: "1979509", // ID en el catálogo de Dropi (SKU KIT-00055, proveedor LIVANA COLOMBIA SAS)
     proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
