@@ -295,6 +295,17 @@
   /* ---------- Página: Inicio ---------- */
 
   function initHome() {
+    // Altura real de topbar+header → variable CSS, para que el hero llene la
+    // pantalla exacta en Chrome y Safari (cada uno mide sus barras distinto)
+    function setHeroOffset() {
+      var topbar = qs(".topbar");
+      var header = qs(".header");
+      var offset = (topbar ? topbar.offsetHeight : 0) + (header ? header.offsetHeight : 0);
+      document.documentElement.style.setProperty("--hero-offset", offset + "px");
+    }
+    setHeroOffset();
+    window.addEventListener("resize", setHeroOffset);
+
     // Video del hero: algunos navegadores móviles no arrancan el autoplay solos
     var heroVid = qs(".hero-bg");
     if (heroVid) {
