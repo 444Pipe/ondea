@@ -319,7 +319,7 @@
 
     var grid = qs("#destacados-grid");
     if (grid) {
-      var ids = ["tratamiento-skala-divino-potao", "kit-rizos-la-pocion", "kit-rizos-lavado-etniker", "duo-rizos-definidos"];
+      var ids = ["kit-rizos-lavado-etniker", "kit-rizos-la-pocion", "kit-emergencia-reparacion-milagros", "kit-rizos-largos-abundantes"];
       grid.innerHTML = ids.map(function (id) { return productCard(getProduct(id)); }).join("");
       bindAddButtons(grid);
     }
@@ -594,7 +594,7 @@
       if (summaryWrap) summaryWrap.style.display = "";
 
       // Venta cruzada: sugiere complementos de buen margen que no estén ya en el carrito
-      var bumpIds = ["monas-saten-scrunchies-x5", "toalla-microfibra-gorro", "termoprotector-rizos-ondas"]
+      var bumpIds = ["duo-rizos-definidos"]
         .filter(function (id) { return getProduct(id) && !cart.some(function (i) { return i.id === id; }); })
         .slice(0, 2);
       var bumpHTML = bumpIds.length
@@ -839,14 +839,10 @@
   function buildRoutine(ans) {
     // Rutina armada solo con el catálogo real conectado a Dropi
     var ids = ["kit-rizos-lavado-etniker"]; // base: limpia, hidrata y define en 3 pasos
-    if (ans.objetivo === "definicion" || ans.tipo === "rizado" || ans.tipo === "afro") {
-      ids.push("tratamiento-skala-divino-potao");
-    }
-    if (ans.objetivo === "definicion") ids.push("gel-definidor-etniker-1000g");
+    if (ans.estado === "seco" || ans.objetivo === "hidratacion") ids.push("kit-rizos-la-pocion");
     if (ans.estado === "seco" || ans.estado === "danado" || ans.tipo === "afro") ids.push("duo-rizos-definidos");
-    if (ans.objetivo === "hidratacion" || ans.estado === "seco") ids.push("mantequilla-rizos-menta-hair");
-    if (ans.frecuencia === "diario" || ans.objetivo === "volumen") ids.push("termoprotector-rizos-ondas");
-    if (ans.estado === "danado" || ans.objetivo === "hidratacion") ids.push("kit-rizos-la-pocion");
+    if (ans.estado === "danado") ids.push("kit-reparacion-profunda-pocion");
+    if (ans.objetivo === "volumen" || ans.frecuencia === "diario") ids.push("kit-rizos-largos-abundantes");
 
     var seen = {};
     return ids.filter(function (id) {
