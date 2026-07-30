@@ -214,6 +214,35 @@ const ONDEA_PRODUCTS = [
     ingredients: "Mascarilla Ancestral con vitaminas A, B1, B2, B6, B12, C y E. Consulta la etiqueta de cada producto Poción del kit para la lista completa. Uso externo.",
   },
   {
+    id: "kit-rizos-perfectos-pocion",
+    dropiId: null, // ⚠️ PENDIENTE: falta el ID de Dropi (SKU KIT-00025) — sin él este kit no viaja automático a Dropi
+    proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
+    name: "Kit Rizos Perfectos «Tongolé»",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado", "afro"],
+    price: 189900,
+    cost: 134011,
+    size: "4 productos",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Envío gratis",
+    badgeClass: "badge-pink",
+    art: "kit",
+    images: [
+      "Statics/productos/kit-rizos-perfectos-pocion/1.png",
+      "Statics/productos/kit-rizos-perfectos-pocion/2.png",
+      "Statics/productos/kit-rizos-perfectos-pocion/3.jpg",
+      "Statics/productos/kit-rizos-perfectos-pocion/4.png",
+      "Statics/productos/kit-rizos-perfectos-pocion/5.png",
+    ],
+    short: "La rutina Tongolé con gel definidor: limpia, nutre, peina y fija tus rizos con acabado natural.",
+    desc: "La rutina completa de definición Tongolé, de la limpieza al acabado final. Incluye el Shampoo Tongolé (450 ml — limpia suavemente mientras hidrata), la Mascarilla Tongolé (350 ml — repara y fortalece la fibra con mayor elasticidad), la Crema de Peinar Tongolé (450 ml — leave-in que desenreda y controla el frizz) y el Gel Definidor Tongolé (moldeador que fija y mantiene la forma de ondas y rizos). Controla el frizz, mejora la elasticidad y mantiene los rizos definidos por más tiempo, con acabado suave y con movimiento. ¿Prefieres tratamiento en vez de gel? Mira el Kit para Rizos Tongolé «La Poción».",
+    benefits: ["Limpia sin resecar e hidrata a profundidad", "Define ondas y rizos de forma natural", "Controla el frizz y facilita el peinado diario", "Gel definidor que fija sin acartonar", "Suavidad, elasticidad y brillo"],
+    howto: "1) Lava con el Shampoo Tongolé y enjuaga. 2) Aplica la Mascarilla de medios a puntas, deja actuar unos minutos y enjuaga. 3) Sobre cabello húmedo aplica la Crema de Peinar para hidratar y desenredar. 4) Termina con el Gel Definidor para moldear y fijar la forma de tus rizos.",
+    ingredients: "Consulta la etiqueta de cada producto Tongolé incluido en el kit. Uso externo.",
+  },
+  {
     id: "kit-milagro-herbal",
     dropiId: "1979509", // ID en el catálogo de Dropi (SKU KIT-00055, proveedor LIVANA COLOMBIA SAS)
     proveedor: "LIVANA", // bodega Dropi — agrupa órdenes y fletes
