@@ -338,21 +338,31 @@
     ok.forEach(function (p) {
       p.items.forEach(function (i) { vendidos[i.id] = (vendidos[i.id] || 0) + i.qty; });
     });
+    // Fallbacks para productos aún sin dato real en js/data.js (⏳ ESTIMADO)
+    var FLETE_DEF = 19000, COMISION_DEF = 0.04, MARGEN_MIN = 15;
     var rows = ONDEA_PRODUCTS.map(function (p) {
       var cost = p.cost || Math.round(p.price * 0.55);
-      var gan = p.price - cost;
-      var margen = Math.round((gan / p.price) * 100);
-      return "<tr><td><strong>" + esc(p.name) + "</strong><br><span class='muted'>" + esc(p.size) + "</span></td>" +
+      var flete = typeof p.fleteEstimado === "number" ? p.fleteEstimado : FLETE_DEF;
+      var comision = typeof p.comisionPlataforma === "number" ? p.comisionPlataforma
+        : Math.round(p.price * (typeof p.comisionPct === "number" ? p.comisionPct : COMISION_DEF));
+      var ganBruta = p.price - cost;
+      var margenBruto = Math.round((ganBruta / p.price) * 100);
+      var ganNeta = ganBruta - flete - comision;
+      var margenNeto = Math.round((ganNeta / p.price) * 100);
+      var alerta = margenNeto < MARGEN_MIN;
+      return "<tr" + (alerta ? ' class="row-alert" title="Margen neto por debajo del ' + MARGEN_MIN + '%: revisar precio"' : "") + "><td><strong>" + esc(p.name) + "</strong><br><span class='muted'>" + esc(p.size) + "</span></td>" +
         "<td>" + esc(p.categoryLabel) + "</td>" +
         '<td class="num">' + fmtCOP(p.price) + "</td>" +
-        '<td class="num muted">' + fmtCOP(cost) + "</td>" +
-        '<td class="num pos">' + fmtCOP(gan) + "</td>" +
-        '<td class="num">' + margen + "%</td>" +
+        '<td class="num muted">' + fmtCOP(cost) + "<br>+" + fmtCOP(flete) + " flete<br>+" + fmtCOP(comision) + " com.</td>" +
+        '<td class="num pos">' + fmtCOP(ganBruta) + "</td>" +
+        '<td class="num">' + margenBruto + "%</td>" +
+        '<td class="num ' + (alerta ? "neg" : "pos") + '">' + fmtCOP(ganNeta) + "</td>" +
+        '<td class="num' + (alerta ? " neg" : "") + '">' + margenNeto + "%</td>" +
         '<td class="num"><strong>' + (vendidos[p.id] || 0) + "</strong></td></tr>";
     }).join("");
     wrap.innerHTML =
       '<table class="admin-table"><thead><tr>' +
-      "<th>Producto</th><th>Categoría</th><th class='num'>Precio</th><th class='num'>Costo</th><th class='num'>Ganancia/und</th><th class='num'>Margen</th><th class='num'>Vendidos</th>" +
+      "<th>Producto</th><th>Categoría</th><th class='num'>Precio</th><th class='num'>Costo</th><th class='num'>Ganancia bruta</th><th class='num'>Margen bruto</th><th class='num'>Ganancia neta</th><th class='num'>Margen neto</th><th class='num'>Vendidos</th>" +
       "</tr></thead><tbody>" + rows + "</tbody></table>";
   }
 

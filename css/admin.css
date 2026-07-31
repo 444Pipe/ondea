@@ -171,6 +171,10 @@ table.admin-table { width: 100%; border-collapse: collapse; font-size: 13.5px; m
 .admin-table tfoot td { font-weight: 700; background: var(--cream); border-top: 2px solid var(--pink-soft); }
 .admin-table .muted { color: var(--brown-soft); font-size: 12px; }
 .admin-table .pos { color: #2E7D52; font-weight: 700; }
+.admin-table .neg { color: #C0392B; font-weight: 700; }
+/* Alerta de rentabilidad: margen neto < 15% en la tabla de Productos */
+.admin-table tr.row-alert td { background: #FBECE6; }
+.admin-table tbody tr.row-alert:hover td { background: #F8E0D5; }
 .tag-demo {
   background: var(--pink-soft); color: var(--brown); font-size: 10px; font-weight: 700;
   padding: 2px 8px; border-radius: 99px; letter-spacing: 1px; margin-left: 6px;

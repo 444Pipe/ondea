@@ -20,7 +20,20 @@ const ONDEA_CONFIG = {
 
    🔌 INTEGRACIÓN DROPI: cada producto lleva  dropiId  con su ID del
    catálogo de Dropi y  cost  con el precio del proveedor. Fotos en
-   Statics/productos/<id>/ (la 1 es la principal). */
+   Statics/productos/<id>/ (la 1 es la principal).
+
+   💰 MARGEN NETO (solo afecta el panel admin, no la tienda ni Dropi):
+   cada producto lleva además  fleteEstimado  (COP — flete de la
+   transportadora según la "Calculadora de flete" de Dropi, destino
+   Bogotá/Cundinamarca, envío con recaudo) y la comisión de Dropi como
+   comisionPlataforma  (COP fijos — dato real de Dropi; tiene prioridad)
+   o  comisionPct  (fracción del precio de venta, ej. 0.04 = 4%).
+   gananciaNeta = price − cost − fleteEstimado − comisión.
+   ⚠️ Las comisiones reales medidas van del 4.3% al 4.5%, algo por encima
+   del placeholder del 4%.
+   Estado del dato en el comentario de cada campo:
+   ⏳ ESTIMADO  = placeholder, pendiente de medir en la calculadora de Dropi
+   ✅ VERIFICADO = medido en la calculadora de Dropi. */
 const ONDEA_PRODUCTS = [
   {
     id: "duo-rizos-definidos",
@@ -32,6 +45,8 @@ const ONDEA_PRODUCTS = [
     types: ["ondulado", "rizado", "afro"],
     price: 94900,
     cost: 64090,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "2 tratamientos × 450 ml",
     rating: 4.9,
     reviews: 0,
@@ -57,8 +72,10 @@ const ONDEA_PRODUCTS = [
     category: "kits",
     categoryLabel: "Kits",
     types: ["ondulado", "rizado", "afro"],
-    price: 129900,
+    price: 134900, // ⬆️ 2026-07-31: subido de 129900 (Magic Hair referencia $140.999 con menos producto)
     cost: 71900,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "3 productos + estuche",
     rating: 4.9,
     reviews: 0,
@@ -85,8 +102,10 @@ const ONDEA_PRODUCTS = [
     category: "kits",
     categoryLabel: "Kits",
     types: ["ondulado", "rizado", "afro"],
-    price: 119900,
+    price: 124900, // ⬆️ 2026-07-31: subido de 119900 (margen bruto alto; kits similares en mercado hasta $150.300)
     cost: 63078,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "3 productos + cepillo",
     rating: 4.9,
     reviews: 0,
@@ -115,6 +134,8 @@ const ONDEA_PRODUCTS = [
     types: ["ondulado", "rizado", "afro"],
     price: 139900,
     cost: 87617,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "4 productos + cepillo",
     rating: 4.9,
     reviews: 0,
@@ -144,6 +165,8 @@ const ONDEA_PRODUCTS = [
     types: ["ondulado", "rizado", "afro"],
     price: 149900,
     cost: 106193,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "4 productos",
     rating: 4.9,
     reviews: 0,
@@ -173,6 +196,8 @@ const ONDEA_PRODUCTS = [
     types: ["ondulado", "rizado", "afro"],
     price: 169900,
     cost: 113724,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "3 productos",
     rating: 4.9,
     reviews: 0,
@@ -200,6 +225,8 @@ const ONDEA_PRODUCTS = [
     types: ["ondulado", "rizado"],
     price: 174900,
     cost: 116177,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "4 productos",
     rating: 4.9,
     reviews: 0,
@@ -229,6 +256,8 @@ const ONDEA_PRODUCTS = [
     types: ["rizado", "afro"],
     price: 149900,
     cost: 88296,
+    fleteEstimado: 17780, // ✅ VERIFICADO en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPlataforma: 6450, // ✅ VERIFICADO — comisión Dropi en COP (~4.3% del precio; tiene prioridad sobre comisionPct)
     size: "3 productos",
     rating: 4.9,
     reviews: 0,
@@ -255,13 +284,15 @@ const ONDEA_PRODUCTS = [
     category: "kits",
     categoryLabel: "Kits",
     types: ["ondulado", "rizado", "afro"],
-    price: 149900,
+    price: 164900, // ⬆️ 2026-07-31: subido de 149900 (margen bruto más alto del catálogo, sin marca oficial comparable); a $164.900 el ingreso supera al esquema viejo con envío cobrado ($161.900) y conserva el envío gratis
     cost: 73017,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "4 productos",
     rating: 4.9,
     reviews: 0,
-    badge: "Nuevo",
-    badgeClass: "",
+    badge: "Envío gratis",
+    badgeClass: "badge-pink",
     art: "kit",
     images: [
       "Statics/productos/kit-tradicional-leche-pal-pelo/1.webp",
@@ -282,6 +313,8 @@ const ONDEA_PRODUCTS = [
     types: ["ondulado", "rizado", "afro"],
     price: 179900,
     cost: 125810,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "4 productos",
     rating: 4.9,
     reviews: 0,
@@ -303,8 +336,10 @@ const ONDEA_PRODUCTS = [
     category: "kits",
     categoryLabel: "Kits",
     types: ["ondulado", "rizado"],
-    price: 239900,
+    price: 259900, // ⬆️ 2026-07-31: subido de 239900 (brecha vs Tongolé oficial $221.600 era solo 8%; techo premium del mercado $295.900)
     cost: 169578,
+    fleteEstimado: 20822, // ✅ VERIFICADO en la calculadora de Dropi (Bogotá/Cund., con recaudo) — re-medir: con recaudo el flete puede variar con el valor declarado
+    comisionPct: 0.045, // ✅ derivado del dato verificado ($10.800 sobre $239.900) — la comisión escala con el precio, por eso va como % y no en COP fijos
     size: "5 productos",
     rating: 5.0,
     reviews: 0,
@@ -335,6 +370,8 @@ const ONDEA_PRODUCTS = [
     types: ["ondulado", "rizado", "afro"],
     price: 249900,
     cost: 175206,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "5 productos",
     rating: 5.0,
     reviews: 0,
@@ -363,8 +400,10 @@ const ONDEA_PRODUCTS = [
     category: "kits",
     categoryLabel: "Kits",
     types: ["ondulado", "rizado"],
-    price: 229900,
+    price: 239900, // ⬆️ 2026-07-31: subido de 229900 (brecha vs Tongolé oficial $215.500 era solo 7%)
     cost: 158358,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "6 productos",
     rating: 5.0,
     reviews: 0,
@@ -393,6 +432,8 @@ const ONDEA_PRODUCTS = [
     types: ["ondulado", "rizado", "afro"],
     price: 184900,
     cost: 133682,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "4 productos",
     rating: 4.9,
     reviews: 0,
@@ -422,6 +463,8 @@ const ONDEA_PRODUCTS = [
     types: ["ondulado", "rizado", "afro"],
     price: 189900,
     cost: 134011,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "4 productos",
     rating: 4.9,
     reviews: 0,
@@ -451,6 +494,8 @@ const ONDEA_PRODUCTS = [
     types: ["ondulado", "rizado", "afro"],
     price: 194900,
     cost: 139288,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "4 productos",
     rating: 4.9,
     reviews: 0,
@@ -480,6 +525,8 @@ const ONDEA_PRODUCTS = [
     types: ["ondulado", "rizado"],
     price: 199900,
     cost: 129379,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "4 productos",
     rating: 4.9,
     reviews: 0,
@@ -507,8 +554,10 @@ const ONDEA_PRODUCTS = [
     category: "kits",
     categoryLabel: "Kits",
     types: ["ondulado", "rizado", "afro"],
-    price: 219900,
+    price: 229900, // ⬆️ 2026-07-31: subido de 219900 (brecha vs oficial $205.500 era solo 7%)
     cost: 154667,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "5 productos",
     rating: 5.0,
     reviews: 0,
@@ -539,6 +588,8 @@ const ONDEA_PRODUCTS = [
     types: ["ondulado", "rizado"],
     price: 189900,
     cost: 129865,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "4 productos",
     rating: 5.0,
     reviews: 0,
@@ -568,8 +619,10 @@ const ONDEA_PRODUCTS = [
     category: "kits",
     categoryLabel: "Kits",
     types: ["ondulado", "rizado", "afro"],
-    price: 109900,
+    price: 114900, // ⬆️ 2026-07-31: subido de 109900 (subida leve — es el kit de entrada, cuidar conversión)
     cost: 65000,
+    fleteEstimado: 19000, // ⏳ ESTIMADO (placeholder) — medir en la calculadora de Dropi (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ⏳ ESTIMADO (placeholder 4%)
     size: "3 productos",
     rating: 4.9,
     reviews: 0,
@@ -587,5 +640,57 @@ const ONDEA_PRODUCTS = [
     benefits: ["Definición y moldeo con fijación flexible", "Control del frizz y brillo sin residuos ni pegajosidad", "Hidratación y desenredo sin tirones", "Rutina simple: limpia → hidrata → define", "Fórmulas sin sulfatos, sin siliconas y sin parabenos"],
     howto: "1) Limpia con el shampoo: el Nutritivo para uso frecuente, o el de Limpieza Profunda máximo 2 veces al mes. 2) En cabello húmedo aplica la crema por secciones y activa con scrunch; no enjuagues. 3) Distribuye la gel por secciones, haz scrunch de abajo hacia arriba y seca al aire o con difusor en calor bajo. Refresh día 2-3: humedece ligeramente y aplica una microdosis de gel.",
     ingredients: "Gel: coco y linaza. Crema: coco, karité y monoï de Tahití (con filtro UV). Fórmulas sin sulfatos, sin sal añadida, sin siliconas, sin aceite mineral y libres de parabenos. Uso externo; evitar contacto con los ojos.",
+  },
+  {
+    id: "kit-antifrizz-menta",
+    dropiId: null, // ⚠️ PENDIENTE: falta el ID de Dropi — sin él este kit no viaja automático a Dropi
+    proveedor: "MENTA HAIR", // Menta Hair Oficial (Bucaramanga) — bodega Dropi distinta a LIVANA: pedido y flete van aparte
+    name: "Dúo Anti-Frizz Menta",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado", "afro"],
+    price: 139900,
+    cost: 73800, // ✅ VERIFICADO en Dropi (Shampoo + Acondicionador Brownie + Cepillo Antifrizz Premium)
+    fleteEstimado: 27000, // ⏳ ESTIMADO por escalado — confirmar en la calculadora de Dropi con las 3 unidades reales (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ✅ VERIFICADO (4%)
+    size: "2 productos + cepillo",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Nuevo",
+    badgeClass: "",
+    art: "kitSmall",
+    images: [], // ⚠️ PENDIENTE: subir fotos a Statics/productos/kit-antifrizz-menta/ (mientras tanto la tienda muestra el arte SVG)
+    // ⚠️ Copy provisional — ajustar con la ficha real del proveedor Menta Hair
+    short: "Shampoo + Acondicionador Nutrirepair Brownie con Cepillo Antifrizz Premium: nutrición y cero frizz en cada lavado.",
+    desc: "El dúo Nutrirepair Brownie de Menta Hair para nutrir el cabello y controlar el frizz desde el lavado. Incluye el Shampoo Nutrirepair Brownie (limpia con suavidad mientras nutre la fibra), el Acondicionador Nutrirepair Brownie (desenreda, suaviza y sella la hidratación) y el Cepillo Antifrizz Premium (desenreda en húmedo o en seco sin quebrar la hebra ni alborotar el rizo). Ideal para cabello ondulado, rizado o afro con frizz, resequedad o puntas opacas que necesita una rutina de lavado nutritiva y fácil de mantener.",
+    benefits: ["Nutre y suaviza el cabello desde el lavado", "Control del frizz en el peinado diario", "Desenredo fácil sin quiebre con el cepillo antifrizz", "Apto para uso frecuente en ondas, rizos y afros", "Incluye Cepillo Antifrizz Premium"],
+    howto: "1) Lava con el Shampoo Nutrirepair Brownie masajeando el cuero cabelludo y enjuaga. 2) Aplica el Acondicionador de medios a puntas, deja actuar 2-3 minutos y enjuaga. 3) Desenreda con el Cepillo Antifrizz Premium sobre cabello húmedo, de puntas a raíz, y define como prefieras.",
+    ingredients: "Consulta la etiqueta de cada producto Menta Hair incluido en el dúo. Uso externo; evitar el contacto con los ojos.",
+  },
+  {
+    id: "kit-soy-rizos-reparacion",
+    dropiId: null, // ⚠️ PENDIENTE: falta el ID de Dropi — sin él este kit no viaja automático a Dropi
+    proveedor: "LOVELY", // Lovely Cosmetic — bodega Dropi distinta a LIVANA: pedido y flete van aparte
+    name: "Dúo Soy Rizos Reparación",
+    category: "kits",
+    categoryLabel: "Kits",
+    types: ["ondulado", "rizado", "afro"],
+    price: 169900,
+    cost: 90000, // ✅ VERIFICADO en Dropi (Shampoo Limpieza e Hidratación + Tratamiento Reparación)
+    fleteEstimado: 25000, // ⏳ ESTIMADO — confirmar en la calculadora de Dropi con las 2 unidades reales (Bogotá/Cund., con recaudo)
+    comisionPct: 0.04, // ✅ VERIFICADO (4%)
+    size: "2 productos",
+    rating: 4.9,
+    reviews: 0,
+    badge: "Envío gratis",
+    badgeClass: "badge-pink",
+    art: "kitSmall",
+    images: [], // ⚠️ PENDIENTE: subir fotos a Statics/productos/kit-soy-rizos-reparacion/ (mientras tanto la tienda muestra el arte SVG)
+    // ⚠️ Copy provisional — ajustar con la ficha real del proveedor Lovely Cosmetic
+    short: "Shampoo Soy Rizos + tratamiento reparador de Lovely Cosmetic: limpieza, hidratación y reparación en dos pasos.",
+    desc: "El dúo Soy Rizos de Lovely Cosmetic para limpiar, hidratar y reparar el cabello rizado en dos pasos. Incluye el Shampoo Soy Rizos Limpieza e Hidratación (limpia con suavidad sin resecar el rizo) y el Tratamiento Capilar Soy Rizos Reparación (nutrición intensiva que repara la fibra, aporta suavidad y ayuda a controlar el frizz). Ideal para rizos secos, maltratados o con frizz que quieren recuperar suavidad, brillo y definición natural con una rutina corta.",
+    benefits: ["Limpieza suave que no reseca el rizo", "Hidratación profunda en cada lavado", "Repara la fibra de rizos secos o maltratados", "Ayuda a controlar el frizz y devuelve el brillo", "Rutina corta de dos pasos, fácil de mantener"],
+    howto: "1) Lava con el Shampoo Soy Rizos masajeando el cuero cabelludo y enjuaga. 2) Aplica el Tratamiento Reparación de medios a puntas, deja actuar 10-15 minutos y enjuaga. Úsalo 1-2 veces por semana; los demás lavados puedes usar solo el shampoo.",
+    ingredients: "Consulta la etiqueta de cada producto Soy Rizos de Lovely Cosmetic incluido en el dúo. Uso externo; evitar el contacto con los ojos.",
   },
 ];
