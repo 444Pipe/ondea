@@ -1,9 +1,98 @@
-# Rizos Ondea — Tienda online 🛒✦
+# Rizos Ondea — Comunidad curly ✦
 
-E-commerce (HTML + CSS + JS + servidor Node sin dependencias) para **Rizos Ondea**, tienda
-online **colombiana curadora de marcas** para cabello rizado, ondulado y afro, con envío a
-domicilio en todo el país (modelo dropshipping: no fabrica, selecciona y revende marcas
-aliadas). El checkout finaliza el pedido por **WhatsApp** y queda registrado en el panel admin.
+Sitio (HTML + CSS + JS + servidor Node sin dependencias) de **Rizos Ondea**: un espacio
+colombiano para **aprender a amar tus rizos**. El corazón del sitio son las **guías paso a
+paso** — cada paso con su foto o su video — que se publican desde el panel admin, más el
+test capilar, los artículos y la comunidad. La **tienda de kits queda en segundo plano**:
+sigue funcionando (catálogo, carrito, checkout, Dropi, Wompi) pero ya no es el foco.
+
+> El sitio **no publica ningún número de teléfono** ni botón de WhatsApp: el contacto
+> público es el correo `hola@rizosondea.com` e Instagram `@rizosondea`.
+
+## 📚 Guías paso a paso (lo principal)
+
+Las guías viven en el servidor, no en el código: se crean y se editan desde
+**`/admin.html` → Guías**.
+
+- **Crear una guía**: título, resumen, tema, textura, nivel, duración, portada y —
+  opcional — un video de la guía completa.
+- **Pasos**: se agregan, se reordenan (↑ ↓) y se borran. Cada paso lleva título,
+  explicación, **una foto y/o un video subidos desde el computador o el celular**, y un tip.
+- **Publicada / Borrador**: mientras esté en borrador nadie la ve. Al publicarla aparece
+  de inmediato en `/guias.html` y en la portada.
+- **Destacada**: la sube a las tres guías que salen en el inicio.
+- **Tips finales**: la lista de consejos que cierra la guía.
+
+Las fotos y los videos se guardan en `DATA_DIR/uploads` y se sirven en `/media/<archivo>`
+(con soporte de rangos, para que los videos arranquen al instante en iPhone y Android).
+Límite: **160 MB por archivo**; formatos JPG, PNG, WEBP, GIF, MP4, WEBM y MOV.
+
+> ⚠️ **Importante en Railway**: sin un *Volume* montado en `/data` (y `DATA_DIR=/data`),
+> las guías, los archivos subidos, los pedidos y los correos del Club Ondea **se borran en
+> cada redespliegue**. Ver "Persistencia" más abajo.
+
+La primera vez que arranca, el servidor siembra 4 guías de arranque (primer lavado,
+definición sin frizz, hidratación semanal y refresco del segundo día) para que la
+comunidad no se vea vacía. Se editan o se borran como cualquier otra.
+
+## Estructura
+
+| Archivo | Qué es |
+|---|---|
+| `index.html` | Inicio comunidad: hero, pilares, guías destacadas, rutina básica, comunidad, tips, FAQ, Club Ondea y — al final — la tienda |
+| `guias.html` | Listado de guías con filtros por tema y por textura |
+| `guia.html?id=...` | Una guía con sus pasos, fotos y videos |
+| `test-capilar.html` | Test capilar: 5 preguntas → textura + guías recomendadas |
+| `blog.html` + `blog-*.html` | Artículos largos (definición, método curly, frizz) |
+| `productos.html` | Catálogo de kits con filtros |
+| `producto.html?id=...` | Detalle de un kit |
+| `carrito.html` | Carrito + checkout (el pedido se confirma en la web, sin apps externas) |
+| `admin.html` | Panel: **Guías**, Club Ondea, Pedidos, Contabilidad, Productos |
+| `js/app.js` | Lógica del sitio: guías, carrito, filtros, quiz, iconos SVG |
+| `js/admin-guias.js` | Editor de guías del panel (subida de fotos y videos) |
+| `js/data.js` | Configuración y catálogo de kits |
+| `css/styles.css` · `css/admin.css` | Estilos del sitio y del panel |
+| `Statics/` | Logo e imágenes de marca |
+| `sitemap.xml`, `robots.txt` | SEO técnico (las guías se añaden al sitemap solas) |
+
+## 🛡️ Panel de administración
+
+En **`/admin.html`** (enlace discreto al final del footer):
+
+- **Guías** — crear, editar, reordenar, publicar y borrar guías; subir fotos y videos.
+- **Club Ondea** — correos suscritos desde el sitio, con exportación a CSV.
+- **Pedidos** — los pedidos de la tienda, con cambio de estado y envío a Dropi.
+- **Contabilidad** y **Productos** — ganancia, margen bruto y neto por kit.
+
+**Acceso**: usuario `gamendo`, contraseña `amoapipe` por defecto. En producción cámbialos
+con `ADMIN_USER` y `ADMIN_PASS` en Railway → *Variables* (recomendado: los valores por
+defecto están en el repositorio).
+
+### Persistencia (Railway)
+
+Crea un **Volume** montado en `/data` y define `DATA_DIR=/data`. Ahí se guardan:
+
+| Archivo | Contenido |
+|---|---|
+| `contenido.json` | Guías y correos del Club Ondea |
+| `uploads/` | Fotos y videos subidos desde el panel |
+| `pedidos.json` | Pedidos de la tienda |
+
+## API
+
+| Ruta | Acceso | Para qué |
+|---|---|---|
+| `GET /api/guias` | público | Guías publicadas (las lee el sitio) |
+| `POST /api/suscriptores` | público | Alta en el Club Ondea |
+| `GET /media/<archivo>` | público | Fotos y videos de las guías |
+| `GET/POST /api/admin/guias` | clave admin | Listar (con borradores) y crear |
+| `PUT/DELETE /api/admin/guias/:id` | clave admin | Editar y borrar |
+| `POST /api/admin/guias/orden` | clave admin | Reordenar |
+| `POST/GET /api/admin/media` | clave admin | Subir archivo (bytes crudos) y listar |
+| `DELETE /api/admin/media/:archivo` | clave admin | Borrar (falla si una guía lo usa) |
+| `GET /api/admin/suscriptores` | clave admin | Correos del Club Ondea |
+
+Las rutas de admin se autentican con la cabecera `x-admin-key: usuario:contraseña`.
 
 ## 🔌 Integración con Dropi
 
@@ -54,91 +143,53 @@ seguro" ni siquiera aparece en el carrito hasta activarlo:
      pago está aprobado.
 5. Verifica la configuración en `GET /api/wompi/estado` (con la clave de admin).
 
-## Estructura
-
-| Archivo | Qué es |
-|---|---|
-| `index.html` | Inicio: hero animado, categorías, destacados, texturas, manifiesto, Instagram, newsletter, FAQ |
-| `productos.html` | Catálogo con filtros (categoría, tipo de rizo, orden) |
-| `producto.html?id=...` | Detalle de producto (beneficios, modo de uso, relacionados) |
-| `carrito.html` | Carrito + checkout con envío calculado y pedido por WhatsApp |
-| `test-capilar.html` | Test capilar interactivo: 5 preguntas → rutina recomendada |
-| `blog.html` + `blog-*.html` | Blog SEO con 3 guías curly (definición, método curly, frizz) |
-| `js/data.js` | **Configuración y catálogo** (aquí se edita todo) |
-| `js/app.js` | Lógica: carrito, filtros, checkout, quiz, iconos SVG |
-| `css/styles.css` | Estilos con la identidad del logo (chocolate + rosa) |
-| `Statics/` | Logo + imágenes de marca generadas con IA (hero, Instagram) |
-| `sitemap.xml`, `robots.txt` | SEO técnico |
-
-## ⚙️ Antes de publicar (importante)
-
-1. **Número de WhatsApp**: ya configurado (`573188546934` en [`js/data.js`](js/data.js)
-   y visible en los footers). Si cambia, actualízalo en esos dos lugares.
-2. **Dominio**: cuando tengan dominio propio, reemplaza `https://www.rizosondea.com/`
-   en las etiquetas `canonical`, `og:*`, JSON-LD, `sitemap.xml` y `robots.txt`.
-3. **Productos**: el catálogo actual es **inventado** (demo). Edita `ONDEA_PRODUCTS`
-   en `js/data.js`: nombres, precios, descripciones. Para usar fotos reales,
-   reemplaza el arte SVG por `<img>` en las funciones de render de `js/app.js`.
-4. **Costos de envío**: en `js/data.js` → `envioNacional`, `envioLocal`, `envioGratisDesde`.
+Los demás métodos (Nequi, Daviplata, transferencia, contraentrega) registran el pedido en
+el panel y muestran la confirmación con el número de pedido en la misma página.
 
 ## SEO incluido
 
-- Titles y descriptions únicos por página, orientados a "productos para rizos
-  Villavicencio / Colombia" y "método curly Colombia".
-- JSON-LD: `Store` (negocio local en Villavicencio con `areaServed` Colombia),
-  `FAQPage`, `ItemList` de productos y `WebSite`.
-- Open Graph + geo tags (`geo.region CO-MET`), `lang="es-CO"`, sitemap y robots.
-- Recomendado al publicar: crear el perfil de **Google Business Profile**
-  (Villavicencio) y verificar el sitio en **Google Search Console** enviando el sitemap.
+- Titles y descriptions únicos por página, orientados a "aprender a cuidar rizos",
+  "guías método curly" y "comunidad curly Colombia".
+- JSON-LD: `Organization` (sin teléfono), `FAQPage` de la comunidad, `ItemList` de
+  productos y `WebSite`.
+- Open Graph, `lang="es-CO"`, robots y **sitemap dinámico**: `/sitemap.xml` toma las
+  páginas fijas del archivo y le suma cada guía publicada con su `lastmod`.
+- Recomendado al publicar: verificar el sitio en **Google Search Console** y enviar el
+  sitemap.
+
+## ⚙️ Antes de publicar
+
+1. **Dominio**: si cambia, reemplaza `https://www.rizosondea.com/` en `canonical`,
+   `og:*`, JSON-LD, `sitemap.xml` y `robots.txt`.
+2. **Volume en Railway**: sin él se pierden guías y archivos subidos en cada deploy.
+3. **Claves del panel**: cambia `ADMIN_USER` y `ADMIN_PASS`.
+4. **Costos de envío** de la tienda: en `js/data.js` → `envioNacional`, `envioLocal`,
+   `envioGratisDesde`.
 
 ## Ver el sitio en local
-
-Abre `index.html` en el navegador, o corre el mismo servidor de producción:
 
 ```
 node server.js
 # → http://localhost:3000
 ```
 
-## 🛡️ Panel de administración
-
-En **`/admin.html`** está el panel interno: pedidos que llegan de la tienda,
-estadísticas (ventas, ganancia, ticket promedio), gráficas, gestión de estados
-(nuevo → confirmado → enviado → entregado / cancelado), contabilidad por
-producto y exportación a CSV.
-
-- **Acceso**: hay un enlace "Admin" al final del footer de la tienda.
-  Usuario por defecto `gamendo`, contraseña `amoapipe`. En producción puedes
-  cambiarlos con las variables `ADMIN_USER` y `ADMIN_PASS` en Railway
-  (*Variables*) — recomendado, porque los valores por defecto quedan visibles
-  en el código del repositorio.
-- **Cómo llegan los pedidos**: cuando una clienta finaliza el checkout, el
-  pedido se guarda automáticamente en el servidor además de abrir WhatsApp.
-- **Persistencia en Railway**: crea un **Volume** montado en `/data` y define
-  la variable `DATA_DIR=/data`. Sin volumen, los pedidos se borran en cada
-  redespliegue (el archivo vive en el sistema de archivos efímero).
-- **Ganancia por producto**: se calcula con el campo `cost` de cada producto
-  en `js/data.js` — actualízalo con tus costos reales.
-- **Datos demo**: el botón "Cargar datos demo" siembra ~32 pedidos de ejemplo
-  para ver el panel en acción; "Borrar demo" los elimina sin tocar los reales.
+Las guías necesitan el servidor (leen `/api/guias`), así que ábrelo por `http://localhost`
+y no como archivo suelto.
 
 ## 🚂 Desplegar en Railway
 
-El proyecto ya incluye todo lo necesario: `server.js` (servidor estático sin
-dependencias, con gzip y caché), `package.json` (comando `start`) y
-`railway.json` (configuración de build y reinicio). Pasos:
+El proyecto ya incluye todo lo necesario: `server.js` (servidor sin dependencias, con gzip,
+caché y streaming de video), `package.json` (comando `start`) y `railway.json`. Pasos:
 
-1. Sube el repositorio a GitHub (ya está commiteado):
+1. Sube el repositorio a GitHub:
    ```
-   git remote add origin https://github.com/TU-USUARIO/rizos-ondea.git
-   git push -u origin main
+   git push origin main
    ```
 2. Entra a [railway.com/new](https://railway.com/new) → **Deploy from GitHub repo**
    → elige el repo. Railway detecta Node y ejecuta `node server.js` solo.
 3. En el servicio → **Settings → Networking → Generate Domain** para obtener la
    URL pública (`*.up.railway.app`).
-4. (Opcional) Conecta el dominio propio en **Settings → Custom Domain** y
-   actualiza las URLs `https://www.rizosondea.com/` del SEO (canonical, og,
-   JSON-LD, `sitemap.xml`, `robots.txt`) con el dominio definitivo.
+4. **Settings → Volumes** → monta un volumen en `/data` y define `DATA_DIR=/data`.
+5. (Opcional) Conecta el dominio propio en **Settings → Custom Domain**.
 
 Cada `git push` a `main` redespliega automáticamente.

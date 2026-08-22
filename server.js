@@ -1,6 +1,7 @@
 /* ==========================================================================
    Rizos Ondea — Servidor para producción (Railway)
-   Sirve el sitio estático Y la API de pedidos del panel admin.
+   Sirve el sitio estático, la API de la comunidad (guías paso a paso con
+   fotos y videos que se suben desde el panel) y la API de pedidos.
    Sin dependencias: solo módulos nativos de Node.
 
    Variables de entorno:
@@ -9,7 +10,8 @@
    - ADMIN_PASS  → contraseña del panel admin (por defecto "amoapipe").
    - DATA_DIR    → carpeta de datos persistente. En Railway crea un Volume
                    montado en /data y define DATA_DIR=/data para que los
-                   pedidos sobrevivan a los redespliegues.
+                   pedidos, las guías y las fotos/videos subidos sobrevivan
+                   a los redespliegues.
    ========================================================================== */
 
 const http = require("http");
@@ -26,6 +28,18 @@ const ADMIN_PASS = process.env.ADMIN_PASS || "amoapipe";
 const ADMIN_KEY = ADMIN_USER + ":" + ADMIN_PASS; // el panel envía "usuario:contraseña"
 const DATA_DIR = process.env.DATA_DIR || path.join(ROOT, "data");
 const PEDIDOS_FILE = path.join(DATA_DIR, "pedidos.json");
+
+/* Contenido de la comunidad: guías paso a paso con fotos y videos que se
+   suben desde el panel admin, y el Club Ondea (correos suscritos).
+   Los archivos subidos viven en DATA_DIR/uploads y se sirven en /media/… */
+const CONTENIDO_FILE = path.join(DATA_DIR, "contenido.json");
+const UPLOADS_DIR = path.join(DATA_DIR, "uploads");
+const MEDIA_MAX = 160 * 1024 * 1024; // 160 MB por archivo (videos de los pasos)
+const MEDIA_EXT = {
+  ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
+  ".webp": "image/webp", ".gif": "image/gif",
+  ".mp4": "video/mp4", ".webm": "video/webm", ".mov": "video/quicktime",
+};
 
 const ESTADOS = ["nuevo", "confirmado", "enviado", "entregado", "cancelado"];
 
@@ -217,6 +231,275 @@ function savePedidos() {
 function genId() {
   const rand = Math.random().toString(36).slice(2, 5).toUpperCase();
   return "PED-" + Date.now().toString(36).toUpperCase() + rand;
+}
+
+/* ---------- Contenido de la comunidad (guías paso a paso) ---------- */
+
+if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+
+/* Guías de arranque: existen para que la comunidad no se vea vacía el
+   primer día. Se editan y se borran desde el panel como cualquier otra. */
+const GUIAS_SEMILLA = [
+  {
+    id: "primer-lavado-curly",
+    titulo: "Tu primer lavado curly, paso a paso",
+    resumen: "El día uno del método curly: cómo lavar, desenredar y secar sin romper tus rizos. Si nunca lo has hecho, empieza por aquí.",
+    categoria: "rutina",
+    textura: "todas",
+    nivel: "principiante",
+    duracion: "35 min",
+    portada: "Statics/ig-rizos.webp",
+    publicada: true,
+    destacada: true,
+    pasos: [
+      { titulo: "Desenreda antes de mojar", texto: "Con el cabello seco y un poco de acondicionador o aceite, separa el pelo en cuatro secciones y desenreda con los dedos desde las puntas hacia la raíz. Nunca desde arriba: ahí es donde se rompe.", tip: "Si escuchas que el pelo truena, estás jalando de más." },
+      { titulo: "Lava el cuero cabelludo, no las puntas", texto: "Moja bien y aplica shampoo solo en el cuero cabelludo, masajeando con las yemas de los dedos (nunca con las uñas) durante un minuto. Al enjuagar, la espuma limpia sola el resto del largo.", tip: "" },
+      { titulo: "Acondiciona con el pelo lleno de agua", texto: "Con el cabello chorreando, aplica acondicionador de medios a puntas y desenreda con los dedos o un peine de dientes anchos. Déjalo actuar tres minutos mientras el rizo se forma solo.", tip: "" },
+      { titulo: "Enjuaga con agua fría o tibia", texto: "El agua fría cierra la cutícula y deja el rizo más brillante. No te obsesiones con dejar el pelo chillón: un poco de deslizamiento significa que quedó hidratado.", tip: "" },
+      { titulo: "Aplica producto con el pelo empapado", texto: "Crema para peinar primero, gel después, siempre con el cabello escurriendo agua. Aplica con la técnica de rezo (praying hands) y luego haz scrunch de puntas hacia el cuero cabelludo.", tip: "Producto sobre pelo seco es frizz. Sobre pelo mojado, definición." },
+      { titulo: "Seca sin toalla de baño", texto: "Retira el exceso de agua apretando (nunca frotando) con una camiseta de algodón o una toalla de microfibra. Deja secar al aire o usa difusor en calor bajo, sin mover el rizo hasta que esté 80% seco.", tip: "El casquito duro del gel es buena señal: al final se rompe con las manos y queda el rizo suave." },
+    ],
+    tips: [
+      "Los primeros lavados pueden verse raros: el cabello viene acostumbrado a siliconas y necesita 3 o 4 lavados para reaccionar.",
+      "Toma fotos de cada lavado. En un mes vas a ver el cambio que hoy no notas.",
+    ],
+  },
+  {
+    id: "definir-rizos-sin-frizz",
+    titulo: "Cómo definir tus rizos sin frizz",
+    resumen: "Scrunch, plopping y casquito: las tres técnicas que hacen la diferencia entre un rizo definido y una nube de frizz.",
+    categoria: "definicion",
+    textura: "todas",
+    nivel: "principiante",
+    duracion: "20 min",
+    portada: "Statics/ig-flatlay.webp",
+    publicada: true,
+    destacada: true,
+    pasos: [
+      { titulo: "Trabaja siempre con el pelo empapado", texto: "La definición se decide con el agua, no con el producto. Si el cabello se secó mientras aplicabas, vuelve a mojar esa sección con un atomizador.", tip: "" },
+      { titulo: "Praying hands", texto: "Reparte el producto entre las palmas y deslízalo por la sección de cabello como si estuvieras rezando, de raíz a puntas. Así el producto cubre parejo sin abrir el rizo.", tip: "" },
+      { titulo: "Scrunch de puntas a raíz", texto: "Toma el cabello desde las puntas y empújalo hacia el cuero cabelludo con la mano en forma de copa, apretando suave. Vas a escuchar el sonido del agua con el gel: eso es lo que forma el resorte.", tip: "" },
+      { titulo: "Plopping 15 minutos", texto: "Envuelve el cabello en una camiseta de algodón sobre la cabeza y déjalo reposar. El rizo se acomoda hacia arriba, se quita el exceso de agua y el largo no se estira con su propio peso.", tip: "Más de 25 minutos y el pelo queda demasiado húmedo: se demora el doble en secar." },
+      { titulo: "No lo toques hasta que esté seco", texto: "Cada vez que metes la mano en el pelo mojado rompes la forma del rizo y sale frizz. Deja secar al aire o con difusor sin manipular.", tip: "" },
+      { titulo: "Rompe el casquito", texto: "Cuando esté 100% seco, frota un poco de aceite entre las manos y haz scrunch para romper la capa dura del gel. Queda rizo definido y suave al tacto.", tip: "" },
+    ],
+    tips: [
+      "El frizz casi siempre es cabello deshidratado, o cabello tocado en el momento equivocado.",
+      "Si vives en clima húmedo (Villavicencio, la costa, el Eje), usa gel de fijación fuerte: ahí el frizz no perdona.",
+    ],
+  },
+  {
+    id: "hidratacion-semanal-rizos-secos",
+    titulo: "Hidratación semanal para rizos resecos",
+    resumen: "La mascarilla que le devuelve elasticidad al rizo quebradizo, y cómo saber si lo que tu pelo necesita es hidratación o proteína.",
+    categoria: "cuidado",
+    textura: "todas",
+    nivel: "intermedio",
+    duracion: "45 min",
+    portada: "Statics/ig-afro.webp",
+    publicada: true,
+    destacada: false,
+    pasos: [
+      { titulo: "Haz la prueba del rizo estirado", texto: "Toma un rizo mojado y estíralo suave. Si se estira mucho y no vuelve, le falta proteína. Si se rompe de una, le falta hidratación. Esa respuesta define tu tratamiento de la semana.", tip: "" },
+      { titulo: "Aplica sobre cabello limpio y húmedo", texto: "Después del shampoo, retira el exceso de agua y aplica la mascarilla mechón por mechón, de medios a puntas. La raíz no la necesita.", tip: "" },
+      { titulo: "Calor suave por 20 minutos", texto: "Cubre con un gorro plástico y envuelve con una toalla. El calor de tu propia cabeza abre la cutícula y deja entrar el tratamiento. Si tienes vaporizador, mejor.", tip: "" },
+      { titulo: "Enjuaga a fondo", texto: "Enjuaga con agua tibia hasta que el pelo deje de sentirse pesado. Un tratamiento mal enjuagado apelmaza el rizo y lo deja sin volumen.", tip: "" },
+      { titulo: "Sigue con tu rutina normal", texto: "Acondicionador, crema y gel como cualquier día. Vas a notar el rizo más pesado, brillante y con el resorte de vuelta.", tip: "Una vez por semana es suficiente: hidratar de más también rompe el pelo." },
+    ],
+    tips: [
+      "Rizos porosos (se mojan rápido y se secan rápido) necesitan sellar con aceite después de hidratar.",
+      "Si tu pelo está teñido o decolorado, alterna hidratación una semana y proteína la siguiente.",
+    ],
+  },
+  {
+    id: "refrescar-rizos-segundo-dia",
+    titulo: "Refresca tus rizos al segundo (y tercer) día",
+    resumen: "No hay que lavarse todos los días. Así se revive el rizo aplastado de la mañana siguiente, en cinco minutos.",
+    categoria: "estilos",
+    textura: "todas",
+    nivel: "principiante",
+    duracion: "10 min",
+    portada: "Statics/hero-poster.jpg",
+    publicada: true,
+    destacada: false,
+    pasos: [
+      { titulo: "Duerme cuidando el rizo", texto: "Piña alta con scrunchie de satén, o gorro y funda de satén. El algodón absorbe la humedad del pelo y aplasta la forma mientras duermes.", tip: "" },
+      { titulo: "Humedece, no empapes", texto: "Con un atomizador de agua (opcional: una cucharadita de acondicionador dentro) rocía sección por sección hasta que el rizo se vuelva a sentir elástico.", tip: "" },
+      { titulo: "Scrunch de nuevo", texto: "Aprieta con la mano en copa, de puntas a raíz. El rizo vuelve a acomodarse sin necesidad de producto nuevo.", tip: "" },
+      { titulo: "Levanta la raíz", texto: "Con los dedos abiertos, mueve suavemente el cuero cabelludo para devolver volumen. Si quedaron zonas muy aplastadas, un poco de gel diluido solo ahí.", tip: "Refrescar gasta menos producto y menos tiempo que lavar: tu rizo y tu bolsillo lo agradecen." },
+    ],
+    tips: ["Si al tercer día ya no responde, es señal de acumulación: toca lavado profundo."],
+  },
+];
+
+let contenido = { guias: [], suscriptores: [] };
+try {
+  const crudo = JSON.parse(fs.readFileSync(CONTENIDO_FILE, "utf8"));
+  contenido.guias = Array.isArray(crudo.guias) ? crudo.guias : [];
+  contenido.suscriptores = Array.isArray(crudo.suscriptores) ? crudo.suscriptores : [];
+} catch (e) {
+  const ahora = new Date().toISOString();
+  contenido = {
+    guias: GUIAS_SEMILLA.map((g, i) => Object.assign({}, g, { orden: i, creada: ahora, actualizada: ahora })),
+    suscriptores: [],
+  };
+}
+
+let contenidoChain = Promise.resolve();
+function saveContenido() {
+  contenidoChain = contenidoChain
+    .then(() => fs.promises.writeFile(CONTENIDO_FILE, JSON.stringify(contenido, null, 2)))
+    .catch((e) => console.error("Error guardando contenido:", e.message));
+}
+if (!fs.existsSync(CONTENIDO_FILE)) saveContenido();
+
+function txt(v, max) {
+  return String(v == null ? "" : v).replace(/\s+/g, " ").trim().slice(0, max);
+}
+
+function parrafo(v, max) {
+  return String(v == null ? "" : v).replace(/\r\n/g, "\n").replace(/[ \t]+/g, " ").trim().slice(0, max);
+}
+
+function slugify(s) {
+  return String(s || "")
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60);
+}
+
+function slugUnico(base, idActual) {
+  const raiz = slugify(base) || "guia";
+  let slug = raiz;
+  let n = 2;
+  while (contenido.guias.some((g) => g.id === slug && g.id !== idActual)) {
+    slug = raiz.slice(0, 55) + "-" + n++;
+  }
+  return slug;
+}
+
+/* Solo se aceptan rutas internas: archivos subidos (/media/…) o del propio
+   sitio (Statics/…). Así el panel nunca termina incrustando enlaces externos. */
+function rutaMedia(v) {
+  const s = txt(v, 300);
+  if (!s || s.indexOf("..") !== -1) return "";
+  if (s.indexOf("/media/") === 0 || s.indexOf("Statics/") === 0) return s;
+  return "";
+}
+
+const CATEGORIAS = ["rutina", "definicion", "cuidado", "transicion", "estilos", "herramientas"];
+const TEXTURAS = ["todas", "ondulada", "rizada", "afro"];
+const NIVELES = ["principiante", "intermedio", "avanzado"];
+
+function normalizarGuia(body, existente) {
+  const ahora = new Date().toISOString();
+  const titulo = txt(body.titulo, 120) || "Guía sin título";
+  return {
+    id: existente ? existente.id : slugUnico(titulo),
+    titulo: titulo,
+    resumen: parrafo(body.resumen, 400),
+    categoria: CATEGORIAS.indexOf(body.categoria) !== -1 ? body.categoria : "rutina",
+    textura: TEXTURAS.indexOf(body.textura) !== -1 ? body.textura : "todas",
+    nivel: NIVELES.indexOf(body.nivel) !== -1 ? body.nivel : "principiante",
+    duracion: txt(body.duracion, 40),
+    portada: rutaMedia(body.portada),
+    video: rutaMedia(body.video),
+    publicada: body.publicada !== false,
+    destacada: !!body.destacada,
+    orden: existente ? existente.orden : contenido.guias.length,
+    creada: existente ? existente.creada : ahora,
+    actualizada: ahora,
+    pasos: (Array.isArray(body.pasos) ? body.pasos : []).slice(0, 25).map((p) => ({
+      titulo: txt(p.titulo, 120),
+      texto: parrafo(p.texto, 1500),
+      imagen: rutaMedia(p.imagen),
+      video: rutaMedia(p.video),
+      tip: parrafo(p.tip, 300),
+    })).filter((p) => p.titulo || p.texto || p.imagen || p.video),
+    tips: (Array.isArray(body.tips) ? body.tips : []).slice(0, 10)
+      .map((t) => parrafo(t, 300)).filter(Boolean),
+  };
+}
+
+function guiasPublicas() {
+  return contenido.guias
+    .filter((g) => g.publicada)
+    .slice()
+    .sort((a, b) => (a.orden || 0) - (b.orden || 0) || String(b.creada).localeCompare(String(a.creada)));
+}
+
+/* ---------- Archivos subidos desde el panel ---------- */
+
+function nombreArchivo(original, tipoMime) {
+  const nombreBase = String(original || "archivo");
+  let ext = path.extname(nombreBase).toLowerCase();
+  if (!MEDIA_EXT[ext]) {
+    ext = Object.keys(MEDIA_EXT).find((e) => MEDIA_EXT[e] === tipoMime) || "";
+  }
+  if (!MEDIA_EXT[ext]) return null;
+  const base = slugify(path.basename(nombreBase, path.extname(nombreBase))) || "archivo";
+  return base.slice(0, 40) + "-" + Date.now().toString(36) + crypto.randomBytes(3).toString("hex") + ext;
+}
+
+/* Subida directa: el cuerpo de la petición son los bytes del archivo tal cual
+   (sin multipart) y se escriben en disco a medida que llegan, para que un
+   video de 100 MB no tenga que caber en memoria. */
+function guardarMedia(req, nombre) {
+  return new Promise((resolve, reject) => {
+    const destino = path.join(UPLOADS_DIR, nombre);
+    const salida = fs.createWriteStream(destino);
+    let size = 0;
+    let abortado = false;
+    const fallar = (msg) => {
+      if (abortado) return;
+      abortado = true;
+      salida.destroy();
+      fs.unlink(destino, () => {});
+      req.destroy();
+      reject(new Error(msg));
+    };
+    req.on("data", (c) => {
+      size += c.length;
+      if (size > MEDIA_MAX) fallar("El archivo pesa más de " + Math.round(MEDIA_MAX / 1048576) + " MB");
+    });
+    req.on("error", () => fallar("Se cortó la subida"));
+    salida.on("error", () => fallar("No se pudo guardar el archivo"));
+    salida.on("finish", () => {
+      if (abortado) return;
+      if (!size) {
+        fs.unlink(destino, () => {});
+        return reject(new Error("El archivo llegó vacío"));
+      }
+      resolve({ nombre: nombre, url: "/media/" + nombre, bytes: size });
+    });
+    req.pipe(salida);
+  });
+}
+
+function listarMedia() {
+  let archivos = [];
+  try { archivos = fs.readdirSync(UPLOADS_DIR); } catch (e) { return []; }
+  return archivos
+    .filter((f) => MEDIA_EXT[path.extname(f).toLowerCase()])
+    .map((f) => {
+      let stat = null;
+      try { stat = fs.statSync(path.join(UPLOADS_DIR, f)); } catch (e) {}
+      return {
+        nombre: f,
+        url: "/media/" + f,
+        bytes: stat ? stat.size : 0,
+        fecha: stat ? stat.mtime.toISOString() : null,
+        tipo: (MEDIA_EXT[path.extname(f).toLowerCase()] || "").split("/")[0],
+      };
+    })
+    .sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+}
+
+function mediaEnUso(nombre) {
+  const url = "/media/" + nombre;
+  return contenido.guias.some((g) =>
+    g.portada === url || g.video === url ||
+    (g.pasos || []).some((p) => p.imagen === url || p.video === url)
+  );
 }
 
 /* ---------- Utilidades HTTP ---------- */
@@ -430,6 +713,27 @@ async function handleApi(req, res, urlPath) {
     return sendJSON(res, 200, { ok: true });
   }
 
+  // Guías publicadas (las lee la comunidad — público)
+  if (urlPath === "/api/guias" && req.method === "GET") {
+    return sendJSON(res, 200, { ok: true, guias: guiasPublicas() });
+  }
+
+  // Club Ondea: alguien deja su correo para recibir las guías nuevas (público)
+  if (urlPath === "/api/suscriptores" && req.method === "POST") {
+    let body;
+    try { body = await readBody(req, 4 * 1024); }
+    catch (e) { return sendJSON(res, 400, { ok: false, error: e.message }); }
+    const email = txt(body && body.email, 140).toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)) {
+      return sendJSON(res, 400, { ok: false, error: "Correo inválido" });
+    }
+    if (!contenido.suscriptores.some((s) => s.email === email)) {
+      contenido.suscriptores.push({ email: email, fecha: new Date().toISOString() });
+      saveContenido();
+    }
+    return sendJSON(res, 201, { ok: true });
+  }
+
   // Todo lo demás requiere la clave del admin
   if (!isAuthed(req)) return sendJSON(res, 401, { ok: false, error: "Clave inválida" });
 
@@ -516,6 +820,7 @@ async function handleApi(req, res, urlPath) {
       }
       const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
       const lugar = ciudades[Math.floor(Math.random() * ciudades.length)];
+      const esVillavo = lugar[0] === "Villavicencio";
       const envio = subtotal >= 150000 ? 0 : 12000;
       let estado;
       if (diasAtras > 8) estado = Math.random() < 0.9 ? "entregado" : "cancelado";
@@ -556,10 +861,149 @@ async function handleApi(req, res, urlPath) {
     return sendJSON(res, 200, { ok: true, eliminados: antes - pedidos.length });
   }
 
+  /* ---------- Panel: guías paso a paso ---------- */
+
+  // Todas las guías, publicadas y borradores
+  if (urlPath === "/api/admin/guias" && req.method === "GET") {
+    return sendJSON(res, 200, {
+      ok: true,
+      guias: contenido.guias.slice().sort((a, b) => (a.orden || 0) - (b.orden || 0)),
+    });
+  }
+
+  // Crear una guía nueva
+  if (urlPath === "/api/admin/guias" && req.method === "POST") {
+    let body;
+    try { body = await readBody(req, 400 * 1024); }
+    catch (e) { return sendJSON(res, 400, { ok: false, error: e.message }); }
+    const guia = normalizarGuia(body, null);
+    contenido.guias.push(guia);
+    saveContenido();
+    return sendJSON(res, 201, { ok: true, guia: guia });
+  }
+
+  // Reordenar las guías (el panel manda los ids en el orden deseado)
+  if (urlPath === "/api/admin/guias/orden" && req.method === "POST") {
+    let body;
+    try { body = await readBody(req, 20 * 1024); }
+    catch (e) { return sendJSON(res, 400, { ok: false, error: e.message }); }
+    const ids = Array.isArray(body.ids) ? body.ids : [];
+    ids.forEach((id, i) => {
+      const g = contenido.guias.find((x) => x.id === id);
+      if (g) g.orden = i;
+    });
+    saveContenido();
+    return sendJSON(res, 200, { ok: true });
+  }
+
+  const matchGuia = urlPath.match(/^\/api\/admin\/guias\/([a-z0-9-]+)$/);
+
+  // Editar una guía existente
+  if (matchGuia && req.method === "PUT") {
+    let body;
+    try { body = await readBody(req, 400 * 1024); }
+    catch (e) { return sendJSON(res, 400, { ok: false, error: e.message }); }
+    const i = contenido.guias.findIndex((g) => g.id === matchGuia[1]);
+    if (i === -1) return sendJSON(res, 404, { ok: false, error: "Guía no encontrada" });
+    contenido.guias[i] = normalizarGuia(body, contenido.guias[i]);
+    saveContenido();
+    return sendJSON(res, 200, { ok: true, guia: contenido.guias[i] });
+  }
+
+  // Borrar una guía
+  if (matchGuia && req.method === "DELETE") {
+    const antes = contenido.guias.length;
+    contenido.guias = contenido.guias.filter((g) => g.id !== matchGuia[1]);
+    if (contenido.guias.length === antes) return sendJSON(res, 404, { ok: false, error: "Guía no encontrada" });
+    saveContenido();
+    return sendJSON(res, 200, { ok: true });
+  }
+
+  /* ---------- Panel: fotos y videos ---------- */
+
+  // Subir un archivo: el cuerpo son los bytes y el nombre viene en la cabecera
+  if (urlPath === "/api/admin/media" && req.method === "POST") {
+    const nombre = nombreArchivo(
+      decodeURIComponent(req.headers["x-nombre-archivo"] || ""),
+      String(req.headers["content-type"] || "").split(";")[0].trim()
+    );
+    if (!nombre) {
+      req.resume();
+      return sendJSON(res, 400, { ok: false, error: "Formato no permitido. Usa JPG, PNG, WEBP, GIF, MP4, WEBM o MOV." });
+    }
+    try {
+      const archivo = await guardarMedia(req, nombre);
+      return sendJSON(res, 201, { ok: true, archivo: archivo });
+    } catch (e) {
+      return sendJSON(res, 413, { ok: false, error: e.message });
+    }
+  }
+
+  // Biblioteca de archivos subidos
+  if (urlPath === "/api/admin/media" && req.method === "GET") {
+    return sendJSON(res, 200, { ok: true, archivos: listarMedia() });
+  }
+
+  // Borrar un archivo (solo si ninguna guía lo está usando)
+  const matchMedia = urlPath.match(/^\/api\/admin\/media\/([A-Za-z0-9._-]+)$/);
+  if (matchMedia && req.method === "DELETE") {
+    const nombre = path.basename(matchMedia[1]);
+    if (!MEDIA_EXT[path.extname(nombre).toLowerCase()]) {
+      return sendJSON(res, 400, { ok: false, error: "Archivo inválido" });
+    }
+    if (mediaEnUso(nombre)) {
+      return sendJSON(res, 409, { ok: false, error: "Este archivo lo está usando una guía. Quítalo de la guía primero." });
+    }
+    try { fs.unlinkSync(path.join(UPLOADS_DIR, nombre)); }
+    catch (e) { return sendJSON(res, 404, { ok: false, error: "El archivo ya no existe" }); }
+    return sendJSON(res, 200, { ok: true });
+  }
+
+  // Club Ondea: correos suscritos
+  if (urlPath === "/api/admin/suscriptores" && req.method === "GET") {
+    return sendJSON(res, 200, {
+      ok: true,
+      suscriptores: contenido.suscriptores.slice().sort((a, b) => String(b.fecha).localeCompare(String(a.fecha))),
+    });
+  }
+
   return sendJSON(res, 404, { ok: false, error: "Ruta no encontrada" });
 }
 
 /* ---------- Servidor ---------- */
+
+/* Entrega un archivo con soporte de rangos: Safari e iOS exigen respuestas
+   206 para reproducir video, y así los videos largos empiezan de inmediato. */
+function serveConRangos(req, res, filePath, mime, cache) {
+  fs.stat(filePath, (err, stat) => {
+    if (err || !stat.isFile()) {
+      return send(res, 404, { "Content-Type": "text/plain; charset=utf-8" }, "404 — No encontrado");
+    }
+    const headers = {
+      "Content-Type": mime,
+      "Cache-Control": cache,
+      "X-Content-Type-Options": "nosniff",
+      "Accept-Ranges": "bytes",
+    };
+    const m = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || "");
+    if (m && (m[1] || m[2])) {
+      let start = m[1] ? parseInt(m[1], 10) : stat.size - parseInt(m[2], 10);
+      let end = m[1] && m[2] ? parseInt(m[2], 10) : stat.size - 1;
+      if (isNaN(start) || isNaN(end) || start < 0 || start > end || start >= stat.size) {
+        headers["Content-Range"] = "bytes */" + stat.size;
+        return send(res, 416, headers, "");
+      }
+      end = Math.min(end, stat.size - 1);
+      headers["Content-Range"] = "bytes " + start + "-" + end + "/" + stat.size;
+      headers["Content-Length"] = end - start + 1;
+      res.writeHead(206, headers);
+      return fs.createReadStream(filePath, { start: start, end: end }).pipe(res);
+    }
+    headers["Content-Length"] = stat.size;
+    res.writeHead(200, headers);
+    fs.createReadStream(filePath).pipe(res);
+  });
+}
 
 const server = http.createServer((req, res) => {
   let urlPath;
@@ -572,6 +1016,33 @@ const server = http.createServer((req, res) => {
   if (urlPath.startsWith("/api/")) {
     handleApi(req, res, urlPath).catch((e) => sendJSON(res, 500, { ok: false, error: e.message }));
     return;
+  }
+
+  // Sitemap: a las páginas fijas se les suman las guías publicadas, para que
+  // Google encuentre cada paso a paso nuevo sin tocar el archivo a mano
+  if (urlPath === "/sitemap.xml") {
+    return fs.readFile(path.join(ROOT, "sitemap.xml"), "utf8", (err, base) => {
+      if (err) return send(res, 404, { "Content-Type": "text/plain; charset=utf-8" }, "404 — No encontrado");
+      const urls = guiasPublicas().map((g) => {
+        const fecha = String(g.actualizada || "").slice(0, 10);
+        return "  <url>\n" +
+          "    <loc>https://www.rizosondea.com/guia.html?id=" + g.id + "</loc>\n" +
+          (/^\d{4}-\d{2}-\d{2}$/.test(fecha) ? "    <lastmod>" + fecha + "</lastmod>\n" : "") +
+          "    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>\n";
+      }).join("");
+      send(res, 200, { "Content-Type": MIME[".xml"], "Cache-Control": "no-cache" }, base.replace("</urlset>", urls + "</urlset>"));
+    });
+  }
+
+  // Fotos y videos subidos desde el panel: viven en DATA_DIR/uploads, fuera
+  // del repositorio, y se sirven en /media/<archivo>
+  if (urlPath.indexOf("/media/") === 0) {
+    const nombre = urlPath.slice("/media/".length);
+    const ext = path.extname(nombre).toLowerCase();
+    if (!MEDIA_EXT[ext] || nombre !== path.basename(nombre)) {
+      return send(res, 404, { "Content-Type": "text/plain; charset=utf-8" }, "404 — No encontrado");
+    }
+    return serveConRangos(req, res, path.join(UPLOADS_DIR, nombre), MEDIA_EXT[ext], "public, max-age=604800");
   }
 
   if (urlPath === "/") urlPath = "/index.html";
@@ -592,37 +1063,10 @@ const server = http.createServer((req, res) => {
     filePath += ".html";
   }
 
-  // Video: streaming con soporte de rangos (Safari/iOS exige respuestas 206 para reproducir)
+  // Video del sitio: streaming con soporte de rangos
   const extVideo = path.extname(filePath).toLowerCase();
   if (extVideo === ".mp4" || extVideo === ".webm") {
-    return fs.stat(filePath, (err, stat) => {
-      if (err || !stat.isFile()) {
-        return send(res, 404, { "Content-Type": "text/plain; charset=utf-8" }, "404 — No encontrado");
-      }
-      const headers = {
-        "Content-Type": MIME[extVideo],
-        "Cache-Control": cacheControl(extVideo),
-        "X-Content-Type-Options": "nosniff",
-        "Accept-Ranges": "bytes",
-      };
-      const m = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || "");
-      if (m && (m[1] || m[2])) {
-        let start = m[1] ? parseInt(m[1], 10) : stat.size - parseInt(m[2], 10);
-        let end = m[1] && m[2] ? parseInt(m[2], 10) : stat.size - 1;
-        if (isNaN(start) || isNaN(end) || start < 0 || start > end || start >= stat.size) {
-          headers["Content-Range"] = "bytes */" + stat.size;
-          return send(res, 416, headers, "");
-        }
-        end = Math.min(end, stat.size - 1);
-        headers["Content-Range"] = "bytes " + start + "-" + end + "/" + stat.size;
-        headers["Content-Length"] = end - start + 1;
-        res.writeHead(206, headers);
-        return fs.createReadStream(filePath, { start: start, end: end }).pipe(res);
-      }
-      headers["Content-Length"] = stat.size;
-      res.writeHead(200, headers);
-      fs.createReadStream(filePath).pipe(res);
-    });
+    return serveConRangos(req, res, filePath, MIME[extVideo], cacheControl(extVideo));
   }
 
   fs.readFile(filePath, (err, data) => {
@@ -658,5 +1102,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, "0.0.0.0", () => {
   console.log("✦ Rizos Ondea sirviendo en el puerto " + PORT);
-  console.log("  Panel admin: /admin.html · Pedidos guardados en " + PEDIDOS_FILE);
+  console.log("  Panel admin: /admin.html");
+  console.log("  Guías y Club Ondea: " + CONTENIDO_FILE + " · fotos y videos: " + UPLOADS_DIR);
+  console.log("  Pedidos: " + PEDIDOS_FILE);
 });

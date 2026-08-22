@@ -6,9 +6,14 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.rizosondea.com/productos.html</loc>
+    <loc>https://www.rizosondea.com/guias.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.rizosondea.com/productos.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/test-capilar.html</loc>
@@ -38,101 +43,101 @@
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=duo-rizos-definidos</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-curl-define-etniker</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-hydracurl-etniker</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-curl-boost-etniker</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-emergencia-reparacion-milagros</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-crecimiento-antifrizz-milagros</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-definicion-antifrizz-ponto</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-rizos-kids-leche-pal-pelo</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-tradicional-leche-pal-pelo</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-rescate-nutritivo-milagros</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-reconstruccion-rizos-pocion</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-pre-decoloracion-pocion</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-rizos-largos-abundantes</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-fortalece-hidrata-pocion</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-rizos-perfectos-pocion</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-milagro-herbal</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-secado-ondas-sonadas</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-reparacion-profunda-pocion</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-rizos-la-pocion</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://www.rizosondea.com/producto.html?id=kit-rizos-lavado-etniker</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.5</priority>
   </url>
 </urlset>

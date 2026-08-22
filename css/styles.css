@@ -30,6 +30,12 @@ body {
   background: var(--cream);
   line-height: 1.6;
   font-size: 16px;
+  /* Las animaciones de revelado y la tarjeta girada del logo sobresalen unos
+     píxeles antes de entrar en pantalla; se recortan a lo ancho para que el
+     celular no pueda desplazarse en horizontal. Es «clip» y no «hidden»
+     porque hidden convertiría al body en contenedor de scroll y rompería el
+     header sticky. */
+  overflow-x: clip;
 }
 
 img, svg { max-width: 100%; display: block; }
@@ -930,16 +936,6 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   margin: 30px 0; font-weight: 500;
 }
 
-/* ---------- WhatsApp flotante ---------- */
-.wa-float {
-  position: fixed; right: 22px; bottom: 22px; z-index: 70;
-  width: 58px; height: 58px; border-radius: 50%;
-  background: #25D366; color: #fff; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); transition: 0.2s;
-}
-.wa-float:hover { transform: scale(1.08); }
-.wa-float svg { width: 30px; height: 30px; }
-
 /* ---------- Toast ---------- */
 .toast {
   position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%) translateY(20px);
@@ -981,7 +977,209 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   .splash-logo, .splash-spark { animation: none; }
 }
 
+/* ==========================================================================
+   Comunidad: pilares, guías paso a paso y tienda en segundo plano
+   ========================================================================== */
+
+/* Enlace a la tienda en el header: presente, pero sin robarse la atención */
+.shop-btn {
+  position: relative; display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--cream);
+  border: 1.5px solid rgba(251, 217, 227, 0.4); border-radius: 999px;
+  padding: 8px 16px; font-weight: 500; font-size: 13.5px; transition: 0.2s;
+}
+.shop-btn:hover { border-color: var(--pink); color: var(--pink); }
+.shop-btn .cart-count {
+  background: var(--pink); color: var(--brown-deep);
+  border-radius: 999px; min-width: 20px; height: 20px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11.5px; padding: 0 5px; font-weight: 600;
+}
+
+/* Tres pilares del inicio: aprender, hacer, compartir */
+.pilares { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.pilar {
+  background: var(--white); border-radius: var(--radius); padding: 30px 26px 32px;
+  box-shadow: var(--shadow); border: 1px solid transparent; transition: 0.25s;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.pilar:hover { transform: translateY(-6px); border-color: var(--pink); }
+.pilar .ico {
+  width: 52px; height: 52px; border-radius: 16px; background: var(--pink-soft);
+  color: var(--brown); display: flex; align-items: center; justify-content: center;
+}
+.pilar .ico .icon { width: 26px; height: 26px; }
+.pilar h3 { font-size: 20px; }
+.pilar p { color: var(--brown-soft); font-size: 14.5px; }
+.pilar .pilar-link { margin-top: auto; padding-top: 8px; color: var(--pink-strong); font-weight: 600; font-size: 14px; }
+
+/* ---------- Guías: listado ---------- */
+.guias-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.guia-card {
+  background: var(--white); border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow); display: flex; flex-direction: column;
+  border: 1px solid transparent; transition: 0.25s;
+}
+.guia-card:hover { transform: translateY(-6px); border-color: var(--pink); }
+.guia-cover {
+  position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden;
+  background: linear-gradient(135deg, var(--pink-soft), var(--cream-2));
+}
+.guia-cover img, .guia-cover video { width: 100%; height: 100%; object-fit: cover; transition: transform 0.45s; }
+.guia-card:hover .guia-cover img { transform: scale(1.06); }
+.guia-cover-fallback {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: var(--pink-strong);
+}
+.guia-cover-fallback .icon { width: 46px; height: 46px; }
+.guia-nivel {
+  position: absolute; top: 12px; left: 12px;
+  background: rgba(85, 46, 31, 0.88); color: var(--pink-soft);
+  font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; font-weight: 600;
+  padding: 5px 11px; border-radius: 999px;
+}
+.guia-tienevideo {
+  position: absolute; bottom: 12px; right: 12px;
+  background: var(--pink); color: var(--brown-deep);
+  font-size: 11.5px; font-weight: 600; padding: 5px 11px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.guia-body { padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
+.guia-meta { font-size: 11.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--pink-strong); font-weight: 600; }
+.guia-body h3 { font-size: 19px; line-height: 1.32; }
+.guia-body h3 a:hover { color: var(--pink-strong); }
+.guia-body p { font-size: 14px; color: var(--brown-soft); }
+.guia-more { margin-top: auto; padding-top: 6px; color: var(--pink-strong); font-weight: 600; font-size: 14px; }
+
+.guias-vacio {
+  grid-column: 1 / -1; background: var(--white); border: 1.5px dashed var(--pink);
+  border-radius: var(--radius); padding: 46px 30px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.guias-vacio strong { font-family: var(--font-display); font-size: 20px; color: var(--brown); }
+.guias-vacio span { color: var(--brown-soft); max-width: 460px; }
+.guias-vacio .btn { margin-top: 8px; }
+
+/* Filtros por tema y textura */
+.filtros-row {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center;
+  margin-bottom: 30px;
+}
+.filtros-row .filtros-lbl {
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--brown-soft); font-weight: 600; margin-right: 4px;
+}
+.chip-filtro {
+  background: var(--white); border: 1.5px solid var(--pink); color: var(--brown);
+  border-radius: 999px; padding: 7px 16px; font-family: var(--font-body);
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s;
+}
+.chip-filtro:hover { background: var(--pink-soft); }
+.chip-filtro.active { background: var(--brown); border-color: var(--brown); color: var(--pink); }
+.guias-count { text-align: center; color: var(--brown-soft); font-size: 13.5px; margin-bottom: 22px; }
+
+/* ---------- Guías: una guía con sus pasos ---------- */
+.guia-detalle { max-width: 820px; margin: 0 auto; padding: 34px 0 72px; }
+.guia-volver { display: block; width: fit-content; color: var(--pink-strong); font-weight: 600; font-size: 14px; margin-bottom: 18px; }
+.guia-volver:hover { color: var(--brown); }
+.guia-head .kicker {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12.5px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--pink-strong); font-weight: 600; margin-bottom: 10px;
+}
+.guia-head h1 { font-size: clamp(28px, 4.6vw, 44px); margin-bottom: 14px; }
+.guia-head .lead { color: var(--brown-soft); font-size: 17px; }
+.guia-chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 8px; }
+.guia-chips span {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--cream-2); color: var(--brown); border-radius: 999px;
+  padding: 7px 15px; font-size: 13px; font-weight: 500;
+}
+.guia-chips .icon { color: var(--pink-strong); }
+
+.guia-portada {
+  margin: 28px 0 8px; border-radius: 22px; overflow: hidden; box-shadow: var(--shadow);
+  background: var(--cream-2);
+}
+.guia-portada-media { width: 100%; display: block; max-height: 520px; object-fit: cover; }
+video.guia-portada-media { object-fit: contain; background: var(--brown-deep); }
+
+.pasos-lista { list-style: none; margin: 34px 0 0; padding: 0; counter-reset: paso; }
+.paso { display: grid; grid-template-columns: 56px 1fr; gap: 18px; padding: 26px 0; border-top: 1px solid var(--cream-2); }
+.paso:first-child { border-top: none; }
+.paso-num {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--brown); color: var(--pink);
+  font-family: var(--font-display); font-size: 20px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.paso-cuerpo h2 { font-size: 22px; margin-bottom: 10px; }
+.paso-cuerpo p { color: var(--ink); margin-bottom: 12px; }
+.paso-media {
+  margin: 16px 0 6px; border-radius: 18px; overflow: hidden;
+  box-shadow: var(--shadow); background: var(--cream-2);
+}
+.paso-media img { width: 100%; display: block; }
+.paso-media video { width: 100%; display: block; background: var(--brown-deep); max-height: 560px; }
+.paso-tip {
+  background: var(--pink-soft); border-radius: 14px; padding: 13px 18px;
+  font-size: 14.5px; color: var(--brown); font-weight: 500; margin-top: 12px;
+}
+
+.guia-tips {
+  background: var(--white); border-radius: 22px; padding: 28px 30px;
+  box-shadow: var(--shadow); margin-top: 34px;
+}
+.guia-tips h2 { font-size: 21px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.guia-tips h2 .icon { color: var(--pink-strong); }
+.guia-tips ul { margin: 0 0 0 20px; color: var(--brown-soft); }
+.guia-tips li { margin-bottom: 8px; }
+
+.guia-cierre {
+  background: var(--cream-2); border-radius: 22px; padding: 34px 32px;
+  margin-top: 30px; text-align: center;
+}
+.guia-cierre h2 { font-size: 24px; margin-bottom: 10px; }
+.guia-cierre p { color: var(--brown-soft); max-width: 520px; margin: 0 auto; }
+.guia-cierre a { color: var(--pink-strong); font-weight: 600; }
+.guia-cierre-acciones { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 20px; }
+.guia-cierre-acciones a { color: inherit; }
+
+.guia-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 34px; }
+.guia-nav a {
+  background: var(--white); border-radius: 16px; padding: 18px 20px;
+  box-shadow: var(--shadow); font-family: var(--font-display); font-size: 16px;
+  color: var(--brown); display: flex; flex-direction: column; gap: 4px; transition: 0.2s;
+}
+.guia-nav a:hover { color: var(--pink-strong); transform: translateY(-3px); }
+.guia-nav a.sig { text-align: right; }
+.guia-nav small { font-size: 11.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--pink-strong); font-family: var(--font-body); font-weight: 600; }
+
+/* ---------- La tienda, en segundo plano ---------- */
+.tienda-suave {
+  background: var(--white); border: 1.5px solid var(--cream-2);
+  border-radius: 22px; padding: 34px 32px;
+}
+.tienda-suave .tienda-nota {
+  text-align: center; color: var(--brown-soft); font-size: 14.5px;
+  max-width: 620px; margin: 0 auto 26px;
+}
+.tienda-suave .tienda-nota strong { color: var(--brown); }
+
 /* ---------- Responsive ---------- */
+@media (max-width: 980px) {
+  .pilares { grid-template-columns: 1fr; }
+  .guias-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .guias-grid { grid-template-columns: 1fr; }
+  .paso { grid-template-columns: 42px 1fr; gap: 14px; }
+  .paso-num { width: 38px; height: 38px; font-size: 17px; }
+  .guia-nav { grid-template-columns: 1fr; }
+  .guia-nav a.sig { text-align: left; }
+  .guia-cierre, .guia-tips, .tienda-suave { padding: 26px 22px; }
+}
+
 @media (max-width: 980px) {
   /* Hero de video en tablet: más compacto */
   .hero-video .hero-inner {
@@ -992,8 +1190,10 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   .hero p.lead { text-align: center; margin: 18px auto 28px; }
   .hero-actions { justify-content: center; }
   .hero-badges { justify-content: center; margin-top: 16px; }
-  /* Tarjeta del logo en la sección "Sobre nosotras" */
-  .hero-visual { max-width: 420px; margin: 18px auto 6px; width: 100%; }
+  /* Tarjeta del logo en la sección "Sobre nosotras". El ancho deja margen
+     para la rotación: girada, la tarjeta ocupa más que su propio ancho y
+     sin ese aire empujaba la página a lo ancho en celular. */
+  .hero-visual { max-width: min(420px, calc(100% - 34px)); margin: 18px auto 6px; width: 100%; }
   .trust-grid { grid-template-columns: repeat(2, 1fr); }
   .cat-grid, .prod-grid, .steps { grid-template-columns: repeat(2, 1fr); }
   .testi-grid { grid-template-columns: 1fr; }
@@ -1036,8 +1236,8 @@ section[id], footer[id] { scroll-margin-top: 96px; }
   .btn { padding: 12px 22px; font-size: 14px; }
   .btn-cta { padding: 15px 28px; font-size: 15.5px; }
   /* Hero minimalista en celular: titular, texto corto y un solo botón.
-     Las insignias y el WhatsApp ya viven en la cinta de confianza y la
-     burbuja flotante — repetirlos aquí saturaba la primera pantalla. */
+     Las insignias ya viven en la cinta de confianza — repetirlas aquí
+     saturaba la primera pantalla. */
   /* En celular el video llena la pantalla al abrir: 100svh menos la altura
      real de topbar+header (la mide app.js y la deja en --hero-offset;
      150px es el respaldo si el JS aún no corre). svh descuenta las barras

@@ -9,18 +9,18 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600;1,700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=56">
-  <link rel="stylesheet" href="css/admin.css?v=4">
+  <link rel="stylesheet" href="css/styles.css?v=60">
+  <link rel="stylesheet" href="css/admin.css?v=5">
 </head>
 <body class="admin-body">
 
   <!-- Acceso -->
   <div class="login-wrap" id="login-view">
     <div class="login-card">
-      <a class="login-back" href="index.html">← Volver a la tienda</a>
+      <a class="login-back" href="index.html">← Volver al sitio</a>
       <img src="Statics/logo.jpeg" alt="Rizos Ondea" width="110" height="110" style="border-radius: 20px; margin: 0 auto;">
       <h1>Panel <span class="script">Ondea</span> ✦</h1>
-      <p>Ingresa tus credenciales para ver los pedidos, estadísticas y contabilidad de la tienda.</p>
+      <p>Ingresa tus credenciales para publicar guías de la comunidad y ver los pedidos, estadísticas y contabilidad.</p>
       <form id="login-form">
         <input type="text" id="login-user" placeholder="Usuario" autocomplete="username" required>
         <input type="password" id="login-pass" placeholder="Contraseña" autocomplete="current-password" required>
@@ -44,6 +44,12 @@
         <button class="sb-item active" data-view="resumen">
           <svg class="icon" aria-hidden="true"><use href="#i-sparkle"></use></svg> Resumen
         </button>
+        <button class="sb-item" data-view="guias">
+          <svg class="icon" aria-hidden="true"><use href="#i-book"></use></svg> Guías
+        </button>
+        <button class="sb-item" data-view="club">
+          <svg class="icon" aria-hidden="true"><use href="#i-mail"></use></svg> Club Ondea
+        </button>
         <button class="sb-item" data-view="pedidos">
           <svg class="icon" aria-hidden="true"><use href="#i-cart"></use></svg> Pedidos
           <span class="sb-badge" id="sb-nuevos" hidden>0</span>
@@ -56,7 +62,7 @@
         </button>
       </nav>
       <div class="sb-foot">
-        <a class="sb-link" href="index.html">← Ver la tienda</a>
+        <a class="sb-link" href="index.html">← Ver el sitio</a>
         <button class="sb-link" id="btn-logout">Cerrar sesión</button>
       </div>
     </aside>
@@ -98,6 +104,16 @@
           </div>
         </section>
 
+        <!-- GUÍAS PASO A PASO -->
+        <section class="admin-view" id="view-guias" hidden>
+          <div id="guias-wrap"><!-- Render dinámico --></div>
+        </section>
+
+        <!-- CLUB ONDEA -->
+        <section class="admin-view" id="view-club" hidden>
+          <div id="club-wrap"><!-- Render dinámico --></div>
+        </section>
+
         <!-- PEDIDOS -->
         <section class="admin-view" id="view-pedidos" hidden>
           <div class="view-head">
@@ -130,13 +146,14 @@
           </div>
         </section>
 
-        <p class="admin-foot">Rizos Ondea ✦ Panel interno — los pedidos llegan aquí automáticamente con cada compra en la tienda.</p>
+        <p class="admin-foot">Rizos Ondea ✦ Panel interno — aquí se publican las guías de la comunidad y llegan los pedidos de la tienda.</p>
       </main>
     </div>
   </div>
 
-  <script src="js/data.js?v=58"></script>
-  <script src="js/app.js?v=57"></script>
-  <script src="js/admin.js?v=4"></script>
+  <script src="js/data.js?v=60"></script>
+  <script src="js/app.js?v=60"></script>
+  <script src="js/admin.js?v=5"></script>
+  <script src="js/admin-guias.js?v=1"></script>
 </body>
 </html>

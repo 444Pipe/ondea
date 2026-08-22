@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Test Capilar Gratis | Descubre tu Rutina para Rizos · Rizos Ondea</title>
-  <meta name="description" content="Haz nuestro test capilar gratis: 5 preguntas y descubre la rutina ideal para tu cabello rizado, ondulado o afro. Productos recomendados con envíos a toda Colombia.">
-  <meta name="keywords" content="test capilar gratis, diagnóstico capilar rizos, qué productos usar cabello rizado, rutina curly personalizada Colombia">
+  <title>Guías Paso a Paso para Rizos | Método Curly con Fotos y Video · Rizos Ondea</title>
+  <meta name="description" content="Guías paso a paso gratis para cabello rizado, ondulado y afro: lavado curly, definición sin frizz, hidratación, refresco del segundo día y más. Con fotos y video en cada paso.">
+  <meta name="keywords" content="guías cabello rizado, método curly paso a paso, como definir rizos video, tutorial rizos Colombia, rutina curly principiantes">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://www.rizosondea.com/test-capilar.html">
+  <link rel="canonical" href="https://www.rizosondea.com/guias.html">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Rizos Ondea">
-  <meta property="og:title" content="Test Capilar Gratis · Rizos Ondea">
-  <meta property="og:description" content="5 preguntas para descubrir la rutina perfecta para tus rizos. Resultado al instante y envíos a toda Colombia.">
+  <meta property="og:title" content="Guías paso a paso para tus rizos · Rizos Ondea">
+  <meta property="og:description" content="Aprende a cuidar tu textura con guías gratis, explicadas paso a paso y con video.">
   <meta property="og:image" content="https://www.rizosondea.com/Statics/logo.jpeg">
-  <meta property="og:url" content="https://www.rizosondea.com/test-capilar.html">
+  <meta property="og:url" content="https://www.rizosondea.com/guias.html">
   <meta property="og:locale" content="es_CO">
 
   <link rel="icon" type="image/jpeg" href="Statics/logo.jpeg">
@@ -24,7 +24,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600;1,700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css?v=60">
 </head>
-<body data-page="test">
+<body data-page="guias">
 
   <div class="topbar">
     <span><svg class="icon" aria-hidden="true"><use href="#i-book"></use></svg> Guías paso a paso gratis</span>
@@ -40,9 +40,9 @@
       <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
       <nav class="nav" aria-label="Navegación principal">
         <a href="index.html">Inicio</a>
-        <a href="guias.html">Guías</a>
+        <a href="guias.html" class="active">Guías</a>
         <a href="blog.html">Tips</a>
-        <a href="test-capilar.html" class="active">Test capilar</a>
+        <a href="test-capilar.html">Test capilar</a>
         <a href="index.html#comunidad">Comunidad</a>
         <a href="productos.html">Tienda</a>
       </nav>
@@ -55,15 +55,61 @@
   <main>
     <div class="page-head">
       <div class="container">
-        <h1>Test capilar <span style="font-style:italic;">gratis</span> ✦</h1>
-        <p>Responde 5 preguntas rápidas y descubre tu textura, tu porosidad y las guías paso a paso con las que deberías empezar. Resultado al instante.</p>
+        <h1>Guías <span style="font-style:italic;">paso a paso</span> ✦</h1>
+        <p>Todo lo que necesitas aprender para cuidar tu textura, explicado movimiento por movimiento y con foto o video en cada paso. Gratis, siempre.</p>
       </div>
     </div>
 
     <section class="section">
-      <div class="container quiz-wrap">
-        <div class="quiz-progress" role="progressbar" aria-label="Progreso del test"><div class="bar" id="quiz-bar"></div></div>
-        <div id="quiz-root"><!-- Render dinámico del quiz --></div>
+      <div class="container">
+        <div class="filtros-row" role="group" aria-label="Filtrar guías por tema">
+          <span class="filtros-lbl">Tema:</span>
+          <button class="chip-filtro" data-filtro="categoria" data-valor="rutina">Rutina</button>
+          <button class="chip-filtro" data-filtro="categoria" data-valor="definicion">Definición</button>
+          <button class="chip-filtro" data-filtro="categoria" data-valor="cuidado">Cuidado</button>
+          <button class="chip-filtro" data-filtro="categoria" data-valor="transicion">Transición</button>
+          <button class="chip-filtro" data-filtro="categoria" data-valor="estilos">Estilos</button>
+          <button class="chip-filtro" data-filtro="categoria" data-valor="herramientas">Herramientas</button>
+        </div>
+        <div class="filtros-row" role="group" aria-label="Filtrar guías por textura">
+          <span class="filtros-lbl">Textura:</span>
+          <button class="chip-filtro" data-filtro="textura" data-valor="ondulada">Ondulada 2A–2C</button>
+          <button class="chip-filtro" data-filtro="textura" data-valor="rizada">Rizada 3A–3C</button>
+          <button class="chip-filtro" data-filtro="textura" data-valor="afro">Afro 4A–4C</button>
+        </div>
+
+        <p class="guias-count" id="guias-count"></p>
+        <div class="guias-grid" id="guias-grid"><!-- Render dinámico desde /api/guias --></div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+        <div class="test-banner">
+          <div>
+            <span class="kicker" style="color:var(--pink-strong); font-weight:600; letter-spacing:3px; text-transform:uppercase; font-size:13px;">✦ ¿Por cuál empiezo?</span>
+            <h2>Deja que tu <span class="script">textura</span> te diga</h2>
+            <p>Responde 5 preguntas y te decimos qué tipo de rizo tienes, qué porosidad y qué guías te sirven desde hoy.</p>
+          </div>
+          <div class="tb-actions">
+            <a class="btn btn-brown" href="test-capilar.html">Hacer el test capilar ✦</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+        <div class="newsletter">
+          <div>
+            <h2>Que no se te pase ninguna ✦</h2>
+            <p>Déjanos tu correo y te avisamos apenas publiquemos una guía nueva. Sin spam, solo rizos.</p>
+          </div>
+          <form id="newsletter-form">
+            <input type="email" id="newsletter-email" placeholder="Tu correo electrónico" required autocomplete="email" aria-label="Correo electrónico">
+            <button class="btn btn-brown" type="submit">Unirme</button>
+          </form>
+        </div>
       </div>
     </section>
   </main>

@@ -2,7 +2,7 @@
   "name": "rizos-ondea",
   "version": "1.0.0",
   "private": true,
-  "description": "Tienda online de Rizos Ondea — productos para cabello rizado, ondulado y afro en Villavicencio, Colombia. Envíos a todo el país.",
+  "description": "Rizos Ondea — comunidad colombiana para aprender a cuidar el cabello rizado, ondulado y afro: guías paso a paso con fotos y video, tips y tienda de kits.",
   "scripts": {
     "start": "node server.js"
   },

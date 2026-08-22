@@ -1,5 +1,7 @@
 /* ==========================================================================
-   Rizos Ondea — Lógica de la tienda (catálogo, carrito, checkout WhatsApp)
+   Rizos Ondea — Lógica del sitio
+   Comunidad (guías paso a paso con fotos y videos), test capilar, blog y —
+   en segundo plano — la tienda de kits: catálogo, carrito y checkout.
    ========================================================================== */
 
 (function () {
@@ -40,7 +42,10 @@
     sym("search", '<circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.2" y2="16.2"/>') +
     sym("star", '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>', true) +
     sym("sparkle", '<path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/>', true) +
-    '<symbol id="i-wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.2 1.6 6L4 29l8.2-1.5c1.2.5 2.5.8 3.8.8 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.2 0-2.4-.3-3.5-.8l-.6-.3-4.9.9 1-4.7-.3-.6c-.9-1.5-1.4-3.2-1.4-5 0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.5 9.5-9.9 9.5zm5.4-7.1c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5s-.7-1.6-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.5-.3z"/></symbol>' +
+    sym("book", '<path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M4 17.5h16"/><line x1="8" y1="7" x2="16" y2="7"/>') +
+    sym("play", '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>') +
+    sym("users", '<path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16.5 3.13a4 4 0 0 1 0 7.75"/>') +
+    sym("camera", '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>') +
     "</svg>";
 
   if (document.body) {
@@ -317,9 +322,27 @@
       document.addEventListener("touchstart", tryPlay, { once: true });
     }
 
+    // Últimas guías paso a paso de la comunidad
+    var guiasHome = qs("#guias-home");
+    if (guiasHome) {
+      fetchGuias().then(function (guias) {
+        var destacadas = guias.filter(function (g) { return g.destacada; });
+        var lista = destacadas.concat(guias.filter(function (g) { return !g.destacada; })).slice(0, 3);
+        guiasHome.innerHTML = lista.length ? lista.map(guiaCard).join("") : GUIAS_VACIO;
+        var contador = qs("#guias-total");
+        if (contador) {
+          contador.setAttribute("data-count", String(guias.length));
+          contador.removeAttribute("data-pending");
+        }
+        revealScan();
+        initCounters();
+      });
+    }
+
+    // La tienda vive al final del inicio, en tono discreto
     var grid = qs("#destacados-grid");
     if (grid) {
-      var ids = ["kit-rizos-lavado-etniker", "kit-rizos-la-pocion", "kit-emergencia-reparacion-milagros", "kit-rizos-largos-abundantes"];
+      var ids = ["kit-rizos-lavado-etniker", "kit-rizos-la-pocion", "kit-emergencia-reparacion-milagros"];
       grid.innerHTML = ids.map(function (id) { return productCard(getProduct(id)); }).join("");
       bindAddButtons(grid);
     }
@@ -339,19 +362,233 @@
       }, 2800);
     }
 
-    // Newsletter: registra el correo vía WhatsApp del negocio
+    initNewsletter();
+  }
+
+  /* Club Ondea: el correo se guarda en el servidor y se ve en el panel */
+  function initNewsletter() {
     var nlForm = qs("#newsletter-form");
-    if (nlForm) {
-      nlForm.addEventListener("submit", function (ev) {
-        ev.preventDefault();
-        var email = qs("#newsletter-email").value.trim();
-        if (!email) return;
-        var msg = "¡Hola Rizos Ondea! Quiero unirme al Club Ondea y recibir novedades y descuentos. Mi correo es: " + email;
-        window.open("https://wa.me/" + ONDEA_CONFIG.whatsapp + "?text=" + encodeURIComponent(msg), "_blank");
-        toast("✓ ¡Bienvenida al Club Ondea!");
-        nlForm.reset();
-      });
+    if (!nlForm) return;
+    nlForm.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var campo = qs("#newsletter-email");
+      var email = campo.value.trim();
+      if (!email) return;
+      var btn = nlForm.querySelector("button");
+      if (btn) btn.disabled = true;
+      fetch("/api/suscriptores", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email }),
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (!d || !d.ok) throw new Error("no");
+          toast("✓ ¡Bienvenida al Club Ondea! Te escribimos con cada guía nueva.");
+          nlForm.reset();
+        })
+        .catch(function () { toast("No pudimos registrar tu correo. Inténtalo de nuevo."); })
+        .then(function () { if (btn) btn.disabled = false; });
+    });
+  }
+
+  /* ==========================================================================
+     Comunidad: guías paso a paso
+     El contenido lo sube la dueña desde el panel (/admin.html → Guías) y el
+     servidor lo entrega en /api/guias. Cada paso puede llevar foto o video.
+     ========================================================================== */
+
+  var CAT_LABEL = {
+    rutina: "Rutina", definicion: "Definición", cuidado: "Cuidado",
+    transicion: "Transición", estilos: "Estilos", herramientas: "Herramientas",
+  };
+  var TEX_LABEL = {
+    todas: "Todas las texturas", ondulada: "Ondulada 2A–2C",
+    rizada: "Rizada 3A–3C", afro: "Afro 4A–4C",
+  };
+  var NIVEL_LABEL = { principiante: "Principiante", intermedio: "Intermedio", avanzado: "Avanzado" };
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  /* Texto plano del panel → párrafos, respetando los saltos de línea */
+  function parrafos(texto) {
+    return String(texto || "").split(/\n{2,}/).filter(function (b) { return b.trim(); })
+      .map(function (b) { return "<p>" + esc(b.trim()).replace(/\n/g, "<br>") + "</p>"; }).join("");
+  }
+
+  function esVideo(url) { return /\.(mp4|webm|mov)(\?|$)/i.test(url || ""); }
+
+  /* <video> o <img> según el archivo que se haya subido */
+  function mediaTag(url, alt, clase) {
+    if (!url) return "";
+    if (esVideo(url)) {
+      return '<video class="' + clase + '" controls playsinline preload="metadata" ' +
+        'aria-label="' + esc(alt) + '"><source src="' + esc(url) + '"></video>';
     }
+    return '<img class="' + clase + '" src="' + esc(url) + '" alt="' + esc(alt) + '" loading="lazy">';
+  }
+
+  var guiasCache = null;
+  function fetchGuias() {
+    if (guiasCache) return Promise.resolve(guiasCache);
+    if (!window.fetch || location.protocol.indexOf("http") !== 0) return Promise.resolve([]);
+    return fetch("/api/guias")
+      .then(function (r) { return r.json(); })
+      .then(function (d) { guiasCache = (d && d.guias) || []; return guiasCache; })
+      .catch(function () { return []; });
+  }
+
+  function guiaCard(g) {
+    var pasos = (g.pasos || []).length;
+    var portada = g.portada
+      ? (esVideo(g.portada)
+        ? '<video muted loop playsinline preload="metadata"><source src="' + esc(g.portada) + '"></video>'
+        : '<img src="' + esc(g.portada) + '" alt="' + esc(g.titulo) + '" loading="lazy">')
+      : '<span class="guia-cover-fallback">' + icon("sparkle") + "</span>";
+    return (
+      '<article class="guia-card">' +
+      '<a class="guia-cover" href="guia.html?id=' + esc(g.id) + '" aria-label="Abrir la guía ' + esc(g.titulo) + '">' +
+      portada +
+      '<span class="guia-nivel">' + esc(NIVEL_LABEL[g.nivel] || "") + "</span>" +
+      (g.video || (g.pasos || []).some(function (p) { return p.video; })
+        ? '<span class="guia-tienevideo">' + icon("play") + " Con video</span>" : "") +
+      "</a>" +
+      '<div class="guia-body">' +
+      '<span class="guia-meta">' + esc(CAT_LABEL[g.categoria] || "Guía") +
+      (g.duracion ? " · " + esc(g.duracion) : "") +
+      (g.textura && g.textura !== "todas" ? " · " + esc(TEX_LABEL[g.textura]) : "") + "</span>" +
+      '<h3><a href="guia.html?id=' + esc(g.id) + '">' + esc(g.titulo) + "</a></h3>" +
+      "<p>" + esc(g.resumen) + "</p>" +
+      '<a class="guia-more" href="guia.html?id=' + esc(g.id) + '">Ver los ' + pasos + " pasos →</a>" +
+      "</div></article>"
+    );
+  }
+
+  var GUIAS_VACIO =
+    '<div class="guias-vacio"><strong>Todavía no hay guías publicadas.</strong>' +
+    "<span>Estamos grabando los primeros pasos a paso. Vuelve pronto o únete al Club Ondea para enterarte apenas salgan. ✦</span></div>";
+
+  /* Página: listado de guías, con filtros por tema y por textura */
+  function initGuias() {
+    var grid = qs("#guias-grid");
+    if (!grid) return;
+    var filtros = { categoria: urlParam("categoria") || "", textura: urlParam("textura") || "" };
+
+    function pintar(guias) {
+      var lista = guias.filter(function (g) {
+        return (!filtros.categoria || g.categoria === filtros.categoria) &&
+          (!filtros.textura || g.textura === filtros.textura || g.textura === "todas");
+      });
+      qs("#guias-count").textContent = lista.length
+        ? lista.length + (lista.length === 1 ? " guía" : " guías")
+        : "";
+      grid.innerHTML = lista.length
+        ? lista.map(guiaCard).join("")
+        : (guias.length
+          ? '<div class="guias-vacio"><strong>Ninguna guía con ese filtro.</strong><span>Prueba con otro tema o mira todas las guías.</span></div>'
+          : GUIAS_VACIO);
+      revealScan();
+    }
+
+    fetchGuias().then(function (guias) {
+      pintar(guias);
+      qsa("[data-filtro]").forEach(function (chip) {
+        chip.addEventListener("click", function () {
+          var tipo = chip.getAttribute("data-filtro");
+          var valor = chip.getAttribute("data-valor");
+          filtros[tipo] = filtros[tipo] === valor ? "" : valor;
+          qsa('[data-filtro="' + tipo + '"]').forEach(function (c) {
+            c.classList.toggle("active", c.getAttribute("data-valor") === filtros[tipo]);
+          });
+          pintar(guias);
+        });
+        if (chip.getAttribute("data-valor") === filtros[chip.getAttribute("data-filtro")]) {
+          chip.classList.add("active");
+        }
+      });
+    });
+  }
+
+  /* Página: una guía con sus pasos, fotos y videos */
+  function initGuia() {
+    var root = qs("#guia-detalle");
+    if (!root) return;
+    var id = urlParam("id");
+
+    fetchGuias().then(function (guias) {
+      var g = guias.find(function (x) { return x.id === id; });
+      if (!g) {
+        root.innerHTML =
+          '<div class="guias-vacio"><strong>No encontramos esa guía.</strong>' +
+          '<span>Puede que la hayamos actualizado o despublicado.</span>' +
+          '<a class="btn btn-brown" href="guias.html">Ver todas las guías ✦</a></div>';
+        return;
+      }
+
+      document.title = g.titulo + " · Guía paso a paso · Rizos Ondea";
+      var meta = qs('meta[name="description"]');
+      if (meta && g.resumen) meta.setAttribute("content", g.resumen);
+
+      var pasos = g.pasos || [];
+      var indice = guias.indexOf(g);
+      var anterior = guias[indice - 1];
+      var siguiente = guias[indice + 1];
+
+      root.innerHTML =
+        '<div class="guia-head">' +
+        '<a class="guia-volver" href="guias.html">← Todas las guías</a>' +
+        '<span class="kicker">' + icon("book") + " " + esc(CAT_LABEL[g.categoria] || "Guía") + " ✦</span>" +
+        "<h1>" + esc(g.titulo) + "</h1>" +
+        (g.resumen ? '<p class="lead">' + esc(g.resumen) + "</p>" : "") +
+        '<div class="guia-chips">' +
+        '<span>' + icon("sparkle") + " " + esc(NIVEL_LABEL[g.nivel] || "") + "</span>" +
+        (g.duracion ? "<span>" + icon("clock") + " " + esc(g.duracion) + "</span>" : "") +
+        "<span>" + icon("wave") + " " + esc(TEX_LABEL[g.textura] || "") + "</span>" +
+        "<span>" + icon("check") + " " + pasos.length + " pasos</span>" +
+        "</div></div>" +
+
+        (g.portada || g.video
+          ? '<figure class="guia-portada">' + mediaTag(g.video || g.portada, g.titulo, "guia-portada-media") + "</figure>"
+          : "") +
+
+        (pasos.length
+          ? '<ol class="pasos-lista">' + pasos.map(function (p, i) {
+            return '<li class="paso">' +
+              '<div class="paso-num" aria-hidden="true">' + (i + 1) + "</div>" +
+              '<div class="paso-cuerpo">' +
+              (p.titulo ? "<h2>" + esc(p.titulo) + "</h2>" : "") +
+              parrafos(p.texto) +
+              (p.imagen ? '<figure class="paso-media">' + mediaTag(p.imagen, p.titulo || g.titulo, "") + "</figure>" : "") +
+              (p.video ? '<figure class="paso-media">' + mediaTag(p.video, p.titulo || g.titulo, "") + "</figure>" : "") +
+              (p.tip ? '<p class="paso-tip">✦ ' + esc(p.tip) + "</p>" : "") +
+              "</div></li>";
+          }).join("") + "</ol>"
+          : "") +
+
+        ((g.tips || []).length
+          ? '<div class="guia-tips"><h2>' + icon("heart") + " Para que te salga aún mejor</h2><ul>" +
+          g.tips.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul></div>"
+          : "") +
+
+        '<div class="guia-cierre">' +
+        "<h2>¿Lo intentaste? Cuéntanos cómo te fue</h2>" +
+        '<p>Etiquétanos en <a href="https://www.instagram.com/rizosondea/" target="_blank" rel="noopener">@rizosondea</a> con tu antes y después: publicamos las transformaciones de la comunidad cada semana.</p>' +
+        '<div class="guia-cierre-acciones">' +
+        '<a class="btn btn-brown" href="guias.html">Ver más guías ✦</a>' +
+        '<a class="btn btn-outline" href="test-capilar.html">Descubrir mi tipo de rizo</a>' +
+        "</div></div>" +
+
+        '<nav class="guia-nav" aria-label="Otras guías">' +
+        (anterior ? '<a href="guia.html?id=' + esc(anterior.id) + '"><small>← Anterior</small>' + esc(anterior.titulo) + "</a>" : "<span></span>") +
+        (siguiente ? '<a class="sig" href="guia.html?id=' + esc(siguiente.id) + '"><small>Siguiente →</small>' + esc(siguiente.titulo) + "</a>" : "<span></span>") +
+        "</nav>";
+
+      revealScan();
+    });
   }
 
   /* ---------- Página: Tienda ---------- */
@@ -528,7 +765,7 @@
       '<div class="detail-ship">' +
       "<span>" + icon("truck") + " <strong>Envíos a toda Colombia</strong> (2 a 5 días hábiles). " + (envioGratis ? "<strong>¡Este producto tiene envío gratis!</strong>" : "Gratis desde " + fmtCOP(ONDEA_CONFIG.envioGratisDesde) + ".") + "</span>" +
       "<span>" + icon("pin") + " <strong>Hasta la puerta de tu casa</strong> en cualquier municipio del país.</span>" +
-      "<span>" + icon("chat") + " ¿Dudas con tu tipo de rizo? <strong>Escríbenos por WhatsApp</strong> y te asesoramos gratis.</span>" +
+      "<span>" + icon("book") + ' ¿Dudas con tu tipo de rizo? Mira las <a href="guias.html" style="color:var(--pink-strong); font-weight:600;">guías paso a paso</a> — son gratis.</span>' +
       "</div>" +
       '<div class="accordion-set">' +
       "<details open><summary>Beneficios</summary><div class='acc-body'><ul>" + p.benefits.map(function (b) { return "<li>" + b + "</li>"; }).join("") + "</ul></div></details>" +
@@ -712,11 +949,6 @@
         var subtotal = cartSubtotal();
         var envio = shippingCost(ciudad, subtotal);
 
-        var lineas = cart.map(function (i) {
-          var p = getProduct(i.id);
-          return "• " + i.qty + " x " + p.name + " — " + fmtCOP(p.price * i.qty);
-        });
-
         var orderPayload = {
           cliente: { nombre: nombre, telefono: telefono, direccion: direccion, ciudad: ciudad, depto: depto, notas: notas },
           items: cart.map(function (i) {
@@ -762,43 +994,36 @@
             })
             .catch(function () {
               if (btnPagar) { btnPagar.disabled = false; btnPagar.innerHTML = btnPagarHTML; }
-              toast("No pudimos abrir el pago en línea. Intenta con otro método o por WhatsApp.");
+              toast("No pudimos abrir el pago en línea. Intenta con otro método de pago.");
             });
           return;
         }
 
-        // Registra el pedido en el panel admin (si el sitio corre sobre HTTP)
-        if (window.fetch && location.protocol.indexOf("http") === 0) {
-          try {
-            fetch("/api/pedidos", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(orderPayload),
-              keepalive: true,
-            }).catch(function () {});
-          } catch (e) { /* si falla, el pedido igual sale por WhatsApp */ }
-        }
+        // Resto de métodos: el pedido queda registrado y la confirmación
+        // ocurre aquí mismo (ya no se abre ninguna app externa)
+        var btnPedido = qs('#checkout-form button[type="submit"]');
+        var btnPedidoHTML = btnPedido ? btnPedido.innerHTML : "";
+        if (btnPedido) { btnPedido.disabled = true; btnPedido.textContent = "Enviando tu pedido…"; }
 
-        var msg =
-          "¡Hola Rizos Ondea! ✨ Quiero hacer este pedido:\n\n" +
-          lineas.join("\n") + "\n\n" +
-          "Subtotal: " + fmtCOP(subtotal) + "\n" +
-          "Envío: " + (envio === 0 ? "Gratis" : fmtCOP(envio)) + "\n" +
-          "*Total: " + fmtCOP(subtotal + envio) + "*\n\n" +
-          "📦 Datos de entrega:\n" +
-          "Nombre: " + nombre + "\n" +
-          "Teléfono: " + telefono + "\n" +
-          "Dirección: " + direccion + "\n" +
-          "Ciudad: " + ciudad + ", " + depto + "\n" +
-          "Método de pago: " + pago +
-          (notas ? "\nNotas: " + notas : "");
-
-        window.open("https://wa.me/" + ONDEA_CONFIG.whatsapp + "?text=" + encodeURIComponent(msg), "_blank");
-
-        saveCart([]);
-        qs("#cart-layout").style.display = "none";
-        qs("#order-ok").style.display = "";
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        fetch("/api/pedidos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderPayload),
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (!data || !data.ok) throw new Error("pedido");
+            var ref = qs("#order-ref");
+            if (ref) ref.textContent = data.id;
+            saveCart([]);
+            qs("#cart-layout").style.display = "none";
+            qs("#order-ok").style.display = "";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          })
+          .catch(function () {
+            if (btnPedido) { btnPedido.disabled = false; btnPedido.innerHTML = btnPedidoHTML; }
+            toast("No pudimos registrar tu pedido. Revisa tu conexión e inténtalo de nuevo.");
+          });
       });
     }
 
@@ -835,6 +1060,8 @@
   ];
 
   var QUIZ_TYPE_LABEL = { ondulado: "Ondulada 2A-2C", rizado: "Rizada 3A-3C", afro: "Afro 4A-4C" };
+  // La textura del test en el vocabulario de las guías
+  var TEXTURA_GUIAS = { ondulado: "ondulada", rizado: "rizada", afro: "afro" };
 
   function buildRoutine(ans) {
     // Rutina armada solo con el catálogo real conectado a Dropi
@@ -897,7 +1124,8 @@
         '<div class="qr-head">' +
         '<span class="qr-badge">' + icon("sparkle") + " Textura " + QUIZ_TYPE_LABEL[answers.tipo] + "</span>" +
         "<h2>Tu rutina Ondea está <span class='script'>lista</span> ✦</h2>" +
-        "<p>Según tus respuestas, esta es la rutina que tu " + (answers.tipo === "ondulado" ? "onda" : "rizo") + " necesita. Puedes agregarla completa al carrito o pedir asesoría personalizada por WhatsApp.</p>" +
+        "<p>Según tus respuestas, esto es lo que tu " + (answers.tipo === "ondulado" ? "onda" : "rizo") + " necesita. Empieza por las guías paso a paso de tu textura: son gratis y son el verdadero cambio. Los kits, si algún día los quieres, están abajo.</p>" +
+        '<a class="btn btn-brown" href="guias.html?textura=' + TEXTURA_GUIAS[answers.tipo] + '">Ver mis guías paso a paso ' + icon("book") + "</a>" +
         "</div>" +
         '<div class="prod-grid" style="grid-template-columns:repeat(2,1fr);">' +
         routine.map(productCard).join("") +
@@ -906,20 +1134,12 @@
         '<div class="qr-price">' + fmtCOP(total) + "<small>" + routine.length + " kits · " + (envioGratis ? "con envío GRATIS a toda Colombia" : "envíos a toda Colombia") + "</small></div>" +
         '<div class="qr-actions">' +
         '<button class="btn btn-pink" id="qr-add-all">Agregar toda mi rutina ' + icon("cart") + "</button>" +
-        '<a class="btn btn-outline" id="qr-wa" target="_blank" rel="noopener">Asesoría ' + icon("wa") + "</a>" +
+        '<a class="btn btn-outline" href="guias.html?textura=' + TEXTURA_GUIAS[answers.tipo] + '">Guías de mi textura</a>' +
         "</div></div>" +
         '<div style="text-align:center; margin-top:18px;"><button class="quiz-back" id="quiz-restart">Repetir el test</button></div>' +
         "</div>";
 
       bindAddButtons(root);
-
-      var waMsg =
-        "¡Hola Rizos Ondea! Hice el test capilar ✦\n" +
-        "Mi textura: " + QUIZ_TYPE_LABEL[answers.tipo] + "\n" +
-        "Mi rutina recomendada:\n" +
-        routine.map(function (p) { return "• " + p.name + " — " + fmtCOP(p.price); }).join("\n") +
-        "\nTotal: " + fmtCOP(total) + "\n¿Me ayudan a confirmarla?";
-      qs("#qr-wa").href = "https://wa.me/" + ONDEA_CONFIG.whatsapp + "?text=" + encodeURIComponent(waMsg);
 
       qs("#qr-add-all").addEventListener("click", function () {
         routine.forEach(function (p) { addToCart(p.id, 1); });
@@ -946,6 +1166,7 @@
     ".manifesto figcaption", ".ig-tile", ".faq details", ".cta-banner",
     ".newsletter", ".blog-card", ".art-cover", ".art-cta",
     ".detail-art", ".detail-info",
+    ".guia-card", ".paso", ".guia-tips", ".guia-cierre", ".pilar",
   ];
 
   // Variantes de entrada según el tipo de elemento
@@ -984,9 +1205,14 @@
   }
 
   /* Contadores animados (se disparan al entrar en pantalla) */
+  /* Los contadores con data-pending esperan a que llegue su dato del
+     servidor: initHome vuelve a llamar aquí cuando ya lo tiene. */
   function initCounters() {
-    var nums = qsa(".stat-num");
+    var nums = qsa(".stat-num").filter(function (el) {
+      return !el.hasAttribute("data-pending") && !el.hasAttribute("data-counted");
+    });
     if (!nums.length) return;
+    nums.forEach(function (el) { el.setAttribute("data-counted", "1"); });
 
     function setFinal(el) {
       var target = parseFloat(el.getAttribute("data-count")) || 0;
@@ -1061,7 +1287,7 @@
     onScroll();
   }
 
-  /* ---------- Común: menú móvil, WhatsApp flotante, badge ---------- */
+  /* ---------- Común: menú móvil y contador del carrito ---------- */
 
   function initCommon() {
     var toggle = qs(".menu-toggle");
@@ -1069,11 +1295,6 @@
     if (toggle && nav) {
       toggle.addEventListener("click", function () { nav.classList.toggle("open"); });
     }
-
-    qsa(".wa-link").forEach(function (a) {
-      var msg = a.getAttribute("data-msg") || "¡Hola Rizos Ondea! ✨ Quiero información sobre sus kits para rizos.";
-      a.href = "https://wa.me/" + ONDEA_CONFIG.whatsapp + "?text=" + encodeURIComponent(msg);
-    });
 
     updateCartBadge();
   }
@@ -1100,10 +1321,13 @@
     initCommon();
     var page = document.body.getAttribute("data-page");
     if (page === "inicio") initHome();
+    if (page === "guias") initGuias();
+    if (page === "guia") initGuia();
     if (page === "tienda") initShop();
     if (page === "producto") initProduct();
     if (page === "carrito") initCart();
     if (page === "test") initQuiz();
+    if (page !== "inicio") initNewsletter();
     initScrollFX();
   });
 })();

@@ -13,31 +13,33 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600;1,700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=56">
+  <link rel="stylesheet" href="css/styles.css?v=60">
 </head>
 <body data-page="gracias">
 
   <div class="topbar">
-    <span><svg class="icon" aria-hidden="true"><use href="#i-truck"></use></svg> Envíos a toda Colombia</span>
-    <span><svg class="icon" aria-hidden="true"><use href="#i-pin"></use></svg> Hasta la puerta de tu casa</span>
-    <span><svg class="icon" aria-hidden="true"><use href="#i-sparkle"></use></svg> Envío GRATIS desde $150.000</span>
+    <span><svg class="icon" aria-hidden="true"><use href="#i-book"></use></svg> Guías paso a paso gratis</span>
+    <span><svg class="icon" aria-hidden="true"><use href="#i-users"></use></svg> Comunidad curly colombiana</span>
+    <span><svg class="icon" aria-hidden="true"><use href="#i-sparkle"></use></svg> Aprende a amar tus rizos</span>
   </div>
 
   <header class="header">
     <div class="container header-inner">
       <a class="brand" href="index.html" aria-label="Rizos Ondea — Inicio">
-        <img class="brand-logo" src="Statics/logo.jpeg" alt="Rizos Ondea — productos para cabello rizado" width="168" height="72">
+        <img class="brand-logo" src="Statics/logo.jpeg" alt="Rizos Ondea — comunidad para cabello rizado" width="168" height="72">
       </a>
       <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
       <nav class="nav" aria-label="Navegación principal">
         <a href="index.html">Inicio</a>
-        <a href="productos.html">Tienda</a>
+        <a href="guias.html">Guías</a>
+        <a href="blog.html">Tips</a>
         <a href="test-capilar.html">Test capilar</a>
-        <a href="blog.html">Blog</a>
-        <a href="index.html#preguntas">Preguntas</a>
-        <a href="index.html#contacto">Contacto</a>
+        <a href="index.html#comunidad">Comunidad</a>
+        <a href="productos.html">Tienda</a>
       </nav>
-      <a class="cart-btn" href="carrito.html" aria-label="Ver carrito de compras"><svg class="icon" aria-hidden="true"><use href="#i-cart"></use></svg> Carrito <span class="cart-count">0</span></a>
+      <a class="shop-btn" href="carrito.html" aria-label="Ver mi carrito">
+        <svg class="icon" aria-hidden="true"><use href="#i-cart"></use></svg> Carrito <span class="cart-count">0</span>
+      </a>
     </div>
   </header>
 
@@ -62,8 +64,8 @@
     </section>
   </main>
 
-  <script src="js/data.js?v=58"></script>
-  <script src="js/app.js?v=57"></script>
+  <script src="js/data.js?v=60"></script>
+  <script src="js/app.js?v=60"></script>
   <script>
   /* Consulta el estado del pago del pedido (?pedido=PED-XXX) hasta que Wompi
      confirme por webhook. Si aprueba, vacía el carrito. */
@@ -80,7 +82,7 @@
       try { localStorage.setItem("ondea_cart", "[]"); } catch (e) {}
       titulo.textContent = "¡Pago aprobado! 💛";
       texto.innerHTML = "Tu pedido <strong>" + pedido + "</strong> quedó confirmado y ya entró a preparación. " +
-        "Te escribiremos por WhatsApp con la guía de envío. ¡Gracias por ondear con nosotras! ✦";
+        "Te contactamos con la guía de envío apenas salga. ¡Gracias por ondear con nosotras! ✦";
       btnInicio.hidden = false;
     }
 
@@ -93,13 +95,13 @@
     function pendiente() {
       titulo.textContent = "Estamos confirmando tu pago";
       texto.innerHTML = "Wompi aún no nos reporta el resultado de la transacción del pedido <strong>" + pedido + "</strong>. " +
-        "Apenas se confirme lo verás reflejado y te escribiremos por WhatsApp. Si tienes dudas, escríbenos.";
+        "Apenas se confirme lo verás reflejado y te contactamos. Si tienes dudas, escríbenos a hola@rizosondea.com.";
       btnInicio.hidden = false;
     }
 
     if (!pedido) {
       titulo.textContent = "¡Gracias por tu compra!";
-      texto.textContent = "Si acabas de pagar, en breve te confirmamos por WhatsApp.";
+      texto.textContent = "Si acabas de pagar, en breve te confirmamos tu pedido.";
       btnInicio.hidden = false;
       return;
     }

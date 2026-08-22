@@ -1,11 +1,10 @@
 /* ==========================================================================
    Rizos Ondea — Datos de la tienda
-   ⚠️ CONFIGURACIÓN: cambia aquí el número de WhatsApp real del negocio.
+   El contacto del negocio es solo por correo e Instagram: no publicamos
+   ningún número de teléfono en el sitio.
    ========================================================================== */
 
 const ONDEA_CONFIG = {
-  // Número de WhatsApp en formato internacional SIN "+" (57 = Colombia).
-  whatsapp: "573188546934",
   ciudad: "Villavicencio",
   envioNacional: 12000,      // COP — envío al resto de Colombia
   envioLocal: 6000,          // COP — envío dentro de Villavicencio

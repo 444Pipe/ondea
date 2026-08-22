@@ -459,7 +459,12 @@
     });
 
     // Navegación entre secciones + menú lateral en móvil
-    var VIEW_TITLES = { resumen: "Resumen", pedidos: "Pedidos", contabilidad: "Contabilidad", productos: "Productos" };
+    var VIEW_TITLES = {
+      resumen: "Resumen", guias: "Guías paso a paso", club: "Club Ondea",
+      pedidos: "Pedidos", contabilidad: "Contabilidad", productos: "Productos",
+    };
+    // El filtro por periodo solo aplica a las vistas de la tienda
+    var VIEWS_SIN_RANGO = { guias: true, club: true };
     var sidebar = $("#admin-sidebar");
     var backdrop = $("#sb-backdrop");
 
@@ -479,6 +484,7 @@
         $$(".sb-item").forEach(function (i) { i.classList.toggle("active", i === item); });
         $$(".admin-view").forEach(function (v) { v.hidden = v.id !== "view-" + view; });
         $("#view-title").textContent = VIEW_TITLES[view] || "";
+        $("#range-row").hidden = !!VIEWS_SIN_RANGO[view];
         closeDrawer();
         window.scrollTo({ top: 0 });
       });
