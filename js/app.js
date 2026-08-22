@@ -46,6 +46,7 @@
     sym("play", '<circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>') +
     sym("users", '<path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16.5 3.13a4 4 0 0 1 0 7.75"/>') +
     sym("camera", '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>') +
+    sym("share", '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="10.5" x2="15.4" y2="6.6"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.4"/>') +
     "</svg>";
 
   if (document.body) {
@@ -325,10 +326,26 @@
     // Últimas guías paso a paso de la comunidad
     var guiasHome = qs("#guias-home");
     if (guiasHome) {
+      guiasHome.innerHTML = esqueletos(3);
       fetchGuias().then(function (guias) {
         var destacadas = guias.filter(function (g) { return g.destacada; });
         var lista = destacadas.concat(guias.filter(function (g) { return !g.destacada; })).slice(0, 3);
         guiasHome.innerHTML = lista.length ? lista.map(guiaCard).join("") : GUIAS_VACIO;
+
+        // Si dejó una guía a medias, lo primero que ve es cómo retomarla
+        var curso = guiaEnCurso(guias);
+        var cajaCurso = qs("#guia-en-curso");
+        if (cajaCurso && curso) {
+          var pct = Math.round((curso.progreso.pasos.length / curso.progreso.total) * 100);
+          cajaCurso.innerHTML =
+            '<a class="retomar" href="guia.html?id=' + esc(curso.guia.id) + '">' +
+            '<span class="rt-ico">' + icon("book") + "</span>" +
+            '<span class="rt-texto"><small>Sigue donde quedaste</small><strong>' + esc(curso.guia.titulo) + "</strong>" +
+            '<span class="rt-barra"><span style="width:' + pct + '%"></span></span>' +
+            "<em>" + curso.progreso.pasos.length + " de " + curso.progreso.total + " pasos hechos</em></span>" +
+            '<span class="rt-flecha" aria-hidden="true">→</span></a>';
+          cajaCurso.hidden = false;
+        }
         var contador = qs("#guias-total");
         if (contador) {
           contador.setAttribute("data-count", String(guias.length));
@@ -432,6 +449,70 @@
     return '<img class="' + clase + '" src="' + esc(url) + '" alt="' + esc(alt) + '" loading="lazy">';
   }
 
+  /* ---------- Progreso de cada guía ----------
+     Qué pasos ya hizo quien está leyendo. Vive solo en su navegador
+     (localStorage): sin cuentas, sin contraseñas y sin mandar nada afuera. */
+
+  var PROGRESO_KEY = "ondea_guias_progreso";
+
+  function leerProgreso() {
+    try { return JSON.parse(localStorage.getItem(PROGRESO_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+
+  function guardarProgreso(todo) {
+    try { localStorage.setItem(PROGRESO_KEY, JSON.stringify(todo)); } catch (e) {}
+  }
+
+  function progresoDe(id) {
+    var p = leerProgreso()[id];
+    return p && Array.isArray(p.pasos) ? p : { pasos: [], total: 0 };
+  }
+
+  function marcarPaso(guia, indice, hecho) {
+    var todo = leerProgreso();
+    var p = todo[guia.id] || { pasos: [] };
+    var marcados = {};
+    (p.pasos || []).forEach(function (i) { marcados[i] = true; });
+    if (hecho) marcados[indice] = true; else delete marcados[indice];
+    p.pasos = Object.keys(marcados).map(Number).sort(function (a, b) { return a - b; });
+    p.total = (guia.pasos || []).length;
+    p.titulo = guia.titulo;
+    p.fecha = new Date().toISOString();
+    if (p.pasos.length) todo[guia.id] = p; else delete todo[guia.id];
+    guardarProgreso(todo);
+    return p;
+  }
+
+  function olvidarProgreso(id) {
+    var todo = leerProgreso();
+    delete todo[id];
+    guardarProgreso(todo);
+  }
+
+  /* La guía a medias más reciente, para ofrecer "sigue donde quedaste" */
+  function guiaEnCurso(guias) {
+    var todo = leerProgreso();
+    var mejor = null;
+    Object.keys(todo).forEach(function (id) {
+      var p = todo[id];
+      if (!p || !p.total || p.pasos.length >= p.total) return;
+      if (mejor && String(p.fecha) <= String(mejor.progreso.fecha)) return;
+      var g = guias.find(function (x) { return x.id === id; });
+      if (g) mejor = { guia: g, progreso: p };
+    });
+    return mejor;
+  }
+
+  /* Marcos grises mientras llegan las guías: la página nunca se ve vacía */
+  function esqueletos(n) {
+    var uno =
+      '<div class="guia-esqueleto" aria-hidden="true">' +
+      '<span class="esq-cover"></span><span class="esq-linea corta"></span>' +
+      '<span class="esq-linea"></span><span class="esq-linea media"></span></div>';
+    return new Array(n + 1).join(uno);
+  }
+
   var guiasCache = null;
   function fetchGuias() {
     if (guiasCache) return Promise.resolve(guiasCache);
@@ -444,6 +525,9 @@
 
   function guiaCard(g) {
     var pasos = (g.pasos || []).length;
+    var avance = progresoDe(g.id);
+    var hechos = avance.pasos.length;
+    var completa = pasos && hechos >= pasos;
     var portada = g.portada
       ? (esVideo(g.portada)
         ? '<video muted loop playsinline preload="metadata"><source src="' + esc(g.portada) + '"></video>'
@@ -454,6 +538,7 @@
       '<a class="guia-cover" href="guia.html?id=' + esc(g.id) + '" aria-label="Abrir la guía ' + esc(g.titulo) + '">' +
       portada +
       '<span class="guia-nivel">' + esc(NIVEL_LABEL[g.nivel] || "") + "</span>" +
+      (completa ? '<span class="guia-hecha">' + icon("check") + " Completada</span>" : "") +
       (g.video || (g.pasos || []).some(function (p) { return p.video; })
         ? '<span class="guia-tienevideo">' + icon("play") + " Con video</span>" : "") +
       "</a>" +
@@ -463,7 +548,14 @@
       (g.textura && g.textura !== "todas" ? " · " + esc(TEX_LABEL[g.textura]) : "") + "</span>" +
       '<h3><a href="guia.html?id=' + esc(g.id) + '">' + esc(g.titulo) + "</a></h3>" +
       "<p>" + esc(g.resumen) + "</p>" +
-      '<a class="guia-more" href="guia.html?id=' + esc(g.id) + '">Ver los ' + pasos + " pasos →</a>" +
+      // Si dejó la guía a medias, la tarjeta se lo recuerda y la invita a seguir
+      (hechos && !completa
+        ? '<span class="guia-avance"><span class="ga-barra"><span style="width:' +
+          Math.round((hechos / pasos) * 100) + '%"></span></span>' +
+          "<small>Vas en " + hechos + " de " + pasos + " pasos</small></span>"
+        : "") +
+      '<a class="guia-more" href="guia.html?id=' + esc(g.id) + '">' +
+      (hechos && !completa ? "Seguir donde quedaste →" : "Ver los " + pasos + " pasos →") + "</a>" +
       "</div></article>"
     );
   }
@@ -472,44 +564,125 @@
     '<div class="guias-vacio"><strong>Todavía no hay guías publicadas.</strong>' +
     "<span>Estamos grabando los primeros pasos a paso. Vuelve pronto o únete al Club Ondea para enterarte apenas salgan. ✦</span></div>";
 
-  /* Página: listado de guías, con filtros por tema y por textura */
+  /* Página: listado de guías, con buscador y filtros por tema y textura */
   function initGuias() {
     var grid = qs("#guias-grid");
     if (!grid) return;
-    var filtros = { categoria: urlParam("categoria") || "", textura: urlParam("textura") || "" };
 
-    function pintar(guias) {
-      var lista = guias.filter(function (g) {
-        return (!filtros.categoria || g.categoria === filtros.categoria) &&
-          (!filtros.textura || g.textura === filtros.textura || g.textura === "todas");
+    var filtros = {
+      categoria: urlParam("categoria") || "",
+      textura: urlParam("textura") || "",
+      q: urlParam("q") || "",
+    };
+    var todas = [];
+    var buscador = qs("#guias-q");
+    var limpiarBusqueda = qs("#guias-q-limpiar");
+    var limpiarTodo = qs("#guias-limpiar");
+
+    grid.innerHTML = esqueletos(6);
+
+    function coincide(g) {
+      if (filtros.categoria && g.categoria !== filtros.categoria) return false;
+      if (filtros.textura && g.textura !== filtros.textura && g.textura !== "todas") return false;
+      if (!filtros.q) return true;
+      // Busca en el título, el resumen, los pasos y los tips: quien escribe
+      // "plopping" espera encontrar la guía aunque no salga en el título
+      var texto = normalizeText([
+        g.titulo, g.resumen,
+        (g.pasos || []).map(function (p) { return p.titulo + " " + p.texto; }).join(" "),
+        (g.tips || []).join(" "),
+        CAT_LABEL[g.categoria] || "", NIVEL_LABEL[g.nivel] || "",
+      ].join(" "));
+      return normalizeText(filtros.q).split(/\s+/).filter(Boolean).every(function (t) {
+        return texto.indexOf(t) !== -1;
       });
-      qs("#guias-count").textContent = lista.length
-        ? lista.length + (lista.length === 1 ? " guía" : " guías")
+    }
+
+    // La URL guarda los filtros: se puede compartir y el botón "atrás" funciona
+    function sincronizarURL() {
+      if (!history.replaceState) return;
+      var partes = [];
+      ["categoria", "textura", "q"].forEach(function (k) {
+        if (filtros[k]) partes.push(k + "=" + encodeURIComponent(filtros[k]));
+      });
+      history.replaceState(null, "", location.pathname + (partes.length ? "?" + partes.join("&") : ""));
+    }
+
+    function pintar() {
+      var lista = todas.filter(coincide);
+      var hayFiltros = !!(filtros.categoria || filtros.textura || filtros.q);
+
+      qs("#guias-count").innerHTML = todas.length
+        ? "<strong>" + lista.length + "</strong> " +
+          (lista.length === 1 ? "guía" : "guías") +
+          (hayFiltros ? " de " + todas.length : "")
         : "";
-      grid.innerHTML = lista.length
-        ? lista.map(guiaCard).join("")
-        : (guias.length
-          ? '<div class="guias-vacio"><strong>Ninguna guía con ese filtro.</strong><span>Prueba con otro tema o mira todas las guías.</span></div>'
-          : GUIAS_VACIO);
+      if (limpiarTodo) limpiarTodo.hidden = !hayFiltros;
+      if (limpiarBusqueda) limpiarBusqueda.hidden = !filtros.q;
+
+      qsa("[data-filtro]").forEach(function (c) {
+        c.classList.toggle("active", c.getAttribute("data-valor") === filtros[c.getAttribute("data-filtro")]);
+      });
+
+      if (lista.length) {
+        grid.innerHTML = lista.map(guiaCard).join("");
+      } else if (todas.length) {
+        grid.innerHTML =
+          '<div class="guias-vacio"><strong>Ninguna guía con esa búsqueda.</strong>' +
+          "<span>Prueba con otra palabra o mira todas las guías: son pocas y todas valen la pena.</span>" +
+          '<button class="btn btn-brown" data-limpiar-filtros>Ver todas las guías ✦</button></div>';
+      } else {
+        grid.innerHTML = GUIAS_VACIO;
+      }
       revealScan();
     }
 
+    function actualizar() {
+      sincronizarURL();
+      pintar();
+    }
+
     fetchGuias().then(function (guias) {
-      pintar(guias);
-      qsa("[data-filtro]").forEach(function (chip) {
-        chip.addEventListener("click", function () {
-          var tipo = chip.getAttribute("data-filtro");
-          var valor = chip.getAttribute("data-valor");
-          filtros[tipo] = filtros[tipo] === valor ? "" : valor;
-          qsa('[data-filtro="' + tipo + '"]').forEach(function (c) {
-            c.classList.toggle("active", c.getAttribute("data-valor") === filtros[tipo]);
-          });
-          pintar(guias);
-        });
-        if (chip.getAttribute("data-valor") === filtros[chip.getAttribute("data-filtro")]) {
-          chip.classList.add("active");
-        }
+      todas = guias;
+      pintar();
+    });
+
+    qsa("[data-filtro]").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        var tipo = chip.getAttribute("data-filtro");
+        var valor = chip.getAttribute("data-valor");
+        filtros[tipo] = filtros[tipo] === valor ? "" : valor;
+        actualizar();
       });
+    });
+
+    if (buscador) {
+      buscador.value = filtros.q;
+      var espera = null;
+      buscador.addEventListener("input", function () {
+        clearTimeout(espera);
+        espera = setTimeout(function () {
+          filtros.q = buscador.value.trim();
+          actualizar();
+        }, 180);
+      });
+    }
+    if (limpiarBusqueda) {
+      limpiarBusqueda.addEventListener("click", function () {
+        filtros.q = "";
+        if (buscador) { buscador.value = ""; buscador.focus(); }
+        actualizar();
+      });
+    }
+
+    function borrarTodo() {
+      filtros.categoria = filtros.textura = filtros.q = "";
+      if (buscador) buscador.value = "";
+      actualizar();
+    }
+    if (limpiarTodo) limpiarTodo.addEventListener("click", borrarTodo);
+    grid.addEventListener("click", function (ev) {
+      if (ev.target.closest && ev.target.closest("[data-limpiar-filtros]")) borrarTodo();
     });
   }
 
@@ -549,25 +722,61 @@
         (g.duracion ? "<span>" + icon("clock") + " " + esc(g.duracion) + "</span>" : "") +
         "<span>" + icon("wave") + " " + esc(TEX_LABEL[g.textura] || "") + "</span>" +
         "<span>" + icon("check") + " " + pasos.length + " pasos</span>" +
+        '<button type="button" class="guia-compartir" id="guia-compartir">' + icon("share") + " Compartir</button>" +
         "</div></div>" +
 
         (g.portada || g.video
           ? '<figure class="guia-portada">' + mediaTag(g.video || g.portada, g.titulo, "guia-portada-media") + "</figure>"
           : "") +
 
+        // Índice: de un vistazo se ve de qué va la guía y se salta a cualquier paso
+        (pasos.length > 2
+          ? '<nav class="guia-indice" aria-label="Índice de la guía">' +
+            "<h2>" + pasos.length + " pasos</h2><ol>" +
+            pasos.map(function (p, i) {
+              return '<li><a href="#paso-' + (i + 1) + '"><b>' + (i + 1) + "</b>" +
+                esc(p.titulo || "Paso " + (i + 1)) + "</a></li>";
+            }).join("") +
+            "</ol>" +
+            '<button type="button" class="btn btn-brown btn-sm" id="gi-empezar">Empezar ✦</button>' +
+            "</nav>"
+          : "") +
+
+        // Barra pegajosa: siempre se ve por dónde va y cuánto falta
+        (pasos.length
+          ? '<div class="guia-progreso" id="guia-progreso">' +
+            '<span class="gp-texto" id="gp-texto"></span>' +
+            '<span class="gp-barra"><span id="gp-relleno"></span></span>' +
+            '<button type="button" class="gp-reiniciar" id="gp-reiniciar" hidden>Reiniciar</button>' +
+            "</div>"
+          : "") +
+
         (pasos.length
           ? '<ol class="pasos-lista">' + pasos.map(function (p, i) {
-            return '<li class="paso">' +
-              '<div class="paso-num" aria-hidden="true">' + (i + 1) + "</div>" +
+            return '<li class="paso" id="paso-' + (i + 1) + '" data-indice="' + i + '">' +
+              '<div class="paso-num" aria-hidden="true"><span class="pn-numero">' + (i + 1) + "</span>" +
+              '<span class="pn-check">✓</span></div>' +
               '<div class="paso-cuerpo">' +
               (p.titulo ? "<h2>" + esc(p.titulo) + "</h2>" : "") +
               parrafos(p.texto) +
               (p.imagen ? '<figure class="paso-media">' + mediaTag(p.imagen, p.titulo || g.titulo, "") + "</figure>" : "") +
               (p.video ? '<figure class="paso-media">' + mediaTag(p.video, p.titulo || g.titulo, "") + "</figure>" : "") +
               (p.tip ? '<p class="paso-tip">✦ ' + esc(p.tip) + "</p>" : "") +
+              '<button type="button" class="paso-listo" data-paso="' + i + '">' +
+              '<span class="pl-marca" aria-hidden="true"></span><span class="pl-texto"></span></button>' +
               "</div></li>";
           }).join("") + "</ol>"
           : "") +
+
+        // Aparece al terminar el último paso
+        '<div class="guia-final" id="guia-final" hidden>' +
+        '<span class="gf-sello" aria-hidden="true">✦</span>' +
+        "<h2>¡Completaste la guía!</h2>" +
+        "<p>Eso es exactamente lo que necesita tu rizo: repetirlo hasta que salga solo. Cuéntanos cómo te fue.</p>" +
+        '<div class="guia-cierre-acciones">' +
+        '<a class="btn btn-brown" href="guias.html">Ir por la siguiente guía ✦</a>' +
+        '<a class="btn btn-outline" href="https://www.instagram.com/rizosondea/" target="_blank" rel="noopener">Mostrar mi resultado</a>' +
+        "</div></div>" +
 
         ((g.tips || []).length
           ? '<div class="guia-tips"><h2>' + icon("heart") + " Para que te salga aún mejor</h2><ul>" +
@@ -587,8 +796,168 @@
         (siguiente ? '<a class="sig" href="guia.html?id=' + esc(siguiente.id) + '"><small>Siguiente →</small>' + esc(siguiente.titulo) + "</a>" : "<span></span>") +
         "</nav>";
 
+      conectarProgreso(g, pasos, root);
       revealScan();
     });
+  }
+
+  /* Marcar los pasos: el progreso queda guardado en el navegador, así que se
+     puede cerrar la página a medio lavado y volver justo donde iba. */
+  function conectarProgreso(g, pasos, root) {
+    if (!pasos.length) return;
+
+    var hechos = {};
+    progresoDe(g.id).pasos.forEach(function (i) { if (i < pasos.length) hechos[i] = true; });
+
+    var relleno = qs("#gp-relleno");
+    var texto = qs("#gp-texto");
+    var btnReiniciar = qs("#gp-reiniciar");
+    var barra = qs("#guia-progreso");
+    var final = qs("#guia-final");
+    var btnEmpezar = qs("#gi-empezar");
+
+    function cuantos() { return Object.keys(hechos).length; }
+
+    function primerPendiente(desde) {
+      for (var k = desde || 0; k < pasos.length; k++) if (!hechos[k]) return k;
+      for (var j = 0; j < (desde || 0); j++) if (!hechos[j]) return j;
+      return null;
+    }
+
+    function irAPaso(i) {
+      var destino = qs("#paso-" + (i + 1));
+      if (destino) destino.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function pintarPaso(i) {
+      var li = qs("#paso-" + (i + 1));
+      if (!li) return;
+      var listo = !!hechos[i];
+      li.classList.toggle("hecho", listo);
+      var btn = qs(".paso-listo", li);
+      if (btn) {
+        btn.classList.toggle("marcado", listo);
+        btn.setAttribute("aria-pressed", listo ? "true" : "false");
+        qs(".pl-texto", btn).textContent = listo ? "Paso hecho" : "Marcar como hecho";
+      }
+      var enlace = qs('.guia-indice a[href="#paso-' + (i + 1) + '"]');
+      if (enlace) enlace.classList.toggle("hecho", listo);
+    }
+
+    function pintarProgreso() {
+      var n = cuantos();
+      var total = pasos.length;
+      var completa = n >= total;
+      if (relleno) relleno.style.width = Math.round((n / total) * 100) + "%";
+      if (texto) {
+        texto.innerHTML = !n
+          ? "Marca cada paso a medida que lo hagas ✦"
+          : (completa
+            ? "<strong>¡Guía completa!</strong> " + total + " de " + total + " pasos"
+            : "<strong>" + n + " de " + total + "</strong> pasos hechos");
+      }
+      if (btnReiniciar) btnReiniciar.hidden = !n;
+      if (barra) barra.classList.toggle("completa", completa);
+      if (final) final.hidden = !completa;
+      if (btnEmpezar) {
+        btnEmpezar.textContent = completa ? "Repasar desde el inicio ✦" : (n ? "Seguir donde quedé →" : "Empezar ✦");
+      }
+    }
+
+    pasos.forEach(function (p, i) { pintarPaso(i); });
+    pintarProgreso();
+
+    root.addEventListener("click", function (ev) {
+      var btn = ev.target.closest ? ev.target.closest(".paso-listo") : null;
+      if (btn) {
+        var i = parseInt(btn.getAttribute("data-paso"), 10);
+        var marcar = !hechos[i];
+        if (marcar) hechos[i] = true; else delete hechos[i];
+        marcarPaso(g, i, marcar);
+        pintarPaso(i);
+        pintarProgreso();
+        if (marcar) {
+          if (cuantos() >= pasos.length) {
+            toast("✦ ¡Completaste la guía! Bien ahí.");
+            if (final) final.scrollIntoView({ behavior: "smooth", block: "center" });
+          } else {
+            var sig = primerPendiente(i + 1);
+            if (sig !== null) irAPaso(sig);
+          }
+        }
+        return;
+      }
+
+      if (ev.target.closest && ev.target.closest("#gp-reiniciar")) {
+        hechos = {};
+        olvidarProgreso(g.id);
+        pasos.forEach(function (p, i) { pintarPaso(i); });
+        pintarProgreso();
+        toast("Progreso reiniciado ✦");
+        return;
+      }
+
+      if (ev.target.closest && ev.target.closest("#guia-compartir")) {
+        compartirGuia(g);
+        return;
+      }
+
+      if (ev.target.closest && ev.target.closest("#gi-empezar")) {
+        var arrancar = cuantos() >= pasos.length ? 0 : (primerPendiente(0) || 0);
+        irAPaso(arrancar);
+        return;
+      }
+
+      var img = ev.target.closest ? ev.target.closest(".paso-media img, .guia-portada img") : null;
+      if (img) ampliarFoto(img);
+    });
+  }
+
+  /* Compartir la guía: en celular abre el menú del sistema (WhatsApp, IG,
+     donde quiera); en computador copia el enlace al portapapeles. */
+  function compartirGuia(g) {
+    function copiarEnlace() {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(location.href)
+          .then(function () { toast("✓ Enlace copiado: pásaselo a quien lo necesite"); })
+          .catch(function () { toast("Copia el enlace desde la barra del navegador"); });
+      } else {
+        toast("Copia el enlace desde la barra del navegador");
+      }
+    }
+
+    if (navigator.share) {
+      navigator.share({
+        title: g.titulo + " · Rizos Ondea",
+        text: g.resumen || "Guía paso a paso para tus rizos",
+        url: location.href,
+      }).catch(function (e) {
+        // Si cerró el menú, no molestamos; si falló de verdad, copiamos
+        if (!e || e.name !== "AbortError") copiarEnlace();
+      });
+      return;
+    }
+    copiarEnlace();
+  }
+
+  /* Ver la foto de un paso en grande: en el celular el detalle se pierde */
+  function ampliarFoto(img) {
+    var capa = document.createElement("div");
+    capa.className = "lightbox";
+    capa.innerHTML =
+      '<button class="lb-cerrar" type="button" aria-label="Cerrar">✕</button>' +
+      '<img src="' + esc(img.currentSrc || img.src) + '" alt="' + esc(img.alt || "") + '">';
+    document.body.appendChild(capa);
+    requestAnimationFrame(function () { capa.classList.add("abierto"); });
+
+    function cerrar() {
+      capa.classList.remove("abierto");
+      document.removeEventListener("keydown", alTeclado);
+      setTimeout(function () { if (capa.parentNode) capa.parentNode.removeChild(capa); }, 240);
+    }
+    function alTeclado(ev) { if (ev.key === "Escape") cerrar(); }
+    capa.addEventListener("click", cerrar);
+    document.addEventListener("keydown", alTeclado);
   }
 
   /* ---------- Página: Tienda ---------- */
@@ -1292,8 +1661,40 @@
   function initCommon() {
     var toggle = qs(".menu-toggle");
     var nav = qs(".nav");
+
     if (toggle && nav) {
-      toggle.addEventListener("click", function () { nav.classList.toggle("open"); });
+      var abrir = function (si) {
+        nav.classList.toggle("open", si);
+        toggle.setAttribute("aria-expanded", si ? "true" : "false");
+        toggle.innerHTML = si ? "✕" : "☰";
+        toggle.setAttribute("aria-label", si ? "Cerrar menú" : "Abrir menú");
+      };
+      toggle.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        abrir(!nav.classList.contains("open"));
+      });
+      // Se cierra al elegir una sección, con Escape o tocando fuera: en celular
+      // un menú que se queda abierto se siente atascado
+      nav.addEventListener("click", function (ev) {
+        if (ev.target.tagName === "A") abrir(false);
+      });
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape") abrir(false);
+      });
+      document.addEventListener("click", function (ev) {
+        if (nav.classList.contains("open") && !nav.contains(ev.target) && ev.target !== toggle) abrir(false);
+      });
+    }
+
+    // Alto real del header → las secciones pegajosas y los anclajes saben
+    // cuánto espacio dejar arriba (cada navegador lo mide distinto)
+    var header = qs(".header");
+    if (header) {
+      var medir = function () {
+        document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
+      };
+      medir();
+      window.addEventListener("resize", medir);
     }
 
     updateCartBadge();

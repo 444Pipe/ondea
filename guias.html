@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,600;1,700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=60">
+  <link rel="stylesheet" href="css/styles.css?v=62">
 </head>
 <body data-page="guias">
 
@@ -62,6 +62,12 @@
 
     <section class="section">
       <div class="container">
+        <div class="guias-buscador">
+          <svg class="icon" aria-hidden="true"><use href="#i-search"></use></svg>
+          <input type="search" id="guias-q" placeholder="Busca: frizz, plopping, hidratación, difusor…" aria-label="Buscar guías">
+          <button type="button" class="gb-limpiar" id="guias-q-limpiar" aria-label="Limpiar la búsqueda" hidden>✕</button>
+        </div>
+
         <div class="filtros-row" role="group" aria-label="Filtrar guías por tema">
           <span class="filtros-lbl">Tema:</span>
           <button class="chip-filtro" data-filtro="categoria" data-valor="rutina">Rutina</button>
@@ -78,7 +84,10 @@
           <button class="chip-filtro" data-filtro="textura" data-valor="afro">Afro 4A–4C</button>
         </div>
 
-        <p class="guias-count" id="guias-count"></p>
+        <p class="guias-count">
+          <span id="guias-count"></span>
+          <button type="button" class="gb-limpiar-todo" id="guias-limpiar" hidden>Limpiar filtros ✕</button>
+        </p>
         <div class="guias-grid" id="guias-grid"><!-- Render dinámico desde /api/guias --></div>
       </div>
     </section>
@@ -154,7 +163,7 @@
     </div>
   </footer>
 
-  <script src="js/data.js?v=60"></script>
-  <script src="js/app.js?v=60"></script>
+  <script src="js/data.js?v=61"></script>
+  <script src="js/app.js?v=63"></script>
 </body>
 </html>
