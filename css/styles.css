@@ -1078,6 +1078,14 @@ section[id], footer[id] { scroll-margin-top: 96px; }
 .chip-filtro.active { background: var(--brown); border-color: var(--brown); color: var(--pink); }
 .guias-count { text-align: center; color: var(--brown-soft); font-size: 13.5px; margin-bottom: 22px; }
 
+/* El ancla avisa (desde JS) cuándo la barra de filtros quedó pegada al header */
+.filtros-ancla { display: block; height: 1px; margin-bottom: -1px; }
+/* Atajo para limpiar que solo aparece en celular, dentro del carril */
+.chip-limpiar, .gf-lupa { display: none; }
+/* El número de guías entra suave cada vez que cambia: se nota que respondió */
+@keyframes cuentaEntra { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.guias-count strong { display: inline-block; animation: cuentaEntra 0.3s ease both; }
+
 /* ---------- Guías: una guía con sus pasos ---------- */
 .guia-detalle { max-width: 820px; margin: 0 auto; padding: 34px 0 72px; }
 .guia-volver { display: block; width: fit-content; color: var(--pink-strong); font-weight: 600; font-size: 14px; margin-bottom: 18px; }
@@ -1589,4 +1597,161 @@ video.guia-portada-media { object-fit: contain; background: var(--brown-deep); }
   .cart-item .line-right { grid-column: 1 / -1; justify-items: start; grid-auto-flow: column; justify-content: space-between; width: 100%; }
   .checkout-form .grid-2 { grid-template-columns: 1fr; }
   .brand .brand-ondea { font-size: 25px; }
+}
+
+/* ---------- Filtros de guías en celular: una barra viva de un renglón ----------
+   Buscador, temas, texturas y conteo se vuelven una sola barra pegada bajo el
+   header. Las dos filas de chips comparten un carril que se desliza de lado, y
+   al bajar la página el buscador se recoge: quedan los filtros a un toque sin
+   robarle pantalla a las guías. */
+@media (max-width: 700px) {
+  /* La barra de filtros abre la página: no necesita el respiro completo arriba */
+  [data-page="guias"] main > .section:first-of-type { padding-top: 24px; }
+
+  .guias-filtros {
+    --gt: 4vw;
+    position: sticky; top: calc(var(--header-h, 76px) - 1px); z-index: 44;
+    margin: 0 calc(-1 * var(--gt)) 16px; padding: 9px var(--gt) 8px;
+    background: var(--cream);
+    transition: padding 0.28s ease, box-shadow 0.3s ease;
+  }
+  .guias-filtros.pegada { box-shadow: 0 18px 20px -20px rgba(88, 48, 31, 0.85); }
+  .guias-filtros.pegada::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--pink-soft) 20%, var(--pink-soft) 80%, transparent);
+  }
+
+  .guias-buscador {
+    max-width: none; margin: 0 0 8px; height: 42px;
+    padding: 0 5px 0 14px; box-shadow: none; border-color: var(--pink);
+    overflow: hidden;
+    transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1), margin 0.3s ease,
+                padding 0.3s ease, border-width 0.3s ease, opacity 0.22s ease,
+                transform 0.3s ease, visibility 0s;
+  }
+  .guias-buscador input { font-size: 14px; padding: 0; }
+  .gb-limpiar { width: 30px; height: 30px; font-size: 13px; }
+
+  /* Carril horizontal: las dos filas van en línea y se deslizan con el dedo */
+  .filtros-scroll {
+    display: flex; align-items: center; gap: 9px;
+    overflow-x: auto; overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    margin-inline: calc(-1 * var(--gt)); padding: 3px var(--gt);
+    transition: padding 0.28s ease;
+  }
+  .filtros-scroll::-webkit-scrollbar { display: none; }
+  /* El difuminado del borde avisa que quedan filtros por ver hacia ese lado */
+  .filtros-scroll.hay-der {
+    -webkit-mask-image: linear-gradient(90deg, #000 84%, transparent);
+            mask-image: linear-gradient(90deg, #000 84%, transparent);
+  }
+  .filtros-scroll.hay-izq {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%);
+            mask-image: linear-gradient(90deg, transparent, #000 7%);
+  }
+  .filtros-scroll.hay-izq.hay-der {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 84%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 7%, #000 84%, transparent);
+  }
+
+  .filtros-row { flex: 0 0 auto; flex-wrap: nowrap; gap: 7px; margin: 0; }
+  .filtros-row + .filtros-row { position: relative; padding-left: 11px; }
+  .filtros-row + .filtros-row::before {
+    content: ""; position: absolute; left: 1px; top: 7px; bottom: 7px;
+    width: 2px; border-radius: 2px; background: var(--pink-soft);
+  }
+  .filtros-row .filtros-lbl { font-size: 9.5px; letter-spacing: 1.2px; margin-right: 1px; }
+  .chip-filtro { white-space: nowrap; padding: 6px 13px; font-size: 12.5px; }
+  .chip-filtro.active::after { content: " ✕"; font-size: 10px; opacity: 0.85; }
+  /* El chip que se acaba de tocar da un saltito: se siente que respondió */
+  .chip-filtro.recien { animation: chipPop 0.34s ease; }
+  @keyframes chipPop {
+    0% { transform: scale(1); }
+    45% { transform: scale(1.09); }
+    100% { transform: scale(1); }
+  }
+
+  /* Limpiar todo: se queda anclado al borde izquierdo mientras el carril corre */
+  .chip-limpiar {
+    position: sticky; left: 0; z-index: 3; flex: 0 0 auto;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin: 0 3px 0 calc(-1 * var(--gt));
+    padding: 7px 13px 7px calc(var(--gt) + 13px);
+    border: none; border-radius: 0 999px 999px 0;
+    background: var(--brown); color: var(--pink);
+    font-family: var(--font-body); font-size: 12.5px; font-weight: 600;
+    cursor: pointer; animation: chipLimpiarEntra 0.26s ease both;
+  }
+  .chip-limpiar[hidden] { display: none; }
+  /* Velo a su derecha: al correr el carril, los chips se desvanecen bajo el
+     atajo en vez de quedar cortados a media letra */
+  .chip-limpiar::after {
+    content: ""; position: absolute; left: 100%; top: 0; bottom: 0; width: 22px;
+    background: linear-gradient(90deg, var(--cream), transparent);
+    opacity: 0; transition: opacity 0.2s ease; pointer-events: none;
+  }
+  .filtros-scroll.corrido .chip-limpiar::after { opacity: 1; }
+  .chip-limpiar .cl-n {
+    background: var(--pink); color: var(--brown-deep); border-radius: 999px;
+    min-width: 18px; height: 18px; line-height: 18px; padding: 0 5px;
+    font-size: 11px; text-align: center;
+  }
+  @keyframes chipLimpiarEntra {
+    from { opacity: 0; transform: translateX(-16px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .guias-count {
+    margin: 8px 0 0; font-size: 12.5px; gap: 10px;
+    transition: opacity 0.2s ease, margin 0.28s ease, height 0.28s ease;
+  }
+  .guias-count .gb-limpiar-todo { display: none; } /* su lugar es el carril */
+
+  /* Lupa flotante: aparece cuando el buscador se recoge */
+  .gf-lupa {
+    position: absolute; right: var(--gt); top: 50%; z-index: 4;
+    display: flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--pink);
+    background: var(--white); color: var(--pink-strong); cursor: pointer;
+    box-shadow: 0 6px 16px rgba(88, 48, 31, 0.16);
+    opacity: 0; pointer-events: none; visibility: hidden;
+    transform: translateY(-50%) scale(0.55);
+    transition: opacity 0.24s ease, transform 0.28s cubic-bezier(0.34, 1.4, 0.5, 1), visibility 0s linear 0.28s;
+  }
+  .gf-lupa .icon { width: 19px; height: 19px; }
+
+  /* Estado recogido: solo queda el carril de chips y la lupa */
+  .guias-filtros.compacta { padding-top: 6px; padding-bottom: 6px; }
+  .guias-filtros.compacta .guias-buscador {
+    height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0;
+    border-width: 0; opacity: 0; transform: translateY(-6px);
+    visibility: hidden; transition-delay: 0s, 0s, 0s, 0s, 0s, 0s, 0.28s;
+  }
+  /* Recogida, la barra reserva el rincón de la lupa: los chips se desvanecen
+     antes de llegar a ella en vez de pasarle por debajo */
+  .guias-filtros.compacta .filtros-scroll {
+    padding-right: calc(var(--gt) + 48px);
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 78px), transparent calc(100% - 56px));
+            mask-image: linear-gradient(90deg, #000 calc(100% - 78px), transparent calc(100% - 56px));
+  }
+  .guias-filtros.compacta .filtros-scroll.hay-izq {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 calc(100% - 78px), transparent calc(100% - 56px));
+            mask-image: linear-gradient(90deg, transparent, #000 7%, #000 calc(100% - 78px), transparent calc(100% - 56px));
+  }
+  .guias-filtros.compacta .guias-count { height: 0; margin: 0; opacity: 0; overflow: hidden; }
+  .guias-filtros.compacta .gf-lupa {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateY(-50%) scale(1); transition-delay: 0.06s, 0.06s, 0s;
+  }
+}
+
+@media (max-width: 560px) {
+  .guias-filtros { --gt: 3vw; }
+  .chip-filtro { padding: 6px 12px; font-size: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip-filtro.recien, .chip-limpiar, .guias-count strong { animation: none; }
+  .guias-filtros, .guias-buscador, .guias-count, .gf-lupa, .filtros-scroll { transition: none; }
 }

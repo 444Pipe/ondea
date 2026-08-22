@@ -578,6 +578,10 @@
     var buscador = qs("#guias-q");
     var limpiarBusqueda = qs("#guias-q-limpiar");
     var limpiarTodo = qs("#guias-limpiar");
+    var barra = qs("#guias-filtros");
+    var carril = qs("#filtros-scroll");
+    var limpiarChip = qs("#guias-limpiar-chip");
+    var limpiarChipN = qs("#guias-limpiar-n");
 
     grid.innerHTML = esqueletos(6);
 
@@ -596,6 +600,32 @@
       return normalizeText(filtros.q).split(/\s+/).filter(Boolean).every(function (t) {
         return texto.indexOf(t) !== -1;
       });
+    }
+
+    /* En celular las dos filas de chips comparten un carril horizontal. El
+       difuminado de los bordes avisa hacia dónde quedan filtros sin ver. */
+    function actualizarCarril() {
+      if (!carril) return;
+      var sobra = carril.scrollWidth - carril.clientWidth;
+      var x = carril.scrollLeft;
+      carril.classList.toggle("hay-der", sobra > 4 && x < sobra - 4);
+      carril.classList.toggle("corrido", x > 2);
+      // el atajo de limpiar va pegado a la izquierda: no se difumina encima
+      carril.classList.toggle(
+        "hay-izq",
+        sobra > 4 && x > 4 && !!(limpiarChip && limpiarChip.hidden)
+      );
+    }
+
+    // Trae al centro el chip recién tocado: nunca queda escondido fuera del carril
+    function centrarChip(chip) {
+      if (!carril || !chip) return;
+      if (carril.scrollWidth <= carril.clientWidth + 4) return;
+      var r = chip.getBoundingClientRect();
+      var c = carril.getBoundingClientRect();
+      var salto = r.left + r.width / 2 - (c.left + c.width / 2);
+      if (Math.abs(salto) < 8) return;
+      carril.scrollBy({ left: salto, behavior: REDUCED_MOTION ? "auto" : "smooth" });
     }
 
     // La URL guarda los filtros: se puede compartir y el botón "atrás" funciona
@@ -619,10 +649,16 @@
         : "";
       if (limpiarTodo) limpiarTodo.hidden = !hayFiltros;
       if (limpiarBusqueda) limpiarBusqueda.hidden = !filtros.q;
+      if (limpiarChip) {
+        var activos = (filtros.categoria ? 1 : 0) + (filtros.textura ? 1 : 0) + (filtros.q ? 1 : 0);
+        limpiarChip.hidden = !activos;
+        if (limpiarChipN) limpiarChipN.textContent = activos;
+      }
 
       qsa("[data-filtro]").forEach(function (c) {
         c.classList.toggle("active", c.getAttribute("data-valor") === filtros[c.getAttribute("data-filtro")]);
       });
+      actualizarCarril();
 
       if (lista.length) {
         grid.innerHTML = lista.map(guiaCard).join("");
@@ -640,11 +676,14 @@
     function actualizar() {
       sincronizarURL();
       pintar();
+      // al quedar sin filtros ni búsqueda la barra puede volver a recogerse
+      if (typeof revisarBarra === "function") revisarBarra();
     }
 
     fetchGuias().then(function (guias) {
       todas = guias;
       pintar();
+      centrarChip(qs(".chip-filtro.active"));
     });
 
     qsa("[data-filtro]").forEach(function (chip) {
@@ -652,7 +691,11 @@
         var tipo = chip.getAttribute("data-filtro");
         var valor = chip.getAttribute("data-valor");
         filtros[tipo] = filtros[tipo] === valor ? "" : valor;
+        chip.classList.remove("recien");
+        void chip.offsetWidth; // reinicia la animación del saltito
+        chip.classList.add("recien");
         actualizar();
+        centrarChip(chip);
       });
     });
 
@@ -681,6 +724,69 @@
       actualizar();
     }
     if (limpiarTodo) limpiarTodo.addEventListener("click", borrarTodo);
+    if (limpiarChip) {
+      limpiarChip.addEventListener("click", function () {
+        borrarTodo();
+        if (carril) carril.scrollTo({ left: 0, behavior: REDUCED_MOTION ? "auto" : "smooth" });
+      });
+    }
+    if (carril) {
+      carril.addEventListener("scroll", actualizarCarril, { passive: true });
+      window.addEventListener("resize", actualizarCarril);
+      actualizarCarril();
+    }
+
+    /* En celular la barra de filtros se queda pegada bajo el header y, al bajar,
+       recoge el buscador: quedan solo los chips y una lupa para volver a abrirlo.
+       Así los filtros siguen a un toque sin taparle pantalla a las guías. */
+    var ancla = qs(".filtros-ancla");
+    if (barra && ancla) {
+      var lupa = qs("#guias-lupa");
+      var buscadorAbierto = false;
+      var esperando = false;
+
+      var revisarBarra = function () {
+        if (!window.matchMedia("(max-width: 700px)").matches) {
+          barra.classList.remove("pegada", "compacta");
+          return;
+        }
+        var alto = parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue("--header-h")
+        ) || 76;
+        var pegada = ancla.getBoundingClientRect().top <= alto + 1;
+        barra.classList.toggle("pegada", pegada);
+        barra.classList.toggle("compacta", pegada && !buscadorAbierto && !filtros.q);
+      };
+
+      window.addEventListener("scroll", function () {
+        if (esperando) return;
+        esperando = true;
+        requestAnimationFrame(function () {
+          esperando = false;
+          revisarBarra();
+        });
+      }, { passive: true });
+      window.addEventListener("resize", revisarBarra);
+      revisarBarra();
+
+      if (lupa) {
+        lupa.addEventListener("click", function () {
+          buscadorAbierto = true;
+          revisarBarra();
+          if (buscador) setTimeout(function () { buscador.focus(); }, 80);
+        });
+      }
+      if (buscador) {
+        buscador.addEventListener("focus", function () {
+          buscadorAbierto = true;
+          revisarBarra();
+        });
+        buscador.addEventListener("blur", function () {
+          buscadorAbierto = !!buscador.value;
+          revisarBarra();
+        });
+      }
+    }
     grid.addEventListener("click", function (ev) {
       if (ev.target.closest && ev.target.closest("[data-limpiar-filtros]")) borrarTodo();
     });
